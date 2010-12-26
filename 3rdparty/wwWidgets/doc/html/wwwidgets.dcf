@@ -1,0 +1,484 @@
+<!DOCTYPE DCF>
+<DCF ref="index.html" icon="wwwidgets.png" imagedir="../../gif" title="wwWidgets Manual">
+<section ref="classes.html" title="Classes">
+    <section ref="qwwbuttonlineedit.html" title="QwwButtonLineEdit Class Reference">
+        <keyword ref="qwwbuttonlineedit.html">QwwButtonLineEdit</keyword>
+        <keyword ref="qwwbuttonlineedit.html#Position-enum">Position</keyword>
+        <keyword ref="qwwbuttonlineedit.html#Position-enum">QwwButtonLineEdit::LeftOutside</keyword>
+        <keyword ref="qwwbuttonlineedit.html#Position-enum">QwwButtonLineEdit::RightInside</keyword>
+        <keyword ref="qwwbuttonlineedit.html#Position-enum">QwwButtonLineEdit::None</keyword>
+        <keyword ref="qwwbuttonlineedit.html#Position-enum">QwwButtonLineEdit::LeftInside</keyword>
+        <keyword ref="qwwbuttonlineedit.html#Position-enum">QwwButtonLineEdit::RightOutside</keyword>
+        <keyword ref="qwwbuttonlineedit.html#autoRaise-prop">autoRaise</keyword>
+        <keyword ref="qwwbuttonlineedit.html#autoRaise-prop">setAutoRaise</keyword>
+        <keyword ref="qwwbuttonlineedit.html#buttonFocusPolicy-prop">buttonFocusPolicy</keyword>
+        <keyword ref="qwwbuttonlineedit.html#buttonFocusPolicy-prop">setButtonFocusPolicy</keyword>
+        <keyword ref="qwwbuttonlineedit.html#buttonPosition-prop">buttonPosition</keyword>
+        <keyword ref="qwwbuttonlineedit.html#buttonPosition-prop">setButtonPosition</keyword>
+        <keyword ref="qwwbuttonlineedit.html#buttonVisible-prop">buttonVisible</keyword>
+        <keyword ref="qwwbuttonlineedit.html#buttonVisible-prop">buttonIsVisible</keyword>
+        <keyword ref="qwwbuttonlineedit.html#buttonVisible-prop">setButtonVisible</keyword>
+        <keyword ref="qwwbuttonlineedit.html#icon-prop">icon</keyword>
+        <keyword ref="qwwbuttonlineedit.html#icon-prop">setIcon</keyword>
+        <keyword ref="qwwbuttonlineedit.html#placeholderText-prop">placeholderText</keyword>
+        <keyword ref="qwwbuttonlineedit.html#placeholderText-prop">setPlaceholderText</keyword>
+        <keyword ref="qwwbuttonlineedit.html#regExp-prop">regExp</keyword>
+        <keyword ref="qwwbuttonlineedit.html#regExp-prop">setRegExp</keyword>
+        <keyword ref="qwwbuttonlineedit.html#button">button</keyword>
+        <keyword ref="qwwbuttonlineedit.html#buttonClicked">buttonClicked</keyword>
+        <keyword ref="qwwbuttonlineedit.html#paintEvent">paintEvent</keyword>
+        <keyword ref="qwwbuttonlineedit.html#validatorChanged">validatorChanged</keyword>
+        <section ref="qwwbuttonlineedit-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwclearlineedit.html" title="QwwClearLineEdit Class Reference">
+        <keyword ref="qwwclearlineedit.html">QwwClearLineEdit</keyword>
+        <section ref="qwwclearlineedit-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwcolorbutton.html" title="QwwColorButton Class Reference">
+        <keyword ref="qwwcolorbutton.html">QwwColorButton</keyword>
+        <keyword ref="qwwcolorbutton.html#colors-prop">colors</keyword>
+        <keyword ref="qwwcolorbutton.html#colors-prop">setColors</keyword>
+        <keyword ref="qwwcolorbutton.html#currentColor-prop">currentColor</keyword>
+        <keyword ref="qwwcolorbutton.html#currentColor-prop">setCurrentColor</keyword>
+        <keyword ref="qwwcolorbutton.html#dragEnabled-prop">dragEnabled</keyword>
+        <keyword ref="qwwcolorbutton.html#dragEnabled-prop">setDragEnabled</keyword>
+        <keyword ref="qwwcolorbutton.html#showName-prop">showName</keyword>
+        <keyword ref="qwwcolorbutton.html#showName-prop">setShowName</keyword>
+        <keyword ref="qwwcolorbutton.html#addColor">addColor</keyword>
+        <keyword ref="qwwcolorbutton.html#clear">clear</keyword>
+        <keyword ref="qwwcolorbutton.html#colorPicked">colorPicked</keyword>
+        <keyword ref="qwwcolorbutton.html#setStandardColors">setStandardColors</keyword>
+        <section ref="qwwcolorbutton-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwcolorcombobox.html" title="QwwColorComboBox Class Reference">
+        <keyword ref="qwwcolorcombobox.html">QwwColorComboBox</keyword>
+        <keyword ref="qwwcolorcombobox.html#colorCount-prop">colorCount</keyword>
+        <keyword ref="qwwcolorcombobox.html#colorDialogEnabled-prop">colorDialogEnabled</keyword>
+        <keyword ref="qwwcolorcombobox.html#colorDialogEnabled-prop">isColorDialogEnabled</keyword>
+        <keyword ref="qwwcolorcombobox.html#colorDialogEnabled-prop">setColorDialogEnabled</keyword>
+        <keyword ref="qwwcolorcombobox.html#colors-prop">colors</keyword>
+        <keyword ref="qwwcolorcombobox.html#colors-prop">setColors</keyword>
+        <keyword ref="qwwcolorcombobox.html#currentColor-prop">currentColor</keyword>
+        <keyword ref="qwwcolorcombobox.html#activated">activated</keyword>
+        <keyword ref="qwwcolorcombobox.html#addColor">addColor</keyword>
+        <keyword ref="qwwcolorcombobox.html#color">color</keyword>
+        <keyword ref="qwwcolorcombobox.html#insertColor">insertColor</keyword>
+        <keyword ref="qwwcolorcombobox.html#setCurrentColor">setCurrentColor</keyword>
+        <keyword ref="qwwcolorcombobox.html#setStandardColors">setStandardColors</keyword>
+        <section ref="qwwcolorcombobox-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwconfigwidget.html" title="QwwConfigWidget Class Reference">
+        <keyword ref="qwwconfigwidget.html">QwwConfigWidget</keyword>
+        <keyword ref="qwwconfigwidget.html#count-prop">count</keyword>
+        <keyword ref="qwwconfigwidget.html#currentIndex-prop">currentIndex</keyword>
+        <keyword ref="qwwconfigwidget.html#currentIndex-prop">setCurrentIndex</keyword>
+        <keyword ref="qwwconfigwidget.html#iconSize-prop">iconSize</keyword>
+        <keyword ref="qwwconfigwidget.html#iconSize-prop">setIconSize</keyword>
+        <keyword ref="qwwconfigwidget.html#addGroup">addGroup</keyword>
+        <keyword ref="qwwconfigwidget.html#currentGroup">currentGroup</keyword>
+        <keyword ref="qwwconfigwidget.html#currentIndexChanged">currentIndexChanged</keyword>
+        <keyword ref="qwwconfigwidget.html#group">group</keyword>
+        <keyword ref="qwwconfigwidget.html#insertGroup">insertGroup</keyword>
+        <keyword ref="qwwconfigwidget.html#removeGroup">removeGroup</keyword>
+        <keyword ref="qwwconfigwidget.html#setCurrentGroup">setCurrentGroup</keyword>
+        <keyword ref="qwwconfigwidget.html#setGroupIcon">setGroupIcon</keyword>
+        <keyword ref="qwwconfigwidget.html#setGroupLabel">setGroupLabel</keyword>
+        <section ref="qwwconfigwidget-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwfilechooser.html" title="QwwFileChooser Class Reference">
+        <keyword ref="qwwfilechooser.html">QwwFileChooser</keyword>
+        <keyword ref="qwwfilechooser.html#acceptMode-prop">acceptMode</keyword>
+        <keyword ref="qwwfilechooser.html#acceptMode-prop">setAcceptMode</keyword>
+        <keyword ref="qwwfilechooser.html#completionMode-prop">completionMode</keyword>
+        <keyword ref="qwwfilechooser.html#completionMode-prop">setCompletionMode</keyword>
+        <keyword ref="qwwfilechooser.html#fileMode-prop">fileMode</keyword>
+        <keyword ref="qwwfilechooser.html#fileMode-prop">setFileMode</keyword>
+        <keyword ref="qwwfilechooser.html#filter-prop">filter</keyword>
+        <keyword ref="qwwfilechooser.html#filter-prop">setFilter</keyword>
+        <keyword ref="qwwfilechooser.html#usesNativeFileDialog-prop">usesNativeFileDialog</keyword>
+        <keyword ref="qwwfilechooser.html#usesNativeFileDialog-prop">setUsesNativeFileDialog</keyword>
+        <keyword ref="qwwfilechooser.html#chooseFile">chooseFile</keyword>
+        <keyword ref="qwwfilechooser.html#setModel">setModel</keyword>
+        <section ref="qwwfilechooser-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwhuesatpicker.html" title="QwwHueSatPicker Class Reference">
+        <keyword ref="qwwhuesatpicker.html">QwwHueSatPicker</keyword>
+        <keyword ref="qwwhuesatpicker.html#color-prop">color</keyword>
+        <keyword ref="qwwhuesatpicker.html#color-prop">setColor</keyword>
+        <keyword ref="qwwhuesatpicker.html#maximumHue-prop">maximumHue</keyword>
+        <keyword ref="qwwhuesatpicker.html#maximumHue-prop">setMaximumHue</keyword>
+        <keyword ref="qwwhuesatpicker.html#maximumSat-prop">maximumSat</keyword>
+        <keyword ref="qwwhuesatpicker.html#maximumSat-prop">setMaximumSat</keyword>
+        <keyword ref="qwwhuesatpicker.html#minimumHue-prop">minimumHue</keyword>
+        <keyword ref="qwwhuesatpicker.html#minimumHue-prop">setMinimumHue</keyword>
+        <keyword ref="qwwhuesatpicker.html#minimumSat-prop">minimumSat</keyword>
+        <keyword ref="qwwhuesatpicker.html#minimumSat-prop">setMinimumSat</keyword>
+        <keyword ref="qwwhuesatpicker.html#value-prop">value</keyword>
+        <keyword ref="qwwhuesatpicker.html#value-prop">setValue</keyword>
+        <keyword ref="qwwhuesatpicker.html#colorPicked">colorPicked</keyword>
+        <keyword ref="qwwhuesatpicker.html#drawCrosshair">drawCrosshair</keyword>
+        <keyword ref="qwwhuesatpicker.html#hueRangeChanged">hueRangeChanged</keyword>
+        <keyword ref="qwwhuesatpicker.html#maximumHueChanged">maximumHueChanged</keyword>
+        <keyword ref="qwwhuesatpicker.html#maximumSatChanged">maximumSatChanged</keyword>
+        <keyword ref="qwwhuesatpicker.html#minimumHueChanged">minimumHueChanged</keyword>
+        <keyword ref="qwwhuesatpicker.html#minimumSatChanged">minimumSatChanged</keyword>
+        <keyword ref="qwwhuesatpicker.html#satRangeChanged">satRangeChanged</keyword>
+        <keyword ref="qwwhuesatpicker.html#setHueRange">setHueRange</keyword>
+        <keyword ref="qwwhuesatpicker.html#setSatRange">setSatRange</keyword>
+        <keyword ref="qwwhuesatpicker.html#valueChanged">valueChanged</keyword>
+        <section ref="qwwhuesatpicker-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwhuesatradialpicker.html" title="QwwHueSatRadialPicker Class Reference">
+        <keyword ref="qwwhuesatradialpicker.html">QwwHueSatRadialPicker</keyword>
+        <keyword ref="qwwhuesatradialpicker.html#color-prop">color</keyword>
+        <keyword ref="qwwhuesatradialpicker.html#color-prop">setColor</keyword>
+        <keyword ref="qwwhuesatradialpicker.html#value-prop">value</keyword>
+        <keyword ref="qwwhuesatradialpicker.html#value-prop">setValue</keyword>
+        <keyword ref="qwwhuesatradialpicker.html#colorPicked">colorPicked</keyword>
+        <keyword ref="qwwhuesatradialpicker.html#drawCrosshair">drawCrosshair</keyword>
+        <keyword ref="qwwhuesatradialpicker.html#valueChanged">valueChanged</keyword>
+        <section ref="qwwhuesatradialpicker-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwled.html" title="QwwLed Class Reference">
+        <keyword ref="qwwled.html">QwwLed</keyword>
+        <keyword ref="qwwled.html#Shape-enum">Shape</keyword>
+        <keyword ref="qwwled.html#Shape-enum">QwwLed::RectangularRaised</keyword>
+        <keyword ref="qwwled.html#Shape-enum">QwwLed::RectangularSunken</keyword>
+        <keyword ref="qwwled.html#Shape-enum">QwwLed::RectangularPlain</keyword>
+        <keyword ref="qwwled.html#Shape-enum">QwwLed::Circular</keyword>
+        <keyword ref="qwwled.html#animated-prop">animated</keyword>
+        <keyword ref="qwwled.html#animated-prop">isAnimated</keyword>
+        <keyword ref="qwwled.html#animated-prop">setAnimated</keyword>
+        <keyword ref="qwwled.html#checked-prop">checked</keyword>
+        <keyword ref="qwwled.html#checked-prop">isChecked</keyword>
+        <keyword ref="qwwled.html#checked-prop">setChecked</keyword>
+        <keyword ref="qwwled.html#color-prop">color</keyword>
+        <keyword ref="qwwled.html#color-prop">setColor</keyword>
+        <keyword ref="qwwled.html#frameWidth-prop">frameWidth</keyword>
+        <keyword ref="qwwled.html#frameWidth-prop">setFrameWidth</keyword>
+        <keyword ref="qwwled.html#period-prop">period</keyword>
+        <keyword ref="qwwled.html#period-prop">setPeriod</keyword>
+        <keyword ref="qwwled.html#shape-prop">shape</keyword>
+        <keyword ref="qwwled.html#shape-prop">setShape</keyword>
+        <keyword ref="qwwled.html#blink">blink</keyword>
+        <keyword ref="qwwled.html#clicked">clicked</keyword>
+        <keyword ref="qwwled.html#colorChanged">colorChanged</keyword>
+        <keyword ref="qwwled.html#toggle">toggle</keyword>
+        <keyword ref="qwwled.html#toggled">toggled</keyword>
+        <section ref="qwwled-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwlistnavigator.html" title="QwwListNavigator Class Reference">
+        <keyword ref="qwwlistnavigator.html">QwwListNavigator</keyword>
+        <keyword ref="qwwlistnavigator.html#Button-enum">Button</keyword>
+        <keyword ref="qwwlistnavigator.html#Button-enum">Buttons</keyword>
+        <keyword ref="qwwlistnavigator.html#Button-enum">QwwListNavigator::NoButtons</keyword>
+        <keyword ref="qwwlistnavigator.html#Button-enum">QwwListNavigator::FirstButton</keyword>
+        <keyword ref="qwwlistnavigator.html#Button-enum">QwwListNavigator::NextButton</keyword>
+        <keyword ref="qwwlistnavigator.html#Button-enum">QwwListNavigator::PrevButton</keyword>
+        <keyword ref="qwwlistnavigator.html#Button-enum">QwwListNavigator::LastButton</keyword>
+        <keyword ref="qwwlistnavigator.html#Button-enum">QwwListNavigator::Slider</keyword>
+        <keyword ref="qwwlistnavigator.html#autoRaise-prop">autoRaise</keyword>
+        <keyword ref="qwwlistnavigator.html#autoRaise-prop">setAutoRaise</keyword>
+        <keyword ref="qwwlistnavigator.html#buttons-prop">buttons</keyword>
+        <keyword ref="qwwlistnavigator.html#buttons-prop">setButtons</keyword>
+        <keyword ref="qwwlistnavigator.html#orientation-prop">orientation</keyword>
+        <keyword ref="qwwlistnavigator.html#orientation-prop">setOrientation</keyword>
+        <keyword ref="qwwlistnavigator.html#toolButtonStyle-prop">toolButtonStyle</keyword>
+        <keyword ref="qwwlistnavigator.html#toolButtonStyle-prop">setToolButtonStyle</keyword>
+        <keyword ref="qwwlistnavigator.html#first">first</keyword>
+        <keyword ref="qwwlistnavigator.html#last">last</keyword>
+        <keyword ref="qwwlistnavigator.html#next">next</keyword>
+        <keyword ref="qwwlistnavigator.html#previous">previous</keyword>
+        <keyword ref="qwwlistnavigator.html#setListWidget">setListWidget</keyword>
+        <keyword ref="qwwlistnavigator.html#sliderChange">sliderChange</keyword>
+        <keyword ref="qwwlistnavigator.html#toFirst">toFirst</keyword>
+        <keyword ref="qwwlistnavigator.html#toLast">toLast</keyword>
+        <keyword ref="qwwlistnavigator.html#toNext">toNext</keyword>
+        <keyword ref="qwwlistnavigator.html#toPrevious">toPrevious</keyword>
+        <section ref="qwwlistnavigator-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwlistwidget.html" title="QwwListWidget Class Reference">
+        <keyword ref="qwwlistwidget.html">QwwListWidget</keyword>
+        <keyword ref="qwwlistwidget.html#currentAvailable">currentAvailable</keyword>
+        <keyword ref="qwwlistwidget.html#moveCurrentDown">moveCurrentDown</keyword>
+        <keyword ref="qwwlistwidget.html#moveCurrentUp">moveCurrentUp</keyword>
+        <keyword ref="qwwlistwidget.html#moveDownAvailable">moveDownAvailable</keyword>
+        <keyword ref="qwwlistwidget.html#moveUpAvailable">moveUpAvailable</keyword>
+        <keyword ref="qwwlistwidget.html#removeCurrent">removeCurrent</keyword>
+        <section ref="qwwlistwidget-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwloginbox.html" title="QwwLoginBox Class Reference">
+        <keyword ref="qwwloginbox.html">QwwLoginBox</keyword>
+        <keyword ref="qwwloginbox.html#Field-enum">Field</keyword>
+        <keyword ref="qwwloginbox.html#Field-enum">Fields</keyword>
+        <keyword ref="qwwloginbox.html#Field-enum">QwwLoginBox::RepeatPasswordField</keyword>
+        <keyword ref="qwwloginbox.html#Field-enum">QwwLoginBox::NoFields</keyword>
+        <keyword ref="qwwloginbox.html#Field-enum">QwwLoginBox::HostField</keyword>
+        <keyword ref="qwwloginbox.html#Field-enum">QwwLoginBox::PortField</keyword>
+        <keyword ref="qwwloginbox.html#Field-enum">QwwLoginBox::UserField</keyword>
+        <keyword ref="qwwloginbox.html#Field-enum">QwwLoginBox::ProxyField</keyword>
+        <keyword ref="qwwloginbox.html#Field-enum">QwwLoginBox::PasswordField</keyword>
+        <keyword ref="qwwloginbox.html#Field-enum">QwwLoginBox::RememberPasswordField</keyword>
+        <keyword ref="qwwloginbox.html#fields-prop">fields</keyword>
+        <keyword ref="qwwloginbox.html#fields-prop">setFields</keyword>
+        <keyword ref="qwwloginbox.html#host-prop">host</keyword>
+        <keyword ref="qwwloginbox.html#host-prop">setHost</keyword>
+        <keyword ref="qwwloginbox.html#port-prop">port</keyword>
+        <keyword ref="qwwloginbox.html#port-prop">setPort</keyword>
+        <keyword ref="qwwloginbox.html#proxyEnabled-prop">proxyEnabled</keyword>
+        <keyword ref="qwwloginbox.html#proxyEnabled-prop">proxyIsEnabled</keyword>
+        <keyword ref="qwwloginbox.html#proxyEnabled-prop">setProxyEnabled</keyword>
+        <keyword ref="qwwloginbox.html#rememberPassword-prop">rememberPassword</keyword>
+        <keyword ref="qwwloginbox.html#rememberPassword-prop">setRememberPassword</keyword>
+        <keyword ref="qwwloginbox.html#user-prop">user</keyword>
+        <keyword ref="qwwloginbox.html#isProxyRepeatCorrect">isProxyRepeatCorrect</keyword>
+        <keyword ref="qwwloginbox.html#isRepeatCorrect">isRepeatCorrect</keyword>
+        <keyword ref="qwwloginbox.html#password">password</keyword>
+        <keyword ref="qwwloginbox.html#setUser">setUser</keyword>
+        <section ref="qwwloginbox-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwlongspinbox.html" title="QwwLongSpinBox Class Reference">
+        <keyword ref="qwwlongspinbox.html">QwwLongSpinBox</keyword>
+        <keyword ref="qwwlongspinbox.html#maximum-prop">maximum</keyword>
+        <keyword ref="qwwlongspinbox.html#maximum-prop">setMaximum</keyword>
+        <keyword ref="qwwlongspinbox.html#minimum-prop">minimum</keyword>
+        <keyword ref="qwwlongspinbox.html#minimum-prop">setMinimum</keyword>
+        <keyword ref="qwwlongspinbox.html#prefix-prop">prefix</keyword>
+        <keyword ref="qwwlongspinbox.html#prefix-prop">setPrefix</keyword>
+        <keyword ref="qwwlongspinbox.html#singleStep-prop">singleStep</keyword>
+        <keyword ref="qwwlongspinbox.html#singleStep-prop">setSingleStep</keyword>
+        <keyword ref="qwwlongspinbox.html#suffix-prop">suffix</keyword>
+        <keyword ref="qwwlongspinbox.html#suffix-prop">setSuffix</keyword>
+        <keyword ref="qwwlongspinbox.html#value-prop">value</keyword>
+        <keyword ref="qwwlongspinbox.html#value-prop">setValue</keyword>
+        <keyword ref="qwwlongspinbox.html#fixup">fixup</keyword>
+        <keyword ref="qwwlongspinbox.html#setRange">setRange</keyword>
+        <keyword ref="qwwlongspinbox.html#stepBy">stepBy</keyword>
+        <keyword ref="qwwlongspinbox.html#stepEnabled">stepEnabled</keyword>
+        <keyword ref="qwwlongspinbox.html#textFromValue">textFromValue</keyword>
+        <keyword ref="qwwlongspinbox.html#validate">validate</keyword>
+        <keyword ref="qwwlongspinbox.html#valueChanged">valueChanged</keyword>
+        <keyword ref="qwwlongspinbox.html#valueFromText">valueFromText</keyword>
+        <section ref="qwwlongspinbox-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwnavigationbar.html" title="QwwNavigationBar Class Reference">
+        <keyword ref="qwwnavigationbar.html">QwwNavigationBar</keyword>
+        <keyword ref="qwwnavigationbar.html#currentIndex-prop">currentIndex</keyword>
+        <keyword ref="qwwnavigationbar.html#currentIndex-prop">setCurrentIndex</keyword>
+        <keyword ref="qwwnavigationbar.html#topWidgetVisible-prop">topWidgetVisible</keyword>
+        <keyword ref="qwwnavigationbar.html#topWidgetVisible-prop">topWidgetIsVisible</keyword>
+        <keyword ref="qwwnavigationbar.html#topWidgetVisible-prop">setTopWidgetVisible</keyword>
+        <keyword ref="qwwnavigationbar.html#addWidget">addWidget</keyword>
+        <keyword ref="qwwnavigationbar.html#button">button</keyword>
+        <keyword ref="qwwnavigationbar.html#currentIndexChanged">currentIndexChanged</keyword>
+        <keyword ref="qwwnavigationbar.html#eventFilter">eventFilter</keyword>
+        <keyword ref="qwwnavigationbar.html#indexOf">indexOf</keyword>
+        <keyword ref="qwwnavigationbar.html#insertWidget">insertWidget</keyword>
+        <keyword ref="qwwnavigationbar.html#removeWidget">removeWidget</keyword>
+        <keyword ref="qwwnavigationbar.html#setCurrentWidget">setCurrentWidget</keyword>
+        <keyword ref="qwwnavigationbar.html#setWidgetIcon">setWidgetIcon</keyword>
+        <keyword ref="qwwnavigationbar.html#setWidgetLabel">setWidgetLabel</keyword>
+        <keyword ref="qwwnavigationbar.html#topWidgetVisibleChanged">topWidgetVisibleChanged</keyword>
+        <keyword ref="qwwnavigationbar.html#widget">widget</keyword>
+        <keyword ref="qwwnavigationbar.html#widgetCount">widgetCount</keyword>
+        <keyword ref="qwwnavigationbar.html#widgetIcon">widgetIcon</keyword>
+        <keyword ref="qwwnavigationbar.html#widgetIconChanged">widgetIconChanged</keyword>
+        <keyword ref="qwwnavigationbar.html#widgetLabel">widgetLabel</keyword>
+        <keyword ref="qwwnavigationbar.html#widgetLabelChanged">widgetLabelChanged</keyword>
+        <section ref="qwwnavigationbar-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwnumpad.html" title="QwwNumPad Class Reference">
+        <keyword ref="qwwnumpad.html">QwwNumPad</keyword>
+        <keyword ref="qwwnumpad.html#animateClick">animateClick</keyword>
+        <keyword ref="qwwnumpad.html#asteriskClicked">asteriskClicked</keyword>
+        <keyword ref="qwwnumpad.html#hashClicked">hashClicked</keyword>
+        <keyword ref="qwwnumpad.html#keyClicked">keyClicked</keyword>
+        <keyword ref="qwwnumpad.html#numberClicked">numberClicked</keyword>
+        <section ref="qwwnumpad-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwresetlineedit.html" title="QwwResetLineEdit Class Reference">
+        <keyword ref="qwwresetlineedit.html">QwwResetLineEdit</keyword>
+        <keyword ref="qwwresetlineedit.html#defaultText-prop">defaultText</keyword>
+        <keyword ref="qwwresetlineedit.html#resetText">resetText</keyword>
+        <section ref="qwwresetlineedit-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwrichtextbutton.html" title="QwwRichTextButton Class Reference">
+        <keyword ref="qwwrichtextbutton.html">QwwRichTextButton</keyword>
+        <keyword ref="qwwrichtextbutton.html#html-prop">html</keyword>
+        <keyword ref="qwwrichtextbutton.html#html-prop">setHtml</keyword>
+        <keyword ref="qwwrichtextbutton.html#document">document</keyword>
+        <keyword ref="qwwrichtextbutton.html#setDocument">setDocument</keyword>
+        <section ref="qwwrichtextbutton-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwrichtextedit.html" title="QwwRichTextEdit Class Reference">
+        <keyword ref="qwwrichtextedit.html">QwwRichTextEdit</keyword>
+        <keyword ref="qwwrichtextedit.html#Action-enum">Action</keyword>
+        <keyword ref="qwwrichtextedit.html#Action-enum">QwwRichTextEdit::FontSizeAction</keyword>
+        <keyword ref="qwwrichtextedit.html#Action-enum">QwwRichTextEdit::FontFamilyAction</keyword>
+        <keyword ref="qwwrichtextedit.html#Action-enum">QwwRichTextEdit::AlignCenterAction</keyword>
+        <keyword ref="qwwrichtextedit.html#Action-enum">QwwRichTextEdit::JustifyAction</keyword>
+        <keyword ref="qwwrichtextedit.html#Action-enum">QwwRichTextEdit::RightAlignAction</keyword>
+        <keyword ref="qwwrichtextedit.html#Action-enum">QwwRichTextEdit::ItalicAction</keyword>
+        <keyword ref="qwwrichtextedit.html#Action-enum">QwwRichTextEdit::BoldAction</keyword>
+        <keyword ref="qwwrichtextedit.html#Action-enum">QwwRichTextEdit::UnderlineAction</keyword>
+        <keyword ref="qwwrichtextedit.html#Action-enum">QwwRichTextEdit::LeftAlignAction</keyword>
+        <keyword ref="qwwrichtextedit.html#Action-enum">QwwRichTextEdit::ColorAction</keyword>
+        <keyword ref="qwwrichtextedit.html#Option-enum">Option</keyword>
+        <keyword ref="qwwrichtextedit.html#Option-enum">Options</keyword>
+        <keyword ref="qwwrichtextedit.html#Option-enum">QwwRichTextEdit::FontSize</keyword>
+        <keyword ref="qwwrichtextedit.html#Option-enum">QwwRichTextEdit::FontFamily</keyword>
+        <keyword ref="qwwrichtextedit.html#Option-enum">QwwRichTextEdit::NoOptions</keyword>
+        <keyword ref="qwwrichtextedit.html#Option-enum">QwwRichTextEdit::Alignment</keyword>
+        <keyword ref="qwwrichtextedit.html#Option-enum">QwwRichTextEdit::Style</keyword>
+        <keyword ref="qwwrichtextedit.html#Option-enum">QwwRichTextEdit::Color</keyword>
+        <keyword ref="qwwrichtextedit.html#options-prop">options</keyword>
+        <keyword ref="qwwrichtextedit.html#options-prop">setOptions</keyword>
+        <keyword ref="qwwrichtextedit.html#changeAlignment">changeAlignment</keyword>
+        <keyword ref="qwwrichtextedit.html#setBold">setBold</keyword>
+        <keyword ref="qwwrichtextedit.html#setColor">setColor</keyword>
+        <keyword ref="qwwrichtextedit.html#setFont">setFont</keyword>
+        <keyword ref="qwwrichtextedit.html#setItalic">setItalic</keyword>
+        <keyword ref="qwwrichtextedit.html#setList">setList</keyword>
+        <keyword ref="qwwrichtextedit.html#setUnderline">setUnderline</keyword>
+        <keyword ref="qwwrichtextedit.html#toolBarAction">toolBarAction</keyword>
+        <keyword ref="qwwrichtextedit.html#updateCurrentBlockFormat">updateCurrentBlockFormat</keyword>
+        <keyword ref="qwwrichtextedit.html#updateCurrentCharFormat">updateCurrentCharFormat</keyword>
+        <section ref="qwwrichtextedit-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwtaskpanel.html" title="QwwTaskPanel Class Reference">
+        <keyword ref="qwwtaskpanel.html">QwwTaskPanel</keyword>
+        <keyword ref="qwwtaskpanel.html#animated-prop">animated</keyword>
+        <keyword ref="qwwtaskpanel.html#animated-prop">isAnimated</keyword>
+        <keyword ref="qwwtaskpanel.html#animated-prop">setAnimated</keyword>
+        <keyword ref="qwwtaskpanel.html#currentIndex-prop">currentIndex</keyword>
+        <keyword ref="qwwtaskpanel.html#currentIndex-prop">setCurrentIndex</keyword>
+        <keyword ref="qwwtaskpanel.html#toggleIcon-prop">toggleIcon</keyword>
+        <keyword ref="qwwtaskpanel.html#toggleIcon-prop">setToggleIcon</keyword>
+        <keyword ref="qwwtaskpanel.html#addTask">addTask</keyword>
+        <keyword ref="qwwtaskpanel.html#currentIndexChanged">currentIndexChanged</keyword>
+        <keyword ref="qwwtaskpanel.html#currentTask">currentTask</keyword>
+        <keyword ref="qwwtaskpanel.html#indexOf">indexOf</keyword>
+        <keyword ref="qwwtaskpanel.html#insertTask">insertTask</keyword>
+        <keyword ref="qwwtaskpanel.html#removeTask">removeTask</keyword>
+        <keyword ref="qwwtaskpanel.html#setTaskIcon">setTaskIcon</keyword>
+        <keyword ref="qwwtaskpanel.html#setTaskName">setTaskName</keyword>
+        <keyword ref="qwwtaskpanel.html#setTaskTitle">setTaskTitle</keyword>
+        <keyword ref="qwwtaskpanel.html#task">task</keyword>
+        <keyword ref="qwwtaskpanel.html#taskCount">taskCount</keyword>
+        <section ref="qwwtaskpanel-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwtextspinbox.html" title="QwwTextSpinBox Class Reference">
+        <keyword ref="qwwtextspinbox.html">QwwTextSpinBox</keyword>
+        <keyword ref="qwwtextspinbox.html#strings-prop">strings</keyword>
+        <keyword ref="qwwtextspinbox.html#strings-prop">setStrings</keyword>
+        <keyword ref="qwwtextspinbox.html#stringsChanged">stringsChanged</keyword>
+        <section ref="qwwtextspinbox-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwtipwidget.html" title="QwwTipWidget Class Reference">
+        <keyword ref="qwwtipwidget.html">QwwTipWidget</keyword>
+        <keyword ref="qwwtipwidget.html#canvasFrameShape-prop">canvasFrameShape</keyword>
+        <keyword ref="qwwtipwidget.html#canvasFrameShape-prop">setCanvasFrameShape</keyword>
+        <keyword ref="qwwtipwidget.html#checkVisible-prop">checkVisible</keyword>
+        <keyword ref="qwwtipwidget.html#checkVisible-prop">checkIsVisible</keyword>
+        <keyword ref="qwwtipwidget.html#checkVisible-prop">setCheckVisible</keyword>
+        <keyword ref="qwwtipwidget.html#closeVisible-prop">closeVisible</keyword>
+        <keyword ref="qwwtipwidget.html#closeVisible-prop">closeIsVisible</keyword>
+        <keyword ref="qwwtipwidget.html#closeVisible-prop">setCloseVisible</keyword>
+        <keyword ref="qwwtipwidget.html#currentTip-prop">currentTip</keyword>
+        <keyword ref="qwwtipwidget.html#currentTip-prop">setCurrentTip</keyword>
+        <keyword ref="qwwtipwidget.html#tips-prop">tips</keyword>
+        <keyword ref="qwwtipwidget.html#tips-prop">setTips</keyword>
+        <keyword ref="qwwtipwidget.html#tipsEnabled-prop">tipsEnabled</keyword>
+        <keyword ref="qwwtipwidget.html#tipsEnabled-prop">setTipsEnabled</keyword>
+        <keyword ref="qwwtipwidget.html#closeButton">closeButton</keyword>
+        <keyword ref="qwwtipwidget.html#closed">closed</keyword>
+        <keyword ref="qwwtipwidget.html#headerWidget">headerWidget</keyword>
+        <keyword ref="qwwtipwidget.html#nextButton">nextButton</keyword>
+        <keyword ref="qwwtipwidget.html#nextTip">nextTip</keyword>
+        <keyword ref="qwwtipwidget.html#prevButton">prevButton</keyword>
+        <keyword ref="qwwtipwidget.html#prevTip">prevTip</keyword>
+        <keyword ref="qwwtipwidget.html#setCheckHidden">setCheckHidden</keyword>
+        <keyword ref="qwwtipwidget.html#setCloseHidden">setCloseHidden</keyword>
+        <keyword ref="qwwtipwidget.html#setHeaderWidget">setHeaderWidget</keyword>
+        <keyword ref="qwwtipwidget.html#tipCanvas">tipCanvas</keyword>
+        <keyword ref="qwwtipwidget.html#tipChanged">tipChanged</keyword>
+        <section ref="qwwtipwidget-members.html" title="List of all members"/>
+    </section>
+    <section ref="qwwtwocolorindicator.html" title="QwwTwoColorIndicator Class Reference">
+        <keyword ref="qwwtwocolorindicator.html">QwwTwoColorIndicator</keyword>
+        <keyword ref="qwwtwocolorindicator.html#active-prop">active</keyword>
+        <keyword ref="qwwtwocolorindicator.html#active-prop">isActive</keyword>
+        <keyword ref="qwwtwocolorindicator.html#active-prop">setActive</keyword>
+        <keyword ref="qwwtwocolorindicator.html#bgColor-prop">bgColor</keyword>
+        <keyword ref="qwwtwocolorindicator.html#bgColor-prop">setBgColor</keyword>
+        <keyword ref="qwwtwocolorindicator.html#dragEnabled-prop">dragEnabled</keyword>
+        <keyword ref="qwwtwocolorindicator.html#dragEnabled-prop">setDragEnabled</keyword>
+        <keyword ref="qwwtwocolorindicator.html#fgColor-prop">fgColor</keyword>
+        <keyword ref="qwwtwocolorindicator.html#fgColor-prop">setFgColor</keyword>
+        <keyword ref="qwwtwocolorindicator.html#bgChanged">bgChanged</keyword>
+        <keyword ref="qwwtwocolorindicator.html#bgClicked">bgClicked</keyword>
+        <keyword ref="qwwtwocolorindicator.html#bgPressed">bgPressed</keyword>
+        <keyword ref="qwwtwocolorindicator.html#fgChanged">fgChanged</keyword>
+        <keyword ref="qwwtwocolorindicator.html#fgClicked">fgClicked</keyword>
+        <keyword ref="qwwtwocolorindicator.html#fgPressed">fgPressed</keyword>
+        <keyword ref="qwwtwocolorindicator.html#paintSection">paintSection</keyword>
+        <keyword ref="qwwtwocolorindicator.html#switchColors">switchColors</keyword>
+        <section ref="qwwtwocolorindicator-members.html" title="List of all members"/>
+    </section>
+</section>
+<section ref="overviews.html" title="Overviews">
+    <section ref="classlists.html" title="Class lists">
+        <keyword ref="classlists.html">Class lists</keyword>
+    </section>
+    <section ref="colorclasses.html" title="Colour manipulation classes">
+        <keyword ref="colorclasses.html">Colour manipulation classes</keyword>
+    </section>
+    <section ref="frameworks-technologies.html" title="Frameworks and Technologies">
+        <keyword ref="frameworks-technologies.html">Frameworks and Technologies</keyword>
+    </section>
+    <section ref="groups.html" title="Groups">
+        <keyword ref="groups.html">Groups</keyword>
+    </section>
+    <section ref="functions.html" title="Member Function Index">
+        <keyword ref="functions.html">Member Function Index</keyword>
+    </section>
+    <section ref="modules.html" title="Modules">
+        <keyword ref="modules.html">Modules</keyword>
+    </section>
+    <section ref="trademarks.html" title="Trademarks">
+        <keyword ref="trademarks.html">Trademarks</keyword>
+    </section>
+    <section ref="icons.html" title="Use of icons">
+        <keyword ref="icons.html">Use of icons</keyword>
+    </section>
+    <section ref="classes.html" title="wwWidgets Classes">
+        <keyword ref="classes.html">wwWidgets Classes</keyword>
+    </section>
+    <section ref="examples.html" title="wwWidgets Examples">
+        <keyword ref="examples.html">wwWidgets Examples</keyword>
+    </section>
+    <section ref="mainclasses.html" title="wwWidgets Main Classes">
+        <keyword ref="mainclasses.html">wwWidgets Main Classes</keyword>
+    </section>
+    <section ref="index.html" title="wwWidgets Manual">
+        <keyword ref="index.html">wwWidgets Manual</keyword>
+    </section>
+    <section ref="wwwidgets.html" title="wwWidgets Module">
+        <keyword ref="wwwidgets.html">wwWidgets Module</keyword>
+    </section>
+</section>
+<section ref="examples.html" title="Tutorial &amp; Examples">
+    <section ref="colorpickers.html" title="Color pickers example">
+        <keyword ref="colorpickers.html">Color pickers example</keyword>
+    </section>
+    <section ref="listwidget.html" title="List widget example">
+        <keyword ref="listwidget.html">List widget example</keyword>
+    </section>
+    <section ref="pinpad.html" title="Pinpad example">
+        <keyword ref="pinpad.html">Pinpad example</keyword>
+    </section>
+    <section ref="texteditor.html" title="Text editor example">
+        <keyword ref="texteditor.html">Text editor example</keyword>
+    </section>
+</section>
+</DCF>

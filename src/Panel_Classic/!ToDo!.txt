@@ -1,0 +1,1 @@
+[ ] Folders icons are given in random. Fix! (f.e. in C:/Save/TestFolder/..Temp_5000/)

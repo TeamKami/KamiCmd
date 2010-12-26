@@ -1,0 +1,12 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>Images/F1.png</file>
+    <file>Images/F2.png</file>
+    <file>Images/F3.png</file>
+    <file>Images/F4.png</file>
+    <file>Images/F5.png</file>
+    <file>Images/F6.png</file>
+    <file>Images/F7.png</file>
+    <file>Images/F8.png</file>
+</qresource>
+</RCC>

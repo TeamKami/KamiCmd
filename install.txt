@@ -1,0 +1,19 @@
+KamiCmd installation instructions
+(for using with Visual Studio):
+
+1. Download and install latest Qt Framework
+   (http://qt.nokia.com/downloads)
+2. Download and install latest Qt Visual Studio Add-in
+   (http://qt.nokia.com/downloads/visual-studio-add-in)
+3. Launch Visual Studio Command Prompt
+   (Start -> All Programs -> Microsoft Visual Studio -> Visual Studio Tools -> Visual Studio Command Prompt)
+4. Navigate to KamiCmd folder
+   (f.e: cd c:\Lang\KamiCmd)
+5. Create Makefile for 3rd party tools via command:
+   qmake -recursive 3rdparty.pro
+6. Compile 3rd party tools via command:
+   nmake
+7. Create Visual Studio project files (.vcproj) from Qt project (.pro) via command:
+   qmake.exe -tp vc -recursive kamicmd.pro
+8. KamiCmd is ready for using with Visual Studio:
+   start kamicmd.sln

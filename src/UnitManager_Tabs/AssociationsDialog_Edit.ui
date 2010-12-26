@@ -1,0 +1,296 @@
+<ui version="4.0" >
+ <class>AssociationsDialog_EditClass</class>
+ <widget class="QWidget" name="AssociationsDialog_EditClass" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>296</width>
+    <height>485</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>AssociationsDialog_Edit</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <widget class="QPushButton" name="iconButton" >
+       <property name="minimumSize" >
+        <size>
+         <width>64</width>
+         <height>64</height>
+        </size>
+       </property>
+       <property name="text" >
+        <string>Icon...</string>
+       </property>
+       <property name="checked" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_2" >
+       <item>
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string>&amp;Description:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>descriptionEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="descriptionEdit" >
+         <property name="text" >
+          <string>Graphics</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2" >
+         <property name="text" >
+          <string>&amp;Mask:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>maskEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="maskEdit" >
+         <property name="text" >
+          <string>*.bmp,*.jpg,*.jpeg,*.jpe,*.png,*.gif,*.jp2,*.jpc,*.tga,*.pcx,*.ico,*.cur,*.icl,*.ani,*.wmf,*.emf,*.psd,*.tiff,*.tif,*.psp*,*.dng</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_4" >
+     <property name="text" >
+      <string>&amp;Icon:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>iconEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="iconEdit" >
+     <property name="text" >
+      <string>:/Icons/Graphics.ico</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_3" >
+     <property name="text" >
+      <string>Size:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3" >
+     <item>
+      <widget class="QLineEdit" name="sizeLowerBoundEdit" >
+       <property name="text" >
+        <string>15 000 000 000</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_7" >
+       <property name="text" >
+        <string>&lt;= size &lt;=</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="sizeUpperBoundEdit" >
+       <property name="text" >
+        <string>15 000 000 000</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_5" >
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_3" >
+       <item>
+        <widget class="QLabel" name="label_5" >
+         <property name="text" >
+          <string>&amp;Text Color:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>textColorEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4" >
+         <item>
+          <widget class="QPushButton" name="textColorButton" >
+           <property name="minimumSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="maximumSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="textColorEdit" >
+           <property name="text" >
+            <string>255 255 255 255</string>
+           </property>
+           <property name="maxLength" >
+            <number>15</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="Line" name="line" >
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_4" >
+       <item>
+        <widget class="QLabel" name="label_6" >
+         <property name="text" >
+          <string>&amp;Background Color:</string>
+         </property>
+         <property name="buddy" >
+          <cstring>backColorEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2" >
+         <item>
+          <widget class="QPushButton" name="backColorButton" >
+           <property name="minimumSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="maximumSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="backColorEdit" >
+           <property name="text" >
+            <string>0 128 128</string>
+           </property>
+           <property name="maxLength" >
+            <number>15</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_8" >
+     <property name="text" >
+      <string>Attributes:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout" >
+     <item row="0" column="0" >
+      <widget class="QCheckBox" name="checkBox" >
+       <property name="text" >
+        <string>CheckBox</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTreeWidget" name="actionsTree" >
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::NoSelection</enum>
+     </property>
+     <property name="rootIsDecorated" >
+      <bool>false</bool>
+     </property>
+     <property name="uniformRowHeights" >
+      <bool>true</bool>
+     </property>
+     <property name="itemsExpandable" >
+      <bool>false</bool>
+     </property>
+     <property name="allColumnsShowFocus" >
+      <bool>true</bool>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
+     <column>
+      <property name="text" >
+       <string>Keys</string>
+      </property>
+     </column>
+     <column>
+      <property name="text" >
+       <string>Action</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <tabstops>
+  <tabstop>descriptionEdit</tabstop>
+  <tabstop>maskEdit</tabstop>
+  <tabstop>iconEdit</tabstop>
+  <tabstop>textColorButton</tabstop>
+  <tabstop>textColorEdit</tabstop>
+  <tabstop>backColorButton</tabstop>
+  <tabstop>backColorEdit</tabstop>
+  <tabstop>actionsTree</tabstop>
+  <tabstop>iconButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
