@@ -4,4 +4,6 @@ SUBDIRS = FS_Qt \
           KamiCmd \
           Panel_Classic \
           Unit_WebKit \
-          UnitManager_Tabs
+          UnitManager_Tabs \
+          Operations_Queue \
+          File_Copy_Windows

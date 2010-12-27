@@ -49,6 +49,7 @@ public slots:
 	void F2_Pressed();
 	void F3_Pressed();
 	void F4_Pressed();
+	void F5_Pressed();
 	void F11_Pressed();
 };
 

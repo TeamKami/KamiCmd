@@ -5,6 +5,8 @@
 #include "ModulesDialog.h"
 #include "Associations.h"
 
+#include "../IFileCopy.h"
+
 
 int UnitManager_Tabs::AddUnit( IUnit *unit )
 {
@@ -119,13 +121,16 @@ void UnitManager_Tabs::Start()
 	connect(tabs->tabBar_, SIGNAL(TabMouseDoubleClicked(int, QMouseEvent *)), this, SLOT(TabMouseDoubleClicked(int, QMouseEvent *)));
 
 	connect(F[1], SIGNAL(triggered()), this, SLOT(F1_Pressed()));
-//	F[1]->setEnabled(true);
+	F[1]->setEnabled(true);
 	connect(F[2], SIGNAL(triggered()), this, SLOT(F2_Pressed()));
 	F[2]->setEnabled(true);
 	connect(F[3], SIGNAL(triggered()), this, SLOT(F3_Pressed()));
 	F[3]->setEnabled(true);
 	connect(F[4], SIGNAL(triggered()), this, SLOT(F4_Pressed()));
 //	F[4]->setEnabled(true);
+	connect(F[5], SIGNAL(triggered()), this, SLOT(F5_Pressed()));
+	F[5]->setEnabled(true);
+
 	connect(F[10], SIGNAL(triggered()), this, SLOT(close()));
 	F[10]->setEnabled(true);
 	connect(F[11], SIGNAL(triggered()), this, SLOT(F11_Pressed()));
@@ -373,11 +378,27 @@ void UnitManager_Tabs::AddNew()
 
 void UnitManager_Tabs::F1_Pressed()
 {
-	if (QDialog *chksums = qobject_cast<QDialog *>(g_Core->QueryModule("Checksums", 1)))
+	if (QDialog *oq = qobject_cast<QDialog *>(g_Core->QueryModule("OperationsQueue", 1, "OQ_Widget")))
 	{
-		chksums->exec();
-		delete chksums;
+		oq->exec();
+		delete oq;
 	}
 	else
 		g_Core->DebugWrite("UnitManager_Tabs", "Check sums module not found", ICoreFunctions::Error);
+}
+
+void UnitManager_Tabs::F5_Pressed()
+{
+	if (IFileCopy *oq = dynamic_cast<IFileCopy *>(g_Core->QueryModule("FileCopy", 1)))
+	{
+		IOperationsQueue *operationsQueue_;
+		if (!(operationsQueue_ = dynamic_cast<IOperationsQueue *>(g_Core->QueryModule("OperationsQueue", 1, "OQ"))))
+		{
+			g_Core->DebugWrite("UnitManager_Tabs", "Operations Queue !!!!!! not found", ICoreFunctions::Error);
+			return;
+		}
+		operationsQueue_->add(*oq, oq->getState());
+	}
+	else
+		g_Core->DebugWrite("UnitManager_Tabs", "!", ICoreFunctions::Error);
 }
