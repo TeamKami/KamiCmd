@@ -12,7 +12,7 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 	case Qt::Key_Shift:
 		//if (currentKeyboardSelectAction == FileListModel::SA_None)
 		{
-			if (model->isSelected(sort->mapToSource(currentIndex())))
+			if (model_->isSelected(sort_->mapToSource(currentIndex())))
 				currentSelectionAction = FileListModel::SA_Deselect;
 			else
 				currentSelectionAction = FileListModel::SA_Select;
@@ -35,17 +35,17 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 		break;
 
 	case Qt::Key_Insert:
-		model->Select(sort->mapToSource(currentIndex()));
+		model_->Select(sort_->mapToSource(currentIndex()));
 		{
-			if (currentIndex().row() + 1 < model->rowCount())
+			if (currentIndex().row() + 1 < model_->rowCount())
 			{
-				const QModelIndex newSel = sort->index(currentIndex().row() + 1, 0);
+				const QModelIndex newSel = sort_->index(currentIndex().row() + 1, 0);
 				selectionModel()->setCurrentIndex(newSel, QItemSelectionModel::NoUpdate);
 				//scrollTo(newSel);
 			}
 			else
-				for (int i = 0; i < model->columnCount(); i++)
-					update( sort->index(currentIndex().row(), i) );
+				for (int i = 0; i < model_->columnCount(); i++)
+					update( sort_->index(currentIndex().row(), i) );
 		}
 		break;
 
@@ -68,10 +68,10 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 		{ 
 		case Qt::Key_Up:
 		case Qt::Key_Down:
-			model->Select(sort->mapToSource(wasCurrent), currentSelectionAction);
-			if (wasCurrent.row() == model->rowCount() - 1 || !wasCurrent.row())
-				for (int i = 0; i < model->columnCount(); i++)
-					update( sort->index(wasCurrent.row(), i) );
+			model_->Select(sort_->mapToSource(wasCurrent), currentSelectionAction);
+			if (wasCurrent.row() == model_->rowCount() - 1 || !wasCurrent.row())
+				for (int i = 0; i < model_->columnCount(); i++)
+					update( sort_->index(wasCurrent.row(), i) );
 			break;
 
 		case Qt::Key_Left:
@@ -87,8 +87,8 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 			list.resize(current.row() - wasCurrent.row() + 1);
 
 			for (int i = wasCurrent.row(); i <= current.row(); i++)
-				list[i - wasCurrent.row()] = sort->mapToSource(sort->index(i, 0));
-			model->SelectRange(list, currentSelectionAction);
+				list[i - wasCurrent.row()] = sort_->mapToSource(sort_->index(i, 0));
+			model_->SelectRange(list, currentSelectionAction);
 
 			setDirtyRegion(QRegion(0, 0, width(), height())); // Kinda not the best solution. Should fix someday
 			break;
@@ -115,37 +115,37 @@ void FileListView::keyboardSearchNullify()
 // 	QTreeView::drawRow(painter, option, index);
 // }
 
-void FileListView::focusInEvent( QFocusEvent *event )
+void FileListView::focusInEvent( QFocusEvent * /*event*/ )
 {
-	model->isFocused = true;
-	for (int i = 0; i < model->columnCount(); i++)
-		update( sort->index(currentIndex().row(), i) );
+	model_->isFocused = true;
+	for (int i = 0; i < model_->columnCount(); i++)
+		update( sort_->index(currentIndex().row(), i) );
 	emit FocusIn();
 }
 
-void FileListView::focusOutEvent( QFocusEvent *event )
+void FileListView::focusOutEvent( QFocusEvent * /*event*/ )
 {
-	model->isFocused = false;
-	for (int i = 0; i < model->columnCount(); i++)
-		update( sort->index(currentIndex().row(), i) );
+	model_->isFocused = false;
+	for (int i = 0; i < model_->columnCount(); i++)
+		update( sort_->index(currentIndex().row(), i) );
 }
 
 void FileListView::currentChanged(const QModelIndex &current, const QModelIndex &previous) // overload
 {
-	model->selection = sort->mapToSource(current);
+	model_->selection = sort_->mapToSource(current);
 	// QT 4.6 CRUTCH. REMOVE WHEN NOT NEEDED
-	{
-		QRect rect;
-		rect = visualRect(current);
-		rect.setLeft(0);
-		rect.setRight(width());
-		setDirtyRegion(rect);
-
-		rect = visualRect(previous);
-		rect.setLeft(0);
-		rect.setRight(width());
-		setDirtyRegion(rect);
-	}
+// 	{
+// 		QRect rect;
+// 		rect = visualRect(current);
+// 		rect.setLeft(0);
+// 		rect.setRight(width());
+// 		setDirtyRegion(rect);
+// 
+// 		rect = visualRect(previous);
+// 		rect.setLeft(0);
+// 		rect.setRight(width());
+// 		setDirtyRegion(rect);
+// 	}
 
 	QAbstractItemView::currentChanged(current, previous);
 }
@@ -157,20 +157,20 @@ void FileListView::mousePressEvent( QMouseEvent *event )
 		QModelIndex index = indexAt(event->pos());
 		if (!index.isValid())
 		{
-			index = sort->index(model->rowCount() - 1, 0);
+			index = sort_->index(model_->rowCount() - 1, 0);
 			setCurrentIndex(index);
 		}
 
-		if ( model->isSelected(sort->mapToSource(index)) )
+		if ( model_->isSelected(sort_->mapToSource(index)) )
 			currentSelectionAction = FileListModel::SA_Deselect;
 		else
 			currentSelectionAction = FileListModel::SA_Select;
 
 		mouseMovePrevIndex = index;
 
-		model->Select(sort->mapToSource(index), currentSelectionAction);
-		for (int i = 0; i < model->columnCount(); i++)
-			update( sort->index(index.row(), i) );
+		model_->Select(sort_->mapToSource(index), currentSelectionAction);
+		for (int i = 0; i < model_->columnCount(); i++)
+			update( sort_->index(index.row(), i) );
 	}
 	else if (event->button() == Qt::MidButton)
 	{
@@ -187,7 +187,7 @@ void FileListView::mouseMoveEvent( QMouseEvent *event )
 	{
 		QModelIndex index = indexAt(QPoint(0, event->pos().y()));
 		if (!index.isValid())
-			index = sort->index(event->pos().y() < 0 ? 0 : model->rowCount() - 1, 0);
+			index = sort_->index(event->pos().y() < 0 ? 0 : model_->rowCount() - 1, 0);
 
 		if (index != mouseMoveActionPrevIndex)
 		{
@@ -203,16 +203,16 @@ void FileListView::mouseMoveEvent( QMouseEvent *event )
 				list.resize(end - start);
 
 				for (int i = 0; i < list.size(); i++)
-					list[i] = sort->mapToSource(sort->index(i + start, 0));
+					list[i] = sort_->mapToSource(sort_->index(i + start, 0));
 
-				model->SelectRange(list, currentSelectionAction);
+				model_->SelectRange(list, currentSelectionAction);
 
 				for (int i = start; i < end; i++)
-					for (int j = 0; j < model->columnCount(); j++)
-						update( sort->index(i, j) );
+					for (int j = 0; j < model_->columnCount(); j++)
+						update( sort_->index(i, j) );
 			}
 			else
-				model->Select(sort->mapToSource(index), currentSelectionAction);
+				model_->Select(sort_->mapToSource(index), currentSelectionAction);
 		}
 	}
 	else
@@ -238,8 +238,8 @@ void FileListView::mouseDoubleClickEvent(QMouseEvent *event)
 	{
 		QModelIndex index = indexAt(QPoint(0, event->pos().y()));
 		if (!index.isValid())
-			index = sort->index(event->pos().y() < 0 ? 0 : model->rowCount() - 1, 0);
-		currentSelectionAction = model->GetFileInfo(sort->mapToSource(index).row())->selected ? FileListModel::SA_Select : FileListModel::SA_Deselect;
+			index = sort_->index(event->pos().y() < 0 ? 0 : model_->rowCount() - 1, 0);
+		currentSelectionAction = model_->GetFileInfo(sort_->mapToSource(index).row())->selected ? FileListModel::SA_Select : FileListModel::SA_Deselect;
 
 		SelectAll(FileListModel::SA_Toggle, true);
 	}
@@ -252,35 +252,48 @@ void FileListView::mouseDoubleClickEvent(QMouseEvent *event)
 void FileListView::SelectAll( int selectAction /*= FileListModel::SA_Select*/, bool excludeCurrent /*= false*/ )
 {
 	QVector<QModelIndex> list;
-	list.resize(model->rowCount() - excludeCurrent);
+	list.resize(model_->rowCount() - excludeCurrent);
 
-	int currentRow = sort->mapToSource(currentIndex()).row();
+	int currentRow = sort_->mapToSource(currentIndex()).row();
 
-	for (int i = 0, shift = 0; i < model->rowCount(); i++)
+	for (int i = 0, shift = 0; i < model_->rowCount(); i++)
 	{
 		if (shift)
-			list[i - shift] = model->index(i);
+			list[i - shift] = model_->index(i);
 
-		if (excludeCurrent && currentRow == model->index(i).row())
+		if (excludeCurrent && currentRow == model_->index(i).row())
 			shift++;
 		if (!shift)
-			list[i] = model->index(i);
+			list[i] = model_->index(i);
 	}
-	model->SelectRange(list, selectAction);
+	model_->SelectRange(list, selectAction);
 
 	setDirtyRegion(QRegion(0, 0, width(), height())); // Kinda not the best solution. Should fix someday
 }
 
 void FileListView::wheelEvent( QWheelEvent *event )
 {
-	if (!model->isFocused)
+	if (!model_->isFocused)
 		return;
 
 	int numDegrees = event->delta() / 8;
 	int numSteps = numDegrees / 15;
 
-	setCurrentIndex(sort->index( qMin(model->rowCount() - 1, qMax(0, currentIndex().row() - numSteps)) , 0));
+// 	if (abs(numSteps) > 1)
+// 	{
+// 		__asm int 3;
+// 	
+// 	}
+// 	int newRow = qMin(model_->rowCount() - 1, qMax(0, currentIndex().row() - numSteps));
+// 	for (int i = currentIndex().row(); ; numSteps > 0 ? i-- : i++)
+// 	{
+// 		setCurrentIndex(sort_->index(i , 0));
+// 		if (i == newRow)
+// 			break;
+// 	}
 
+	setCurrentIndex(sort_->index( qMin(model_->rowCount() - 1, qMax(0, currentIndex().row() - numSteps)) , 0));
+	event->accept();
 	return;
 	QTreeView::wheelEvent(event);
 }
@@ -300,4 +313,24 @@ FileListView::FileListView()
 	pal.setColor(QPalette::Base, QColor(33, 38, 38));
 	setPalette(pal);
 #endif
+}
+
+FileListModel * FileListView::Model()
+{
+	return model_;
+}
+
+void FileListView::SetModel( FileListModel *model )
+{
+	model_ = model;
+}
+
+SortModel * FileListView::Sort()
+{
+	return sort_;
+}
+
+void FileListView::SetSortModel( SortModel *sort )
+{
+	sort_ = sort;
 }

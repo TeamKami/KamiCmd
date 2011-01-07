@@ -1,10 +1,10 @@
 #include "LinkedUnit.h"
 #include "library.h"
 
-void LinkedUnit::Create( IUnit *active, IUnit *passive, bool isActiveLeft )
+void LinkedUnit::Create( IUnit *active, IUnit *inactive, bool isActiveLeft )
 {
-	left = isActiveLeft ? active : passive;
-	right = isActiveLeft ? passive : active;
+	left = isActiveLeft ? active : inactive;
+	right = isActiveLeft ? inactive : active;
 	this->active = active;
 	setFocusProxy(active);
 	splitter->addWidget(left);
@@ -84,14 +84,14 @@ void LinkedUnit::LoadState( QSettings &set )
 		g_Core->DebugWrite("UnitManager_Tabs", "Panel module not found", ICoreFunctions::Error);
 }
 
-IUnit * LinkedUnit::GetPassiveUnit()
-{
-	return active == left ? right : left;
-}
-
 IUnit * LinkedUnit::GetActiveUnit()
 {
 	return active;
+}
+
+IUnit * LinkedUnit::GetInactiveUnit()
+{
+	return active == left ? right : left;
 }
 
 IUnit * LinkedUnit::GetLeftUnit()
@@ -103,6 +103,7 @@ IUnit * LinkedUnit::GetRightUnit()
 {
 	return right;
 }
+
 
 QSplitterHandle* Splitter::createHandle()
 {

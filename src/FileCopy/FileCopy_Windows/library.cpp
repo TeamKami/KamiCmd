@@ -13,7 +13,7 @@ QVector<Module *> FC_Library::ListModulesAndGetCore( ICoreFunctions *core )
 	return arr;
 }
 
-QObject* FC_Library::CreateModuleInstance( int id, QObject *parent )
+QObject* FC_Library::CreateModuleInstance( int /*id*/, QObject *parent )
 {
 	return new FileCopy(parent);//	return new OQWidget(qobject_cast<QWidget *>(parent));//OperationsQueue(parent);
 }

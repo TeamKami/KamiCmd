@@ -10,7 +10,7 @@ QVector<Module *> Unit_WebKit_Library::ListModulesAndGetCore( ICoreFunctions *co
 	g_Core = core;
 
 	QVector<Module *> arr;
-	arr << new Module("WebKitUnit", 1, "Unit_WebKit", 1, MUnit_WebKit);
+	arr << new Module("WebViewUnit", 1, "Unit_WebKit", 1, MUnit_WebKit);
 	return arr;
 }
 

@@ -8,20 +8,23 @@
 #include "../IFileCopy.h"
 
 
-int UnitManager_Tabs::AddUnit( IUnit *unit )
+int UnitManager_Tabs::AddUnit( IUnit *unit, bool isNextToActive )
 {
-	int index = tabs->addTab(unit, unit->GetText());
+	int index;
+	if (isNextToActive)
+		index = tabs->insertTab(tabs->currentIndex() + 1, unit, unit->GetText());
+	else
+		index = tabs->addTab(unit, unit->GetText());
 	connect(unit, SIGNAL(TextChanged()), this, SLOT(UnitTextChanged()));
 	return index;
 }
 
-void UnitManager_Tabs::AddBar( Qt::ToolBarArea area, QToolBar *bar )
+IUnit * UnitManager_Tabs::GetActiveUnit()
 {
-	addToolBar(area, bar);
-	//bar->addWidget(tabs->tabBar_);
+	return static_cast<IUnit *>(tabs->currentWidget());
 }
 
-void UnitManager_Tabs::Link( int indexA, int indexB )
+void UnitManager_Tabs::LinkUnits( int indexA, int indexB )
 {
 	LinkedUnit *activeLinked = dynamic_cast<LinkedUnit *>(tabs->widget(indexA)),
 		*passiveLinked = dynamic_cast<LinkedUnit *>(tabs->widget(indexB));
@@ -32,7 +35,9 @@ void UnitManager_Tabs::Link( int indexA, int indexB )
 	{
 		if (activeLinked == passiveLinked || passiveLinked) // Break link when passive is link or active == passive
 		{
-			IUnit *left = passiveLinked->GetLeftUnit(), *right = passiveLinked->GetRightUnit(), *active = passiveLinked->GetActiveUnit();
+			IUnit *left = passiveLinked->GetLeftUnit(),
+				*right = passiveLinked->GetRightUnit(),
+				*active = passiveLinked->GetActiveUnit();
 			tabs->removeTab(indexB);
 			tabs->insertTab(indexB, left, left->GetText());
 			tabs->insertTab(indexB + 1, right, right->GetText());
@@ -43,8 +48,10 @@ void UnitManager_Tabs::Link( int indexA, int indexB )
 		}
 		else if (activeLinked) // Relink inactive unit in LinkedUnit with indexB
 		{
-			IUnit *left = activeLinked->GetLeftUnit(), *active = activeLinked->GetActiveUnit();
-			IUnit *inactive = activeLinked->GetPassiveUnit();
+			IUnit *left = activeLinked->GetLeftUnit(),
+				*right = activeLinked->GetRightUnit(),
+				*active = activeLinked->GetActiveUnit();
+			IUnit *inactive = active == left ? right : left;
 
 			if (LinkedUnit *link = dynamic_cast<LinkedUnit *>(g_Core->QueryModule("LinkedUnit", 1)))
 			{
@@ -59,7 +66,7 @@ void UnitManager_Tabs::Link( int indexA, int indexB )
 				g_Core->DebugWrite("UnitManager", "LinkedUnit module not found", ICoreFunctions::Error);
 		}
 		else // Both units are linked, supposedly to swap their inactive units
-			MBox("Unsupported yet"); // btw it never happens
+			g_Core->DebugWrite("UnitManager", "Unsupported yet", ICoreFunctions::Error); // btw it never happens
 	}
 	else if (indexA != indexB) // Link 2 single units
 	{
@@ -77,10 +84,53 @@ void UnitManager_Tabs::Link( int indexA, int indexB )
 // 		MBox("Unsupported yet");
 }
 
-void UnitManager_Tabs::currentChanged( int index )
+void UnitManager_Tabs::CloseUnit( int index )
 {
-	tabs->setCurrentIndex(index);
+	if (tabs->count() != 1)
+	{
+		QWidget *widget = tabs->widget(index);
+		tabs->removeTab(index);
+		delete widget;
+	}
 }
+
+void UnitManager_Tabs::AddNewPanels()
+{
+	IPanel *cur = dynamic_cast<IPanel *>(tabs->widget(tabs->currentIndex()));
+	LinkedUnit *curLink = dynamic_cast<LinkedUnit *>(tabs->widget(tabs->currentIndex()));
+	QString pathA, pathB = QApplication::applicationDirPath();
+
+	if (cur)
+		pathA = cur->GetPath();
+	else if (curLink)
+	{
+		IPanel *curLinkLeft = dynamic_cast<IPanel *>(curLink->GetLeftUnit());
+		IPanel *curLinkRight = dynamic_cast<IPanel *>(curLink->GetRightUnit());
+		pathA = curLinkLeft->GetPath();
+		pathB = curLinkRight->GetPath();
+	}
+
+	if (IPanel *panel = dynamic_cast<IPanel *>(g_Core->QueryModule("Panel", 1)))
+	{
+		int index1 = AddUnit(panel, false);
+		panel->SetPath(pathA);
+
+		IPanel *panel2;
+		int index2 = AddUnit(panel2 = dynamic_cast<IPanel *>(g_Core->QueryModule("Panel", 1)), false);
+		panel2->SetPath(pathB);
+
+		LinkUnits(index1, index2);
+	}
+	else
+		g_Core->DebugWrite("UnitManager_Tabs", "Panel module not found", ICoreFunctions::Error);
+}
+
+void UnitManager_Tabs::AddBar( Qt::ToolBarArea area, QToolBar *bar )
+{
+	addToolBar(area, bar);
+	//bar->addWidget(tabs->tabBar_);
+}
+
 
 void UnitManager_Tabs::Start()
 {
@@ -103,6 +153,11 @@ void UnitManager_Tabs::Start()
 	F[10] = new QAction(/*QIcon(":/Images/F10.png"), */tr("F10 Exit"), this);
 	F[11] = new QAction(/*QIcon(":/Images/F11.png"), */tr("F11 Modules"), this);
 	F[12] = new QAction(/*QIcon(":/Images/F12.png"), */tr("F12 Tabs"), this);
+	QAction *actClose = new QAction(this);
+	actClose->setShortcut(Qt::Key_Escape);
+	actClose->setShortcutContext(Qt::WindowShortcut);
+	connect(actClose, SIGNAL(triggered()), this, SLOT(Close_Pressed()));
+	addAction(actClose);
 
 	for (int i = 1; i < F.size(); i++)
 		F[i]->setEnabled(false);
@@ -116,7 +171,7 @@ void UnitManager_Tabs::Start()
 	tabs->setMovable(true);
 	//tabs->setTabsClosable(true);
 
-	connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(currentChanged(int)));
+	connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(CurrentUnitChanged(int)));
 	connect(tabs->tabBar_, SIGNAL(TabMousePressed(int, QMouseEvent *)), this, SLOT(TabMousePressed(int, QMouseEvent *)));
 	connect(tabs->tabBar_, SIGNAL(TabMouseDoubleClicked(int, QMouseEvent *)), this, SLOT(TabMouseDoubleClicked(int, QMouseEvent *)));
 
@@ -161,19 +216,31 @@ void UnitManager_Tabs::Start()
 	setGeometry((int)(QApplication::desktop()->width() - (QApplication::desktop()->width() - (QApplication::desktop()->width() / 2)) * 1.5) / 2, (int)(QApplication::desktop()->height() - (QApplication::desktop()->height() - (QApplication::desktop()->height() / 2)) * 1.5) / 2, (int)((QApplication::desktop()->width() - (QApplication::desktop()->width() / 2)) * 1.5), (int)((QApplication::desktop()->height() - (QApplication::desktop()->height() / 2)) * 1.5));
 
 	LoadState();
+
+	if (IUnit *console = dynamic_cast<IUnit *>(g_Core->QueryModule("ConsoleUnit", 1)))
+	{
+		AddUnit(console, true);
+		console->Create(GetActiveUnit());
+	}
+
 	show();
+}
+
+void UnitManager_Tabs::CurrentUnitChanged( int index )
+{
+	tabs->setCurrentIndex(index);
 }
 
 void UnitManager_Tabs::TabMousePressed( int index, QMouseEvent *event )
 {
 	if (index != -1 && event->button() == Qt::LeftButton && event->modifiers() & Qt::ControlModifier)
-		Link(tabs->currentIndex(), index);
+		LinkUnits(tabs->currentIndex(), index);
 	else if (event->button() == Qt::MidButton)
 	{
 		if (index == -1) // Click outside of tabs
-			AddNew();
+			AddNewPanels();
 		else // Click on tabs
-			Close(index);
+			CloseUnit(index);
 	}
 }
 
@@ -182,9 +249,9 @@ void UnitManager_Tabs::TabMouseDoubleClicked( int index, QMouseEvent *event )
 	if (event->button() == Qt::LeftButton)
 	{
 		if (index == -1) // DoubleClick outside of tabs
-			AddNew();
-		else // DoubleClick on tabs
-			Close(index);
+			AddNewPanels();
+// 		else // DoubleClick on tabs to close
+// 			CloseUnit(index);
 	}
 }
 
@@ -192,24 +259,6 @@ void UnitManager_Tabs::UnitTextChanged()
 {
 	if (IUnit *unit = dynamic_cast<IUnit *>(sender()))
 		tabs->setTabText(tabs->indexOf(unit), unit->GetText());
-}
-
-void UnitManager_Tabs::Close( int index )
-{
-	if (tabs->count() != 1)
-	{
-		QWidget *widget = tabs->widget(index);
-		tabs->setCurrentIndex(index - 1 >= 0 ? index - 1 : index + 1);
-		tabs->removeTab(index);
-		delete widget;
-	}
-}
-
-IUnit * UnitManager_Tabs::GetActiveUnit()
-{
-	IUnit *cur = static_cast<IUnit *>(tabs->widget(tabs->currentIndex()));
-//	ILinkedUnit *curLink = dynamic_cast<ILinkedUnit *>(cur);
-	return cur;	
 }
 
 void UnitManager_Tabs::closeEvent( QCloseEvent *event )
@@ -257,7 +306,7 @@ void UnitManager_Tabs::LoadState()
 		{
 			if (IPanel *panel = dynamic_cast<IPanel *>(g_Core->QueryModule("Panel", 1)))
 			{
-				AddUnit(panel);
+				AddUnit(panel, false);
 				panel->LoadState(set);
 			}
 			else
@@ -267,7 +316,7 @@ void UnitManager_Tabs::LoadState()
 		{
 			if (LinkedUnit *link = dynamic_cast<LinkedUnit *>(g_Core->QueryModule("LinkedUnit", 1)))
 			{
-				AddUnit(link);
+				AddUnit(link, false);
 				link->LoadState(set);
 			}
 			else
@@ -284,7 +333,7 @@ void UnitManager_Tabs::LoadState()
 			IPanel *panelB = dynamic_cast<IPanel *>(g_Core->QueryModule("Panel", 1));
 			panelA->SetPath(QApplication::applicationDirPath());
 			panelB->SetPath(QApplication::applicationDirPath());
-			Link(AddUnit(panelA), AddUnit(panelB));
+			LinkUnits(AddUnit(panelA, false), AddUnit(panelB, false));
 		}
 		else
 			g_Core->DebugWrite("UnitManager_Tabs", "Panel module not found", ICoreFunctions::Error);
@@ -297,6 +346,11 @@ void UnitManager_Tabs::LoadState()
 	restoreState(set.value("state").toByteArray());
 	set.endGroup();
 }
+
+
+
+
+
 
 void UnitManager_Tabs::F11_Pressed()
 {
@@ -319,14 +373,14 @@ void UnitManager_Tabs::F2_Pressed()
 
 void UnitManager_Tabs::F3_Pressed()
 {
-	if (IUnit *viewer = dynamic_cast<IUnit *>(g_Core->QueryModule("PictureViewUnit", 1)))
+	if (IUnit *viewer = dynamic_cast<IUnit *>(g_Core->QueryModule("WebViewUnit", 1)))
 	{
-		LinkedUnit *link = dynamic_cast<LinkedUnit *>(tabs->currentWidget());
+		LinkedUnit *link = dynamic_cast<LinkedUnit *>(GetActiveUnit());
 		if (link)
 			viewer->Create(link->GetActiveUnit());
 		else
-			viewer->Create(static_cast<IUnit *>(tabs->currentWidget()));
-		tabs->setCurrentIndex(AddUnit(viewer));
+			viewer->Create(GetActiveUnit());
+		tabs->setCurrentIndex(AddUnit(viewer, true));
 	}
 }
 
@@ -334,44 +388,13 @@ void UnitManager_Tabs::F4_Pressed()
 {
 	if (IUnit *editor = dynamic_cast<IUnit *>(g_Core->QueryModule("TextEditorUnit", 1)))
 	{
-		LinkedUnit *link = dynamic_cast<LinkedUnit *>(tabs->currentWidget());
+		LinkedUnit *link = dynamic_cast<LinkedUnit *>(GetActiveUnit());
 		if (link)
 			editor->Create(link->GetActiveUnit());
 		else
-			editor->Create(static_cast<IUnit *>(tabs->currentWidget()));
-		tabs->setCurrentIndex(AddUnit(editor));
+			editor->Create(GetActiveUnit());
+		tabs->setCurrentIndex(AddUnit(editor, true));
 	}
-}
-
-void UnitManager_Tabs::AddNew()
-{
-	IPanel *cur = dynamic_cast<IPanel *>(tabs->widget(tabs->currentIndex()));
-	LinkedUnit *curLink = dynamic_cast<LinkedUnit *>(tabs->widget(tabs->currentIndex()));
-	QString pathA, pathB = QApplication::applicationDirPath();
-
-	if (cur)
-		pathA = cur->GetPath();
-	else if (curLink)
-	{
-		IPanel *curLinkLeft = dynamic_cast<IPanel *>(curLink->GetLeftUnit());
-		IPanel *curLinkRight = dynamic_cast<IPanel *>(curLink->GetRightUnit());
-		pathA = curLinkLeft->GetPath();
-		pathB = curLinkRight->GetPath();
-	}
-
-	if (IPanel *panel = dynamic_cast<IPanel *>(g_Core->QueryModule("Panel", 1)))
-	{
-		int index1 = AddUnit(panel);
-		panel->SetPath(pathA);
-
-		IPanel *panel2;
-		int index2 = AddUnit(panel2 = dynamic_cast<IPanel *>(g_Core->QueryModule("Panel", 1)));
-		panel2->SetPath(pathB);
-
-		Link(index1, index2);
-	}
-	else
-		g_Core->DebugWrite("UnitManager_Tabs", "Panel module not found", ICoreFunctions::Error);
 }
 
 void UnitManager_Tabs::F1_Pressed()
@@ -401,4 +424,12 @@ void UnitManager_Tabs::F5_Pressed()
 	}
 	else
 		g_Core->DebugWrite("UnitManager_Tabs", "File Copy not found", ICoreFunctions::Error);
+}
+
+void UnitManager_Tabs::Close_Pressed()
+{
+	if (!dynamic_cast<LinkedUnit *>(GetActiveUnit()) && !dynamic_cast<IPanel *>(GetActiveUnit()))
+	{
+		CloseUnit(tabs->currentIndex());
+	}
 }

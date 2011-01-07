@@ -12,7 +12,7 @@ QVector<Module *> FS_Library::ListModulesAndGetCore( ICoreFunctions *core )
 	return arr;
 }
 
-QObject* FS_Library::CreateModuleInstance( int id, QObject *parent )
+QObject* FS_Library::CreateModuleInstance( int /*id*/, QObject *parent )
 {
 	return new FS_Qt(parent);
 }

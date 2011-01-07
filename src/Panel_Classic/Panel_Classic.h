@@ -7,29 +7,23 @@
 #include "SortModel.h"
 #include "FileListView.h"
 
-#ifdef PANEL_CLASSIC_LIB
-# define PANEL_CLASSIC_EXPORT Q_DECL_EXPORT
-#else
-# define PANEL_CLASSIC_EXPORT Q_DECL_IMPORT
-#endif
-
 class Panel_Classic : public IPanel
 {
 	Q_OBJECT
 
 public:
 	Panel_Classic(QWidget *parent);
-	void Create(IUnit *createdFrom); //overload
-	void Link(IUnit *withUnit); //overload
-	QString GetText(); // overload
-	void SaveState(QSettings &set); // overload
-	void LoadState(QSettings &set); // overload
+	virtual void Create(IUnit *createdFrom = NULL);
+	virtual void Link(IUnit *withUnit = NULL);
+	virtual QString GetText();
+	virtual void SaveState(QSettings &set);
+	virtual void LoadState(QSettings &set);
 
-	QString GetPath(); //overload
-	const FileInfo *const GetCurrentFile(); //overload
-	QVector<const FileInfo*> GetSelectedFiles(); //overload
-	bool SetCurrentIndex(int index); //overload
-	int  GetCurrentIndex(); //overload
+	virtual QString GetPath();
+	virtual const FileInfo *const GetCurrentFile();
+	virtual QVector<const FileInfo*> GetSelectedFiles();
+	virtual bool SetCurrentIndex(int index);
+	virtual int  GetCurrentIndex();
 
 private:
 	QLineEdit *pathEdit;
@@ -38,9 +32,9 @@ private:
 	IUnit *inactivePanel;
 
 public slots:
-	void SetPath(QString path); // overload
-	void EnterSelected();
+	virtual void SetPath(QString path);
 
+	void EnterSelected();
 	void pathEditReturnPressed();
 
 signals:

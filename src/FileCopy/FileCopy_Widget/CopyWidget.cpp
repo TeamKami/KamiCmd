@@ -13,7 +13,7 @@ CopyWidget::CopyWidget(QWidget *parent)
 		done(0);
  	ILinkedUnit *unit = dynamic_cast<ILinkedUnit *> (unitManagerTabs->GetActiveUnit());
 	IPanel *active = dynamic_cast<IPanel *>(unit->GetActiveUnit());
-	IPanel *passive = dynamic_cast<IPanel *>(unit->GetPassiveUnit());
+	IPanel *passive = dynamic_cast<IPanel *>(unit->GetInactiveUnit());
 	
 	if(!active)
 	{
@@ -55,7 +55,7 @@ void CopyWidget::on_copyPushButtonClicked()
 	for(int i = 0; i < files.size(); i++)
 		paths << files[i]->path + files[i]->name;
 
-	copy->prepareForCopy(paths, 
+	copy->PrepareForCopy(paths, 
 		ui.copyToComboBox->currentText(), 
 		ui.filterCheckBox->isChecked() ? ui.includeMaskComboBox->currentText() : "",
 		ui.filterCheckBox->isChecked() ? ui.excludeMaskComboBox->currentText() : "");

@@ -16,9 +16,9 @@ public:
 	FileCopy(QObject *parent = 0);
 	~FileCopy();
 
-	virtual bool prepareForCopy(const QString & from, const QString & to);
-	virtual bool prepareForCopy(const QStringList & files, const QString & to, const QString & includeMask, const QString & excludeMask);
-	virtual bool prepareForCopy(const QList<FileInfo *> & files, const QString & to, const QString & includeMask, const QString & excludeMask);
+	virtual bool PrepareForCopy(const QString & from, const QString & to);
+	virtual bool PrepareForCopy(const QStringList & files, const QString & to, const QString & includeMask, const QString & excludeMask);
+	virtual bool PrepareForCopy(const QList<FileInfo *> & files, const QString & to, const QString & includeMask, const QString & excludeMask);
 
 	virtual bool Exec();
 	virtual bool Pause();

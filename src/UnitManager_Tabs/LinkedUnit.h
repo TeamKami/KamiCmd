@@ -4,13 +4,14 @@
 #include <QtGui>
 #include "IUnitManager.h"
 
+
 class SplitterHandle : public QSplitterHandle
 {
 	Q_OBJECT
 
 public:
-	SplitterHandle(Qt::Orientation orientation, QSplitter * parent) : QSplitterHandle(orientation, parent) {}; // overload
-	void mouseDoubleClickEvent(QMouseEvent *event); // overload
+	SplitterHandle(Qt::Orientation orientation, QSplitter * parent) : QSplitterHandle(orientation, parent) {};
+	virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
 signals:
 	void MouseDoubleClicked();
@@ -22,7 +23,7 @@ class Splitter : public QSplitter
 	Q_OBJECT
 
 public:
-	Splitter(Qt::Orientation orientation, QWidget *parent = 0) : QSplitter(orientation, parent) {}; // overload
+	Splitter(Qt::Orientation orientation, QWidget *parent = 0) : QSplitter(orientation, parent) {};
 
 protected:
 	QSplitterHandle *createHandle();
@@ -38,26 +39,25 @@ class LinkedUnit : public ILinkedUnit
 
 public:
 	LinkedUnit(QWidget *parent);
-	void Create(IUnit * /*createdFrom*/) {}; // overload
-	void Link(IUnit * /*withUnit*/) {}; // overload
-	QString GetText(); // overload
-	void SaveState(QSettings &set); // overload
-	void LoadState(QSettings &set); // overload
+	virtual void Create(IUnit * /*createdFrom*/) {};
+	virtual void Link(IUnit * /*withUnit*/) {};
+	virtual QString GetText();
+	virtual void SaveState(QSettings &set);
+	virtual void LoadState(QSettings &set);
 
-	void Create(IUnit *active, IUnit *passive, bool isActiveLeft);
-
-
+	virtual void Create(IUnit *active, IUnit *inactive, bool isActiveLeft);
 	virtual IUnit *GetActiveUnit();
-	virtual IUnit *GetPassiveUnit();
-
+	virtual IUnit *GetInactiveUnit();
 	virtual IUnit *GetLeftUnit();
 	virtual IUnit *GetRightUnit();
 
+private:
+	IUnit *left, *right, *active;
 
 private:
 	Splitter *splitter;
 	QVBoxLayout *layout;
-	IUnit *left, *right, *active;
+
 
 public slots:
 	void LinkedUnitFocusIn();

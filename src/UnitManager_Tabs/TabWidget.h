@@ -7,15 +7,33 @@ class TabBar : public QTabBar
 {
 	Q_OBJECT
 
-	void mousePressEvent(QMouseEvent *event); // overload
-	void mouseDoubleClickEvent(QMouseEvent *event); // overload
-
 public:
-	TabBar(QWidget *parent): QTabBar(parent) {};
+	TabBar(QWidget *parent);
+
+private:
+	virtual void mousePressEvent(QMouseEvent *event);
+	virtual void mouseDoubleClickEvent(QMouseEvent *event);
+	virtual void mouseReleaseEvent(QMouseEvent *event);
+
+	void ActivateLastActive();
+
+	QList<int> tabsFocus;
+	int mousePressCurrentIndex;
+	int mousePressIndex;
+
+protected:
+	virtual void tabRemoved(int index);
+	virtual void tabInserted(int index);
 
 signals:
 	void TabMousePressed(int index, QMouseEvent *event);
 	void TabMouseDoubleClicked(int index, QMouseEvent *event);
+
+private slots:
+	void TabMoved(int from, int to);
+
+public slots:
+	void CurrentChanged(int index);
 };
 
 
@@ -27,6 +45,7 @@ public:
 	TabWidget(QWidget *parent) : QTabWidget(parent)
 	{
 		tabBar_ = new TabBar(this);
+		tabBar_->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
 		setTabBar(tabBar_);
 	};
 

@@ -4,20 +4,20 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 	: IPanel(parent)
 {
 	view = new FileListView();
-	view->model = new FileListModel();
-	view->sort = new SortModel();
+	view->SetModel(new FileListModel());
+	view->SetSortModel(new SortModel());
 
 	pathEdit = new QLineEdit(this);
 	pathEdit->setFocusPolicy(Qt::ClickFocus);
 
 	view->setItemsExpandable(false);
 	view->setRootIsDecorated(false);
-	view->setSelectionMode(QAbstractItemView::NoSelection);
+//	view->setSelectionMode(QAbstractItemView::NoSelection);
 
-	view->sort->setSourceModel(view->model);
-	view->setModel(view->sort);
+	view->Sort()->setSourceModel(view->Model());
+	view->setModel(view->Sort());
 
-	view->setAllColumnsShowFocus(true);
+//	view->setAllColumnsShowFocus(true);
 	view->setUniformRowHeights(true);
 	view->setSortingEnabled(true);
 	view->sortByColumn(0, Qt::AscendingOrder);
@@ -30,12 +30,12 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 
 	connect(view, SIGNAL(EnterSelected()), this, SLOT(EnterSelected()));
 	connect(pathEdit, SIGNAL(returnPressed()), this, SLOT(pathEditReturnPressed()));
-	connect(view->model, SIGNAL(modelReset()), view, SLOT(keyboardSearchNullify()));
-	connect(view->model, SIGNAL(PathChanged()), this, SIGNAL(TextChanged()));
+	connect(view->Model(), SIGNAL(modelReset()), view, SLOT(keyboardSearchNullify()));
+	connect(view->Model(), SIGNAL(PathChanged()), this, SIGNAL(TextChanged()));
 	connect(view, SIGNAL(FocusIn()), this, SIGNAL(FocusIn()));
 	//connect(list, SIGNAL(list->header()->mouseDoubleClickEvent()), list, SLOT(list->header()->))
 
-	view->model->SetPath(QApplication::applicationDirPath()); // Kinda crutch. Should fix someday
+	view->Model()->SetPath(QApplication::applicationDirPath()); // Kinda crutch. Should fix someday
 }
 
 void Panel_Classic::Create(IUnit *createdFrom)
@@ -51,22 +51,22 @@ void Panel_Classic::Link( IUnit *withUnit )
 
 void Panel_Classic::SetPath( QString path )
 {
-	QModelIndex current = view->model->SetPath(path);
+	QModelIndex current = view->Model()->SetPath(path);
 	if (current.isValid())
-		view->setCurrentIndex(view->sort->mapFromSource(current));
+		view->setCurrentIndex(view->Sort()->mapFromSource(current));
 	else
-		view->setCurrentIndex(view->sort->index(0, 0));
-	pathEdit->setText(view->model->GetPath());
+		view->setCurrentIndex(view->Sort()->index(0, 0));
+	pathEdit->setText(view->Model()->GetPath());
 }
 
 void Panel_Classic::EnterSelected()
 {
-	QModelIndex current = view->model->Enter( view->model->index(view->sort->mapToSource(view->currentIndex()).row()) );
+	QModelIndex current = view->Model()->Enter( view->Model()->index(view->Sort()->mapToSource(view->currentIndex()).row()) );
 	if (current.isValid())
-		view->setCurrentIndex( view->sort->mapFromSource(current) );
+		view->setCurrentIndex( view->Sort()->mapFromSource(current) );
 	else
-		view->setCurrentIndex(view->sort->index(0, 0));
-	pathEdit->setText(view->model->GetPath());
+		view->setCurrentIndex(view->Sort()->index(0, 0));
+	pathEdit->setText(view->Model()->GetPath());
 }
 
 void Panel_Classic::pathEditReturnPressed()
@@ -76,42 +76,42 @@ void Panel_Classic::pathEditReturnPressed()
 
 QString Panel_Classic::GetPath()
 {
-	return view->model->GetPath();
+	return view->Model()->GetPath();
 }
 
 QString Panel_Classic::GetText()
 {
-	QString str = view->model->GetPath();
-	if (!view->model->GetFs()->isRoot())
+	QString str = view->Model()->GetPath();
+	if (!view->Model()->GetFs()->isRoot())
 	{
 		int pos = str.lastIndexOf("/", -2) + 1;
-		str = str.mid(str.lastIndexOf("/", -2) + 1, str.length() - pos);
+		str = str.mid(str.lastIndexOf("/", -2) + 1, str.length() - pos - 1);
 	}
 	return str;
 }
 
 const FileInfo *const Panel_Classic::GetCurrentFile()
 {
-	return view->model->GetFileInfo(view->sort->mapToSource(view->currentIndex()).row());
+	return view->Model()->GetFileInfo(view->Sort()->mapToSource(view->currentIndex()).row());
 }
 
 QVector<const FileInfo*> Panel_Classic::GetSelectedFiles()
 {
 	QVector<const FileInfo*> arr;
-	int i = 0, n = view->model->selectedNum;
+	int i = 0, n = view->Model()->selectedNum;
 
-	if (view->model->rowCount())
+	if (view->Model()->rowCount())
 	{
 		if (n)
 		{
-			const FileInfo* info = view->model->GetFileInfo( view->sort->mapToSource(view->sort->index(0, 0)).row() );
+			const FileInfo* info = view->Model()->GetFileInfo( view->Sort()->mapToSource(view->Sort()->index(0, 0)).row() );
 			if (info->name == "..")
 				i++;
 
 			arr.reserve(n - i);
-			for (; i < view->model->rowCount(); i++ )
+			for (; i < view->Model()->rowCount(); i++ )
 			{
-				const FileInfo* info = view->model->GetFileInfo( view->sort->mapToSource(view->sort->index(i, 0)).row() );
+				const FileInfo* info = view->Model()->GetFileInfo( view->Sort()->mapToSource(view->Sort()->index(i, 0)).row() );
 				if (info->selected)
 					arr.append(info);
 			}
@@ -124,9 +124,9 @@ QVector<const FileInfo*> Panel_Classic::GetSelectedFiles()
 
 bool Panel_Classic::SetCurrentIndex( int index )
 {
-	if (index > 0 && index < view->model->rowCount())
+	if (index > 0 && index < view->Model()->rowCount())
 	{
-		view->setCurrentIndex(view->sort->index(index, 0));
+		view->setCurrentIndex(view->Sort()->index(index, 0));
 		return true;
 	}
 	return false;

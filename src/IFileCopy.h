@@ -5,7 +5,7 @@
 #include "IFileOperation.h"
 
 class QString;
-class FileInfo;
+struct FileInfo;
 
 class IFileCopy : public IFileOperation
 {

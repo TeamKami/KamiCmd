@@ -27,7 +27,7 @@ QString FormatSize(qint64 size)
 	return QLocale().toString(bytes);
 }
 
-QModelIndex FileListModel::index( int row, int column /*= 0*/, const QModelIndex &parent /*= QModelIndex()*/ ) const
+QModelIndex FileListModel::index( int row, int column /*= 0*/, const QModelIndex & /*parent*/ /*= QModelIndex()*/ ) const
 {
 	if (column > columnCount() || row > list.count() || list.isEmpty())
 		return QModelIndex();
@@ -92,8 +92,8 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 		break;
 
 	case Qt::BackgroundRole:
-		if (index.row() == selection.row())
-			return isFocused ? (current.selected ? selectionMarked : selectionActive) : (current.selected ? selectionMarkedInactive : selectionInactive);
+// 		if (index.row() == selection.row())
+// 			return isFocused ? (current.selected ? selectionMarked : selectionActive) : (current.selected ? selectionMarkedInactive : selectionInactive);
 
 		if (current.selected)
 #ifdef DARK
@@ -299,7 +299,7 @@ int FileListModel::columnCount( const QModelIndex& /*= QModelIndex()*/ ) const
 	return columns;
 }
 
-bool FileListModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool FileListModel::setData( const QModelIndex & /*index*/, const QVariant & /*value*/, int /*role*/ )
 {
 	return true;
 }

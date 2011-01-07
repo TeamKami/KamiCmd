@@ -14,16 +14,11 @@ public:
 	virtual QString GetPath() = 0;
 	virtual const FileInfo *const GetCurrentFile() = 0;
 	virtual QVector<const FileInfo*> GetSelectedFiles() = 0;
-
 	virtual bool SetCurrentIndex(int index) = 0;
 	virtual int  GetCurrentIndex() = 0;
 
 public slots:
 	virtual void SetPath(QString path) = 0;
-
-signals:
-	void TextChanged();
-	void FocusIn();
 };
 
 #endif // PANEL_CLASSIC_INTERFACE_H

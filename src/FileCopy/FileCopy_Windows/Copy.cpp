@@ -12,7 +12,7 @@ FileCopy::~FileCopy()
 
 }
 
-bool FileCopy::prepareForCopy( const QString & from, const QString & to )
+bool FileCopy::PrepareForCopy( const QString & from, const QString & to )
 {
 	from_.clear();
 	from_ << from;
@@ -20,7 +20,7 @@ bool FileCopy::prepareForCopy( const QString & from, const QString & to )
 	return true;
 }
 
-bool FileCopy::prepareForCopy( const QStringList & files, const QString & to, const QString & includeMask, const QString & excludeMask )
+bool FileCopy::PrepareForCopy( const QStringList & files, const QString & to, const QString & includeMask, const QString & excludeMask )
 {
 	from_ = files;
 	to_ = to;
@@ -30,9 +30,9 @@ bool FileCopy::prepareForCopy( const QStringList & files, const QString & to, co
 	return true;
 }
 
-bool FileCopy::prepareForCopy( const QList<FileInfo *> & files, const QString & to, const QString & includeMask, const QString & excludeMask )
+bool FileCopy::PrepareForCopy( const QList<FileInfo *> & files, const QString & to, const QString & includeMask, const QString & excludeMask )
 {
-
+	return true;
 }
 
 bool FileCopy::Exec()

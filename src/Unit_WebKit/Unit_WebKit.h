@@ -5,26 +5,17 @@
 #include "../IUnitManager.h"
 #include <QWebView>
 
-// class WebKit : public QWidget
-// {
-// public:
-// 	WebKit(QWidget *parent);
-// 
-// private:
-// 	void paintEvent(QPaintEvent *event);
-// };
-// 
 class Unit_WebKit : public IUnit
 {
 	Q_OBJECT
 
 public:
 	Unit_WebKit(QWidget *parent);
-	void Create(IUnit *createdFrom); // overload
-	void Link(IUnit *withUnit) {}; // overload
-	QString GetText(); // overload
-	void SaveState(QSettings &set); // overload
-	void LoadState(QSettings &set); // overload
+	virtual void Create(IUnit *createdFrom);
+	virtual void Link(IUnit * /*withUnit*/) {};
+	virtual QString GetText();
+	virtual void SaveState(QSettings &set);
+	virtual void LoadState(QSettings &set);
 
 private:
 	QVBoxLayout *layout;
@@ -35,7 +26,7 @@ private:
 	void OpenFile();
 
 signals:
-	void TextChanged();
+	/*virtual*/ void TextChanged();
 };
 
 #endif // UNIT_WEBKIT_H

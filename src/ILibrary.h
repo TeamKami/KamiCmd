@@ -15,9 +15,6 @@ public:
 	virtual QVector<const Module *> GetModulesInfo(QString type = "", int interfaceVersion = 0) = 0;
 };
 
-#define MBox(text) g_Core->DebugWrite("MBox", text, ICoreFunctions::ReportMe)
-#define MBoxI(integer) g_Core->DebugWrite("MBox", QString::number(integer), ICoreFunctions::ReportMe)
-
 struct Module
 {
 	Module(QString inType, int inInterfaceVersion, QString inName, int inModuleVersion, int inModuleId):

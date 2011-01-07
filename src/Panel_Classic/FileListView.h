@@ -9,33 +9,36 @@ class FileListView : public QTreeView
 {
 	Q_OBJECT
 
+public:
+	FileListView();
+	virtual void focusInEvent(QFocusEvent *event);
+	virtual void focusOutEvent(QFocusEvent *event);
+	virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
+	virtual void mousePressEvent(QMouseEvent *event);
+	virtual void mouseMoveEvent(QMouseEvent *event);
+	virtual void mouseReleaseEvent(QMouseEvent *event);
+	virtual void wheelEvent(QWheelEvent *event);
+	virtual void resizeEvent(QResizeEvent *event);
+	
+	FileListModel *Model();
+	void SetModel(FileListModel *model);
+	SortModel *Sort();
+	void SetSortModel(SortModel *sort);
+
+private:
+	SortModel *sort_;
+	FileListModel *model_;
 	int currentSelectionAction;
 	QModelIndex mouseMovePrevIndex, mouseMoveActionPrevIndex;
-
-public:
-	SortModel *sort;
-	FileListModel *model;
-
-	FileListView();
-
-//	void drawRow(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const; //overload
-	void focusInEvent(QFocusEvent *event); // overload
-	void focusOutEvent(QFocusEvent *event); // overload
-	void currentChanged(const QModelIndex &current, const QModelIndex &previous); // overload
-	void mousePressEvent(QMouseEvent *event); // overload
-	void mouseMoveEvent(QMouseEvent *event); // overload
-	void mouseReleaseEvent(QMouseEvent *event); // overload
-	void wheelEvent(QWheelEvent *event); // overload
-	void resizeEvent(QResizeEvent *event); // overload
 
 signals:
 	void EnterSelected();
 	void FocusIn();
 
 public slots:
-	void keyPressEvent(QKeyEvent *event); // overload
-	void keyReleaseEvent(QKeyEvent *event); // overload
-	void mouseDoubleClickEvent(QMouseEvent *event); // overload
+	virtual void keyPressEvent(QKeyEvent *event);
+	virtual void keyReleaseEvent(QKeyEvent *event);
+	virtual void mouseDoubleClickEvent(QMouseEvent *event);
 	void keyboardSearchNullify();
 	void SelectAll(int selectAction, bool excludeCurrent = false);
 };
