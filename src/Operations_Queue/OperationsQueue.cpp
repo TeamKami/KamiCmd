@@ -1,9 +1,9 @@
 #include "OperationsQueue.h"
 
-void OperationsQueue::add( IFileOperation& fileOperation, IFileOperation::OperationState state )
+void OperationsQueue::Add( IFileOperation& fileOperation, IFileOperation::OperationState state )
 {
 	if(state == IFileOperation::Running)
-		if(!fileOperation.exec())
+		if(!fileOperation.Exec())
 		{
 			g_Core->DebugWrite(g_moduleName, "Can't start file operation", ICoreFunctions::Info);
 			return;
@@ -12,30 +12,30 @@ void OperationsQueue::add( IFileOperation& fileOperation, IFileOperation::Operat
 }
 
 
-bool OperationsQueue::remove( int index )
+bool OperationsQueue::Remove( int index )
 {
 	IFileOperation &operation = *operationsQueue_[index];
 	operationsQueue_.removeAt(index);
-	return operation.cancel();
+	return operation.Cancel();
 }
 
-bool OperationsQueue::pause( int index )
+bool OperationsQueue::Pause( int index )
 {
-	return operationsQueue_[index]->pause();
+	return operationsQueue_[index]->Pause();
 }
 
 
-bool OperationsQueue::resume( int index )
+bool OperationsQueue::Resume( int index )
 {
-	return operationsQueue_[index]->resume();
+	return operationsQueue_[index]->Resume();
 }
 
-void OperationsQueue::changePriority( const IFileOperation&, int )
+void OperationsQueue::ChangePriority( const IFileOperation&, int )
 {
 
 }
 
-int OperationsQueue::size() const
+int OperationsQueue::Count() const
 {
 	return operationsQueue_.size();
 }
@@ -49,7 +49,7 @@ OperationsQueue::~OperationsQueue()
 	}
 }
 
-IFileOperation * OperationsQueue::getFileOperation( int index ) const
+IFileOperation * OperationsQueue::GetFileOperation( int index ) const
 {
 	return operationsQueue_[index];
 }

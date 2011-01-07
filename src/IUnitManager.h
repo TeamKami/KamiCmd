@@ -25,6 +25,20 @@ signals:
 	void FocusIn();
 };
 
+class ILinkedUnit : public IUnit
+{
+public:
+	ILinkedUnit(QWidget *parent) : IUnit(parent) {};
+
+	virtual void Create(IUnit *active, IUnit *passive, bool isActiveLeft) = 0;
+	virtual IUnit *GetActiveUnit() = 0;
+	virtual IUnit *GetPassiveUnit() = 0;
+
+	virtual IUnit *GetLeftUnit() = 0;
+	virtual IUnit *GetRightUnit() = 0;
+
+};
+
 
 class IUnitManager
 {

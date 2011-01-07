@@ -5,7 +5,7 @@
 #include <Qt/qglobal.h>
 #include <QWidget>
 #include "IUnitManager.h"
-#include "../IFileSystem.h"
+#include "IFileSystem.h"
 
 class IPanel : public IUnit
 {

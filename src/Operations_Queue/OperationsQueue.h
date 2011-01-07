@@ -17,15 +17,14 @@ public:
 	{}
 	~OperationsQueue();
 
-	void add(IFileOperation&, IFileOperation::OperationState state);
-	IFileOperation *getFileOperation(int index) const;
-	bool remove(int index);
-	bool pause(int index);
-	bool resume(int index);
+	virtual void Add(IFileOperation&, IFileOperation::OperationState state);
+	virtual IFileOperation* GetFileOperation(int index) const;
+	virtual bool Remove(int index);
+	virtual bool Pause(int index);
+	virtual bool Resume(int index);
 
-	void changePriority(const IFileOperation&, int);  // changes fileOperation place in waiting queue 
-
-	int size() const;
+	virtual void ChangePriority(const IFileOperation&, int);  // changes fileOperation place in waiting queue 
+	virtual int Count() const;
 
 private:
 	QList<IFileOperation *> operationsQueue_;

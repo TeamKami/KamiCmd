@@ -20,7 +20,7 @@ void LinkedUnit::Create( IUnit *active, IUnit *passive, bool isActiveLeft )
 }
 
 LinkedUnit::LinkedUnit(QWidget *parent)
-	: IUnit(parent)
+	: ILinkedUnit(parent)
 {
 	left = right = NULL;
 	splitter = new Splitter(Qt::Horizontal, this);
@@ -82,6 +82,26 @@ void LinkedUnit::LoadState( QSettings &set )
 	}
 	else
 		g_Core->DebugWrite("UnitManager_Tabs", "Panel module not found", ICoreFunctions::Error);
+}
+
+IUnit * LinkedUnit::GetPassiveUnit()
+{
+	return active == left ? right : left;
+}
+
+IUnit * LinkedUnit::GetActiveUnit()
+{
+	return active;
+}
+
+IUnit * LinkedUnit::GetLeftUnit()
+{
+	return left;
+}
+
+IUnit * LinkedUnit::GetRightUnit()
+{
+	return right;
 }
 
 QSplitterHandle* Splitter::createHandle()

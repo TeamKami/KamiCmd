@@ -52,12 +52,12 @@ class IFileSystem
 {
 public:
 	virtual ~IFileSystem()	{}
-	virtual int  SetPath(QString path) = 0; // return value is: 0 = failed, 1 = success, -1 = partial success
+	virtual int SetPath(QString path) = 0; // return value is: 0 = failed, 1 = success, -1 = partial success
 	virtual QString GetPath() = 0;
 	virtual uint GetNumberOfFiles() = 0;
 	virtual int  UpOneLevel() = 0; // return value is: 0 = failed, 1 = success, -1 = partial success
 	virtual bool isRoot() = 0;
-
+	
 	virtual QFile* GetFile(QString path) = 0;
 	virtual bool GetFirstFileInfo(FileInfo &info) = 0;
 	virtual bool GetNextFileInfo(FileInfo &info) = 0;

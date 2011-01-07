@@ -32,7 +32,7 @@ void UnitManager_Tabs::Link( int indexA, int indexB )
 	{
 		if (activeLinked == passiveLinked || passiveLinked) // Break link when passive is link or active == passive
 		{
-			IUnit *left = passiveLinked->left, *right = passiveLinked->right, *active = passiveLinked->active;
+			IUnit *left = passiveLinked->GetLeftUnit(), *right = passiveLinked->GetRightUnit(), *active = passiveLinked->GetActiveUnit();
 			tabs->removeTab(indexB);
 			tabs->insertTab(indexB, left, left->GetText());
 			tabs->insertTab(indexB + 1, right, right->GetText());
@@ -43,8 +43,8 @@ void UnitManager_Tabs::Link( int indexA, int indexB )
 		}
 		else if (activeLinked) // Relink inactive unit in LinkedUnit with indexB
 		{
-			IUnit *left = activeLinked->left, *right = activeLinked->right, *active = activeLinked->active;
-			IUnit *inactive = active == left ? right : left;
+			IUnit *left = activeLinked->GetLeftUnit(), *active = activeLinked->GetActiveUnit();
+			IUnit *inactive = activeLinked->GetPassiveUnit();
 
 			if (LinkedUnit *link = dynamic_cast<LinkedUnit *>(g_Core->QueryModule("LinkedUnit", 1)))
 			{
@@ -208,10 +208,8 @@ void UnitManager_Tabs::Close( int index )
 IUnit * UnitManager_Tabs::GetActiveUnit()
 {
 	IUnit *cur = static_cast<IUnit *>(tabs->widget(tabs->currentIndex()));
-	LinkedUnit *curLink = dynamic_cast<LinkedUnit *>(cur);
-	if (curLink)
-		return curLink->active;
-	return cur;
+//	ILinkedUnit *curLink = dynamic_cast<ILinkedUnit *>(cur);
+	return cur;	
 }
 
 void UnitManager_Tabs::closeEvent( QCloseEvent *event )
@@ -325,7 +323,7 @@ void UnitManager_Tabs::F3_Pressed()
 	{
 		LinkedUnit *link = dynamic_cast<LinkedUnit *>(tabs->currentWidget());
 		if (link)
-			viewer->Create(link->active);
+			viewer->Create(link->GetActiveUnit());
 		else
 			viewer->Create(static_cast<IUnit *>(tabs->currentWidget()));
 		tabs->setCurrentIndex(AddUnit(viewer));
@@ -338,7 +336,7 @@ void UnitManager_Tabs::F4_Pressed()
 	{
 		LinkedUnit *link = dynamic_cast<LinkedUnit *>(tabs->currentWidget());
 		if (link)
-			editor->Create(link->active);
+			editor->Create(link->GetActiveUnit());
 		else
 			editor->Create(static_cast<IUnit *>(tabs->currentWidget()));
 		tabs->setCurrentIndex(AddUnit(editor));
@@ -355,8 +353,8 @@ void UnitManager_Tabs::AddNew()
 		pathA = cur->GetPath();
 	else if (curLink)
 	{
-		IPanel *curLinkLeft = dynamic_cast<IPanel *>(curLink->left);
-		IPanel *curLinkRight = dynamic_cast<IPanel *>(curLink->right);
+		IPanel *curLinkLeft = dynamic_cast<IPanel *>(curLink->GetLeftUnit());
+		IPanel *curLinkRight = dynamic_cast<IPanel *>(curLink->GetRightUnit());
 		pathA = curLinkLeft->GetPath();
 		pathB = curLinkRight->GetPath();
 	}
@@ -389,16 +387,18 @@ void UnitManager_Tabs::F1_Pressed()
 
 void UnitManager_Tabs::F5_Pressed()
 {
-	if (IFileCopy *oq = dynamic_cast<IFileCopy *>(g_Core->QueryModule("FileCopy", 1)))
+	if (QDialog *copyDialog = dynamic_cast<QDialog *>(g_Core->QueryModule("FileCopy", 1, "FileCopy_Widget", -1, this)))
 	{
-		IOperationsQueue *operationsQueue_;
-		if (!(operationsQueue_ = dynamic_cast<IOperationsQueue *>(g_Core->QueryModule("OperationsQueue", 1, "OQ"))))
-		{
-			g_Core->DebugWrite("UnitManager_Tabs", "Operations Queue !!!!!! not found", ICoreFunctions::Error);
-			return;
-		}
-		operationsQueue_->add(*oq, oq->getState());
+		copyDialog->show();
+	//	delete copyDialog;
+// 		IOperationsQueue *operationsQueue_;
+// 		if (!(operationsQueue_ = dynamic_cast<IOperationsQueue *>(g_Core->QueryModule("OperationsQueue", 1, "OQ"))))
+// 		{
+// 			g_Core->DebugWrite("UnitManager_Tabs", "Operations Queue not found", ICoreFunctions::Error);
+// 			return;
+// 		}
+// 		operationsQueue_->Add(*oq, oq->GetState());
 	}
 	else
-		g_Core->DebugWrite("UnitManager_Tabs", "!", ICoreFunctions::Error);
+		g_Core->DebugWrite("UnitManager_Tabs", "File Copy not found", ICoreFunctions::Error);
 }

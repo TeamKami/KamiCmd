@@ -9,8 +9,8 @@ QVector<Module *> FC_Library::ListModulesAndGetCore( ICoreFunctions *core )
 	g_Core = core;
 	module = 0;
 	QVector<Module *> arr;
-	arr += new Module("OperationsQueue", 1, "OQ", 1, 0);
-	arr += new Module("OperationsQueue", 1, "OQ_Widget", 1, 1);
+	arr += new Module("OperationsQueue", CURRENT_FILE_OPERATION_INTERFACE_VERSION, "OQ", 1, 0);
+	arr += new Module("OperationsQueue", CURRENT_FILE_OPERATION_INTERFACE_VERSION, "OQ_Widget", 1, 1);
 	return arr;
 }
 

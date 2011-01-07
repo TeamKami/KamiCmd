@@ -14,15 +14,15 @@ OQWidget::OQWidget(QWidget *parent)
 		done(0);
 		return;
 	}
-	int count = operationsQueue_->size();
+	int count = operationsQueue_->Count();
  	QList<QTreeWidgetItem *> items;
 	
 	for(int i = 0; i < count; i++)
 	{
-		const IFileOperation* fileOperation = operationsQueue_->getFileOperation(i);
+		const IFileOperation* fileOperation = operationsQueue_->GetFileOperation(i);
 		
 		QString state;
-		switch(fileOperation->getState())
+		switch(fileOperation->GetState())
 		{
 		case IFileOperation::Paused:
 			state = tr("Paused");
@@ -45,9 +45,9 @@ OQWidget::OQWidget(QWidget *parent)
 		default:
 			state = tr("Unknown state");
 		}
-		QString & t = fileOperation->getType();
+		QString & t = fileOperation->GetType();
 		items << new QTreeWidgetItem((QTreeWidget*)0, QStringList() << t
-			<< QString::number(fileOperation->getProgress()) + "%" << state);
+			<< QString::number(fileOperation->GetProgress()) + "%" << state);
 	}
 	ui.treeWidget->insertTopLevelItems(0, items);
 }

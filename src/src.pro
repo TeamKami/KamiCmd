@@ -6,4 +6,5 @@ SUBDIRS = FS_Qt \
           Unit_WebKit \
           UnitManager_Tabs \
           Operations_Queue \
-          File_Copy_Windows
+          FileCopy/FileCopy_Widget \
+          FileCopy/FileCopy_Windows 

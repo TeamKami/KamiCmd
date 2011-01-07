@@ -4,6 +4,8 @@
 
 class IOperationsQueue;
 
+#define CURRENT_FILE_OPERATION_INTERFACE_VERSION 1
+
 class IFileOperation
 {	
 public:
@@ -14,18 +16,22 @@ public:
         ForcedRunning, 
         Queued,
         Error,
-	Finished
+		Finished
     };
 
-	virtual OperationState getState() const = 0;
-	virtual QString getType() const = 0; // i.e. copying, etc...
-	virtual int getProgress() const = 0; // percentage
+	virtual OperationState GetState() const = 0;
+	virtual QString GetType() const = 0; // i.e. copying, etc...
+	virtual int GetProgress() const = 0; // percentage
 
-	virtual bool exec() = 0;
-	virtual bool pause() = 0;
-	virtual bool resume() = 0;
-	virtual bool cancel() = 0;
+	virtual bool Exec() = 0;
+	virtual bool Pause() = 0;
+	virtual bool Resume() = 0;
+	virtual bool Cancel() = 0;
 
+	virtual ~IFileOperation() 
+	{
+
+	}
 //	friend class IOperationsQueue;
 };
 
@@ -33,13 +39,15 @@ class IOperationsQueue
 {
 
 public:
-    virtual void add(IFileOperation&, IFileOperation::OperationState state) = 0;
+    virtual void Add(IFileOperation&, IFileOperation::OperationState state) = 0;
 	
-	virtual IFileOperation *getFileOperation(int index) const = 0;
-	virtual bool remove(int index) = 0;
-	virtual bool pause(int index) = 0;
-	virtual bool resume(int index) = 0;
+	virtual IFileOperation *GetFileOperation(int index) const = 0;
+	virtual bool Remove(int index) = 0;
+	virtual bool Pause(int index) = 0;
+	virtual bool Resume(int index) = 0;
 
-	virtual void changePriority(const IFileOperation&, int) = 0;  // changes fileOperation place in waiting queue 
-	virtual int size() const = 0;
+	virtual void ChangePriority(const IFileOperation&, int) = 0;  // changes fileOperation place in waiting queue 
+	virtual int Count() const = 0;
+	virtual ~IOperationsQueue() 
+	{};
 };

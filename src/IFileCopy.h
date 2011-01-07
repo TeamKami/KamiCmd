@@ -7,8 +7,8 @@
 class IFileCopy : public IFileOperation
 {
 public:
-	virtual bool copy(const QString & from, const QString & to) = 0;
-	virtual bool copy(const QStringList & files, const QString & to, const QString & includeMask, const QString & excludeMask) = 0;
+	virtual bool prepareForCopy(const QString & from, const QString & to) = 0;
+	virtual bool prepareForCopy(const QStringList & files, const QString & to, const QString & includeMask, const QString & excludeMask) = 0;
 };
 
 #endif

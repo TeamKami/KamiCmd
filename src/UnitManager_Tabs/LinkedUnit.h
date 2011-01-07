@@ -2,7 +2,7 @@
 #define LINKEDUNIT_H
 
 #include <QtGui>
-#include "../IUnitManager.h"
+#include "IUnitManager.h"
 
 class SplitterHandle : public QSplitterHandle
 {
@@ -32,7 +32,7 @@ public slots:
 };
 
 
-class LinkedUnit : public IUnit
+class LinkedUnit : public ILinkedUnit
 {
 	Q_OBJECT
 
@@ -46,11 +46,18 @@ public:
 
 	void Create(IUnit *active, IUnit *passive, bool isActiveLeft);
 
-	IUnit *left, *right, *active;
+
+	virtual IUnit *GetActiveUnit();
+	virtual IUnit *GetPassiveUnit();
+
+	virtual IUnit *GetLeftUnit();
+	virtual IUnit *GetRightUnit();
+
 
 private:
 	Splitter *splitter;
 	QVBoxLayout *layout;
+	IUnit *left, *right, *active;
 
 public slots:
 	void LinkedUnitFocusIn();
