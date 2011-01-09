@@ -18,6 +18,11 @@ public slots:
 
 private:
 	int commandPos;
+	void SetCursorPos(int pos, bool isKeepAnchor = false);
+	void LimitCursorSelectionTo(int start);
+
+signals:
+	void ExecuteCommand(QString command);
 };
 
 #endif // CONSOLEWIDGET_H
