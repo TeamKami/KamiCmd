@@ -16,11 +16,14 @@ public:
 	virtual void Create(IUnit *createdFrom = NULL);
 	virtual void Link(IUnit *withUnit = NULL);
 	virtual QString GetText();
+	virtual QIcon GetIcon();
 	virtual void SaveState(QSettings &set);
 	virtual void LoadState(QSettings &set);
 
 	virtual QString GetPath();
 	virtual const FileInfo *const GetCurrentFile();
+	virtual const FileInfo *const SetCurrentFileToPrev();
+	virtual const FileInfo *const SetCurrentFileToNext();
 	virtual QVector<const FileInfo*> GetSelectedFiles();
 	virtual bool SetCurrentIndex(int index);
 	virtual int  GetCurrentIndex();

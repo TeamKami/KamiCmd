@@ -1,24 +1,25 @@
-	#include "ModulesDialog.h"
+#include "ModulesDialog.h"
 #include "library.h"
 
 ModulesDialog::ModulesDialog( QWidget *parent )
- : QDialog(parent)
+: QDialog(parent)
 {
-	resize(380, 360);
-	setWindowTitle(tr("Modules"));
-
-	tree = new QTreeWidget();
-	tree->setAlternatingRowColors(false);
-	tree->setSelectionMode(QAbstractItemView::NoSelection);
-	tree->setAllColumnsShowFocus(true);
-	tree->setUniformRowHeights(true);
-//	tree->setSortingEnabled(true);
-	tree->setColumnCount(2);
-	tree->setHeaderLabels(QStringList() << tr("Name") << tr("Type"));
-
-	layout = new QVBoxLayout();
-	layout->addWidget(tree);
-	setLayout(layout);
+	ui.setupUi(this);
+	// 	resize(380, 360);
+	// 	setWindowTitle(tr("Modules"));
+	// 
+	// 	tree = new QTreeWidget();
+	// 	tree->setAlternatingRowColors(false);
+	// 	tree->setSelectionMode(QAbstractItemView::NoSelection);
+	// 	tree->setAllColumnsShowFocus(true);
+	// 	tree->setUniformRowHeights(true);
+	// //	tree->setSortingEnabled(true);
+	// 	tree->setColumnCount(3);
+	// 	tree->setHeaderLabels(QStringList() << tr("Name") << tr("Type") << tr("Version"));
+	// 
+	// 	layout = new QVBoxLayout();
+	// 	layout->addWidget(tree);
+	// 	setLayout(layout);
 
 	libraryIcon.addPixmap(style()->standardPixmap(QStyle::SP_DirOpenIcon),
 		QIcon::Normal, QIcon::On);
@@ -53,18 +54,18 @@ void ModulesDialog::populateTree()
 	quintptr curLib = 0;
 	QTreeWidgetItem *root = NULL;
 
-	QFont boldFont = tree->font();
+	QFont boldFont = ui.modulesTreeWidget->font();
 	boldFont.setBold(true);
 
 	for (int i = 0; i < modules.size(); i++)
 	{
 		if (curLib != modules[i]->parentLib)
 		{
-			root = new QTreeWidgetItem(tree);
+			root = new QTreeWidgetItem(ui.modulesTreeWidget);
 			root->setText(0, modules[i]->parentLibName);
 			root->setIcon(0, libraryIcon);
 			root->setFont(0, boldFont);
-			tree->setItemExpanded(root, true);
+			ui.modulesTreeWidget->setItemExpanded(root, true);
 			curLib = modules[i]->parentLib;
 			i--;
 		}
@@ -73,9 +74,10 @@ void ModulesDialog::populateTree()
 			QTreeWidgetItem *item = new QTreeWidgetItem(root);
 			item->setIcon(0, moduleIcon);
 			item->setText(0, modules[i]->name);
-			item->setText(1, QString("%1 [%2.%3]").arg(modules[i]->type).arg(modules[i]->interfaceVersion).arg(modules[i]->moduleVersion));
+			item->setText(1, modules[i]->type);
+			item->setText(2, QString("%2.%3").arg(modules[i]->interfaceVersion).arg(modules[i]->moduleVersion));
 		}
 	}
 
-	tree->resizeColumnToContents(0);
+	ui.modulesTreeWidget->resizeColumnToContents(0);
 }

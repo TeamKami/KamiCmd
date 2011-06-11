@@ -87,3 +87,8 @@ QByteArray Unit_Console::ConvertToConsoleCP( QString string )
 	return string.toUtf8();
 #endif
 }
+
+QIcon Unit_Console::GetIcon()
+{
+	return QIcon();
+}

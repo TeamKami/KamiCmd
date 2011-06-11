@@ -104,6 +104,11 @@ IUnit * LinkedUnit::GetRightUnit()
 	return right;
 }
 
+QIcon LinkedUnit::GetIcon()
+{
+	return QIcon();
+}
+
 
 QSplitterHandle* Splitter::createHandle()
 {

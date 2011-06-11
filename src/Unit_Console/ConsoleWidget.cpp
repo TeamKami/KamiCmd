@@ -32,6 +32,7 @@ void ConsoleWidget::keyPressEvent( QKeyEvent *event )
 	switch (event->key())
 	{
 	case Qt::Key_Tab:
+	case Qt::Key_Backtab:
 		event->ignore();
 		return;
 

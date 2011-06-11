@@ -373,7 +373,7 @@ void UnitManager_Tabs::F2_Pressed()
 
 void UnitManager_Tabs::F3_Pressed()
 {
-	if (IUnit *viewer = dynamic_cast<IUnit *>(g_Core->QueryModule("WebViewUnit", 1)))
+	if (IUnit *viewer = dynamic_cast<IUnit *>(g_Core->QueryModule("PictureViewUnit", 1)))
 	{
 		LinkedUnit *link = dynamic_cast<LinkedUnit *>(GetActiveUnit());
 		if (link)

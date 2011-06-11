@@ -13,6 +13,8 @@ public:
 	IPanel(QWidget *parent) : IUnit(parent) {};
 	virtual QString GetPath() = 0;
 	virtual const FileInfo *const GetCurrentFile() = 0;
+	virtual const FileInfo *const SetCurrentFileToPrev() = 0;
+	virtual const FileInfo *const SetCurrentFileToNext() = 0;
 	virtual QVector<const FileInfo*> GetSelectedFiles() = 0;
 	virtual bool SetCurrentIndex(int index) = 0;
 	virtual int  GetCurrentIndex() = 0;

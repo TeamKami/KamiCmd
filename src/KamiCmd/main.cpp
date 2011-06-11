@@ -5,6 +5,7 @@ int main(int argc, char *argv[])
 {
 	int res = -1;
 	{
+		//QApplication::setStyle("plastique");
 		QApplication a(argc, argv);
 		QSettings::setDefaultFormat(QSettings::IniFormat);
 
@@ -29,7 +30,15 @@ int main(int argc, char *argv[])
 			unitManager->Start();
 		else
 		{
-			core.DebugWrite("Core", "UnitManager module not found", ICoreFunctions::Error);
+			QVector<const Module*> modulesInfo = core.GetModulesInfo();
+			QString msg;
+			QSet<QString> set;
+			foreach(const Module * module, modulesInfo)
+				set.insert(module->parentLibName);
+			foreach(QString module, set.toList())
+				msg.append("\n" + module);
+			
+			core.DebugWrite("Core", QString("UnitManager module not found\nLoaded libraries:%1").arg(msg), ICoreFunctions::Error);
 			return 1;
 		}
 		res = a.exec();

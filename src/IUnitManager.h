@@ -11,11 +11,13 @@ public:
 	virtual void Link(IUnit *withUnit = NULL) = 0;
 	virtual void Close() {};
 	virtual QString GetText() = 0;
+	virtual QIcon GetIcon() = 0;
 	virtual void SaveState(QSettings &set) = 0;
 	virtual void LoadState(QSettings &set) = 0;
 
 signals:
 	void TextChanged();
+	void IconChanged();
 	void FocusIn();
 };
 

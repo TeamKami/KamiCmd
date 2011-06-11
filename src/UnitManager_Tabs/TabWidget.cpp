@@ -85,6 +85,9 @@ void TabBar::tabInserted( int index )
 
 void TabBar::CurrentChanged( int index )
 {
+	if (index == -1)
+		return;
+
 	for (int i = 0; i < tabsFocus.size(); i++)
 		if (tabsFocus[i] > tabsFocus[index])
 			tabsFocus[i]--;

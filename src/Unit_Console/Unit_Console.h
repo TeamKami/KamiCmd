@@ -14,6 +14,7 @@ public:
 	virtual void Create(IUnit *createdFrom);
 	virtual void Link(IUnit * /*withUnit*/) {};
 	virtual QString GetText();
+	virtual QIcon GetIcon();
 	virtual void SaveState(QSettings &set);
 	virtual void LoadState(QSettings &set);
 

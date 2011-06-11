@@ -42,7 +42,7 @@ bool CoreFunctions::LoadModules()
         }
 	}
 	if (!num)
-		DebugWrite("Core", "Modules not found", Error);
+		DebugWrite("Core", QString("Modules not found\nSearched in: \"%1\"").arg(modulesDir.absolutePath()), Error);
 
 	qSort(modules.begin(), modules.end(), moduleLessThan);
 

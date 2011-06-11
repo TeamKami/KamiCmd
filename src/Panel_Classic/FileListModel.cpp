@@ -62,6 +62,10 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 		}
 		break;
 
+	case Qt::UserRole:
+		return current.attributes;
+		break;
+
 	case Qt::DecorationRole:
 		if (!index.column())
 			return current.icon;
@@ -112,6 +116,9 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 		if (index.column() == 1)
 			return int(Qt::AlignRight | Qt::AlignVCenter);
 		break;
+
+// 	case Qt::SizeHintRole:
+// 		return QSize(10, 40);
 	}
 
 /*

@@ -1,4 +1,5 @@
 #include "Panel_Classic.h"
+#include "FilesDelegate.h"
 
 Panel_Classic::Panel_Classic(QWidget *parent)
 	: IPanel(parent)
@@ -6,6 +7,15 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 	view = new FileListView();
 	view->SetModel(new FileListModel());
 	view->SetSortModel(new SortModel());
+
+	FilesDelegate *filesDelegate = new FilesDelegate(this);
+	view->setItemDelegateForColumn(0, filesDelegate);
+// 	static bool isFirst = true;
+// 	if (isFirst)
+// 	{
+// 		view->setItemDelegateForColumn(0, filesDelegate);
+// 		isFirst = false;
+// 	}
 
 	pathEdit = new QLineEdit(this);
 	pathEdit->setFocusPolicy(Qt::ClickFocus);
@@ -26,6 +36,7 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 	layout = new QVBoxLayout(this);
 	layout->addWidget(pathEdit);
 	layout->addWidget(view);
+	layout->addWidget(view->QuickSearchBar());
 	layout->setMargin(0);
 
 	connect(view, SIGNAL(EnterSelected()), this, SLOT(EnterSelected()));
@@ -33,9 +44,12 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 	connect(view->Model(), SIGNAL(modelReset()), view, SLOT(keyboardSearchNullify()));
 	connect(view->Model(), SIGNAL(PathChanged()), this, SIGNAL(TextChanged()));
 	connect(view, SIGNAL(FocusIn()), this, SIGNAL(FocusIn()));
+	connect(view, SIGNAL(PaletteChanged()), filesDelegate, SLOT(PaletteChanged()));
+	connect(view, SIGNAL(QuickSearch(QString)), filesDelegate, SLOT(QuickSearchChanged(QString)));
 	//connect(list, SIGNAL(list->header()->mouseDoubleClickEvent()), list, SLOT(list->header()->))
 
 	view->Model()->SetPath(QApplication::applicationDirPath()); // Kinda crutch. Should fix someday
+
 }
 
 void Panel_Classic::Create(IUnit *createdFrom)
@@ -95,6 +109,20 @@ const FileInfo *const Panel_Classic::GetCurrentFile()
 	return view->Model()->GetFileInfo(view->Sort()->mapToSource(view->currentIndex()).row());
 }
 
+const FileInfo *const Panel_Classic::SetCurrentFileToPrev()
+{
+	if (SetCurrentIndex(view->currentIndex().row() - 1))
+		return GetCurrentFile();
+	return NULL;
+}
+
+const FileInfo *const Panel_Classic::SetCurrentFileToNext()
+{
+	if (SetCurrentIndex(view->currentIndex().row() + 1))
+		return GetCurrentFile();
+	return NULL;
+}
+
 QVector<const FileInfo*> Panel_Classic::GetSelectedFiles()
 {
 	QVector<const FileInfo*> arr;
@@ -147,4 +175,9 @@ void Panel_Classic::LoadState( QSettings &set )
 {
 	SetPath(set.value("Path", QApplication::applicationDirPath()).toString());
 	SetCurrentIndex(set.value("CurrentIndex", 0).toInt());
+}
+
+QIcon Panel_Classic::GetIcon()
+{
+	return QIcon();
 }

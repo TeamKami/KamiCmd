@@ -4,9 +4,10 @@
 
 void FileListView::keyPressEvent( QKeyEvent *event )
 {
-	int overridden_key = 0;
+	int overridden_key = 0, overridden_modifiers = 0;
 	QModelIndex wasCurrent = currentIndex();
 
+	bool isControlEnter = (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) && (event->modifiers() & Qt::ControlModifier);
 	switch (event->key())
 	{ 
 	case Qt::Key_Shift:
@@ -35,39 +36,134 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 		break;
 
 	case Qt::Key_Insert:
-		model_->Select(sort_->mapToSource(currentIndex()));
-		{
-			if (currentIndex().row() + 1 < model_->rowCount())
-			{
-				const QModelIndex newSel = sort_->index(currentIndex().row() + 1, 0);
-				selectionModel()->setCurrentIndex(newSel, QItemSelectionModel::NoUpdate);
-				//scrollTo(newSel);
-			}
-			else
-				for (int i = 0; i < model_->columnCount(); i++)
-					update( sort_->index(currentIndex().row(), i) );
-		}
+		overridden_key = Qt::Key_Down;
+		overridden_modifiers = Qt::ShiftModifier;
 		break;
 
 	case Qt::Key_Enter:
 	case Qt::Key_Return:
-		emit EnterSelected();
-		break;
+	case Qt::Key_Escape:
+			if (!isControlEnter)
+				emit EnterSelected();
+			break;
 	}
 
-	if (overridden_key)
-		QTreeView::keyPressEvent(&QKeyEvent(event->type(), overridden_key,
-		event->modifiers(), event->text(), event->isAutoRepeat(), event->count()));
-	else
-		QTreeView::keyPressEvent(event);
+	if (isSearchMode && !isControlEnter)
+		switch (event->key())
+		{
+		case Qt::Key_Return:
+		case Qt::Key_Enter:
+		case Qt::Key_Escape:
+		case Qt::Key_Left:
+		case Qt::Key_Right:
+		case Qt::Key_Up:
+		case Qt::Key_Down:
+		case Qt::Key_PageUp:
+		case Qt::Key_PageDown:
+		case Qt::Key_Home:
+		case Qt::Key_End:
+			isSearchMode = false;
+			searchEdit->setText("");
+			searchEdit->setVisible(false);
+			emit QuickSearch(searchEdit->text());
+			setDirtyRegion(QRegion(0, 0, width(), height()));
+			break;
+		}
 
-	if (event->modifiers() & Qt::ShiftModifier)
+	bool modified = (event->modifiers() & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier));
+	if (isControlEnter && isSearchMode || !event->text().isEmpty() && event->text() != "\x0d" && !modified && !edit(currentIndex(), AnyKeyPressed, event))
+	{
+		if (!isSearchMode)
+		{
+			isSearchMode = true;
+			searchEdit->setVisible(true);
+		}
+		if (!isControlEnter)
+		{
+			searchEdit->keyPressEvent(event);
+			emit QuickSearch(searchEdit->text());
+		}
+
+		bool isFound = false;
+		if (event->modifiers() & Qt::ShiftModifier)
+		{ // Is quick search order reversed?
+			for (int i = currentIndex().row() - (isControlEnter ? 1 : 0); i >= 0; i--)
+				if (sort_->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
+				{
+					setCurrentIndex(sort_->index(i, 0));
+					isFound = true;
+					break;
+				}
+			if (!isFound)
+			{
+				for (int i = sort_->rowCount() - 1; i > currentIndex().row(); i--)
+					if (sort_->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
+					{
+						setCurrentIndex(sort_->index(i, 0));
+						isFound = true;
+						break;
+					}
+			}
+		}
+		else
+		{
+			for (int i = currentIndex().row() + (isControlEnter ? 1 : 0); i < sort_->rowCount(); i++)
+				if (sort_->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
+				{
+					setCurrentIndex(sort_->index(i, 0));
+					isFound = true;
+					break;
+				}
+			if (!isFound)
+			{
+				for (int i = 0; i < currentIndex().row(); i++)
+					if (sort_->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
+					{
+						setCurrentIndex(sort_->index(i, 0));
+						isFound = true;
+						break;
+					}
+			}
+		}
+
+		if (!isControlEnter)
+		{
+			static bool wasFound = true;
+			if (wasFound != isFound)
+			{
+				wasFound = isFound;
+
+				QPalette pal = searchEdit->palette();
+				pal.setColor(QPalette::Base, QColor(255, 200, 200));
+				if (isFound)
+					pal = palette();
+				searchEdit->setPalette(pal);
+			}
+		}
+
+		setDirtyRegion(QRegion(0, 0, width(), height()));
+		//keyboardSearch(event->text());
+		event->accept();
+	}
+	else
+	{
+		event->ignore();
+
+		if (overridden_key)
+			QTreeView::keyPressEvent(&QKeyEvent(event->type(), overridden_key,
+			event->modifiers() & overridden_modifiers, event->text(), event->isAutoRepeat(), event->count()));
+		else
+			QTreeView::keyPressEvent(event);
+	}
+
+	if (event->modifiers() & Qt::ShiftModifier || overridden_modifiers & Qt::ShiftModifier)
 	{
 		QModelIndex current = currentIndex();
 		switch (event->key())
 		{ 
 		case Qt::Key_Up:
 		case Qt::Key_Down:
+		case Qt::Key_Insert:
 			model_->Select(sort_->mapToSource(wasCurrent), currentSelectionAction);
 			if (wasCurrent.row() == model_->rowCount() - 1 || !wasCurrent.row())
 				for (int i = 0; i < model_->columnCount(); i++)
@@ -306,8 +402,11 @@ void FileListView::resizeEvent( QResizeEvent *event )
 }
 
 FileListView::FileListView()
-	:currentSelectionAction(FileListModel::SA_None)
+	:currentSelectionAction(FileListModel::SA_None), isSearchMode(false)
 {
+	searchEdit = new SearchLineEdit(this);
+	searchEdit->setVisible(isSearchMode);
+	searchEdit->setFocusPolicy(Qt::ClickFocus);
 #ifdef DARK
 	QPalette pal = palette();
 	pal.setColor(QPalette::Base, QColor(33, 38, 38));
@@ -333,4 +432,16 @@ SortModel * FileListView::Sort()
 void FileListView::SetSortModel( SortModel *sort )
 {
 	sort_ = sort;
+}
+
+void FileListView::keyboardSearch( const QString &search )
+{
+	searchEdit->insert(search);
+}
+
+void FileListView::changeEvent( QEvent *event )
+{
+	if (event->type() == QEvent::PaletteChange)
+		emit PaletteChanged();
+	return QTreeView::changeEvent(event);
 }

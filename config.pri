@@ -1,4 +1,4 @@
-CONFIG += qt thread wwwidgets
+CONFIG += qt thread #wwwidgets
 
 CONFIG(debug, debug|release)
 { 
@@ -7,7 +7,7 @@ CONFIG(debug, debug|release)
     } else {
         DESTDIR = $${Root}/debug
     }
-    LIBS += "$$[QT_INSTALL_BINS]/wwwidgets4d.lib"
+#   LIBS += "$$[QT_INSTALL_BINS]/wwwidgets4d.lib"
 }
 CONFIG(release, debug|release)
 { 
@@ -16,7 +16,7 @@ CONFIG(release, debug|release)
     } else {
         DESTDIR = $${Root}/release
     }
-    LIBS += "$$[QT_INSTALL_BINS]/wwwidgets4.lib"
+#   LIBS += "$$[QT_INSTALL_BINS]/wwwidgets4.lib"
 }
-INCLUDEPATH += $${Root}/3rdparty/wwWidgets/include \
+INCLUDEPATH += \ #$${Root}/3rdparty/wwWidgets/include \
                $${Root}/src

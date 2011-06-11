@@ -1,24 +1,21 @@
-#ifndef ModulesDialog_H
-#define ModulesDialog_H
+#ifndef MODULESDIALOG_H
+#define MODULESDIALOG_H
 
 #include <QDialog>
-#include <QTreeWidget>
-#include <QVBoxLayout>
+#include "ui_ModulesDialog.h"
 
 class ModulesDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	ModulesDialog(QWidget *parent);
+	ModulesDialog(QWidget *parent = 0);
 
 private:
-	QTreeWidget *tree;
-	QVBoxLayout *layout;
 	void populateTree();
 
+	Ui::ModulesDialog ui;
 	QIcon libraryIcon, moduleIcon;
-	
 };
 
-#endif // ModulesDialog_H
+#endif // MODULESDIALOG_H

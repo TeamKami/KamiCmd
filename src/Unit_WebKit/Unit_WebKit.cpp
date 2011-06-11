@@ -40,3 +40,8 @@ void Unit_WebKit::OpenFile()
 {
 	webView->load(path + text);
 }
+
+QIcon Unit_WebKit::GetIcon()
+{
+	return QIcon();
+}

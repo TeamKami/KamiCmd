@@ -4,6 +4,14 @@
 #include <QtGui>
 #include "SortModel.h"
 #include "FileListModel.h"
+#include <QLineEdit>
+
+class SearchLineEdit : public QLineEdit
+{
+public:
+	virtual void keyPressEvent(QKeyEvent *event) { QLineEdit::keyPressEvent(event); };
+	SearchLineEdit(QWidget *parent) : QLineEdit(parent) { };
+};
 
 class FileListView : public QTreeView
 {
@@ -19,26 +27,35 @@ public:
 	virtual void mouseReleaseEvent(QMouseEvent *event);
 	virtual void wheelEvent(QWheelEvent *event);
 	virtual void resizeEvent(QResizeEvent *event);
+	virtual void keyboardSearch(const QString &search);
+	virtual void keyPressEvent(QKeyEvent *event);
+	virtual void keyReleaseEvent(QKeyEvent *event);
+	virtual void mouseDoubleClickEvent(QMouseEvent *event);
+	virtual void changeEvent(QEvent *event);
 	
 	FileListModel *Model();
 	void SetModel(FileListModel *model);
 	SortModel *Sort();
 	void SetSortModel(SortModel *sort);
 
+	QWidget *QuickSearchBar() { return searchEdit; };
+
 private:
 	SortModel *sort_;
 	FileListModel *model_;
 	int currentSelectionAction;
 	QModelIndex mouseMovePrevIndex, mouseMoveActionPrevIndex;
+	
+	bool isSearchMode;
+	SearchLineEdit *searchEdit;
 
 signals:
 	void EnterSelected();
 	void FocusIn();
-
+	void PaletteChanged();
+	void QuickSearch(QString search);
+	
 public slots:
-	virtual void keyPressEvent(QKeyEvent *event);
-	virtual void keyReleaseEvent(QKeyEvent *event);
-	virtual void mouseDoubleClickEvent(QMouseEvent *event);
 	void keyboardSearchNullify();
 	void SelectAll(int selectAction, bool excludeCurrent = false);
 };
