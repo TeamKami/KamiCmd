@@ -306,17 +306,17 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 		}
 
 // 		// draw the focus rect
-		if (vopt->state & QStyle::State_HasFocus)
-		{
-			QStyleOptionFocusRect o;
-			o.QStyleOption::operator=(*vopt);
-			o.rect = style->subElementRect(QStyle::SE_ItemViewItemFocusRect, vopt, widget);
-			o.state |= QStyle::State_KeyboardFocusChange;
-			o.state |= QStyle::State_Item;
-			QPalette::ColorGroup cg = (vopt->state & QStyle::State_Enabled)	? QPalette::Normal : QPalette::Disabled;
-			o.backgroundColor = vopt->palette.color(cg, (vopt->state & QStyle::State_Selected) ? QPalette::Highlight : QPalette::Window);
-			style->proxy()->drawPrimitive(QStyle::PE_FrameFocusRect, &o, p, widget);
-		}
+// 		if (vopt->state & QStyle::State_HasFocus)
+// 		{
+// 			QStyleOptionFocusRect o;
+// 			o.QStyleOption::operator=(*vopt);
+// 			o.rect = style->subElementRect(QStyle::SE_ItemViewItemFocusRect, vopt, widget);
+// 			o.state |= QStyle::State_KeyboardFocusChange;
+// 			o.state |= QStyle::State_Item;
+// 			QPalette::ColorGroup cg = (vopt->state & QStyle::State_Enabled)	? QPalette::Normal : QPalette::Disabled;
+// 			o.backgroundColor = vopt->palette.color(cg, (vopt->state & QStyle::State_Selected) ? QPalette::Highlight : QPalette::Window);
+// 			style->proxy()->drawPrimitive(QStyle::PE_FrameFocusRect, &o, p, widget);
+// 		}
 
 		p->restore();
 	}

@@ -407,6 +407,11 @@ FileListView::FileListView()
 	searchEdit = new SearchLineEdit(this);
 	searchEdit->setVisible(isSearchMode);
 	searchEdit->setFocusPolicy(Qt::ClickFocus);
+
+// 	QPalette pal = palette();
+// 	pal.setColor(QPalette::AlternateBase, QColor(248, 248, 248));
+// 	setPalette(pal);
+
 #ifdef DARK
 	QPalette pal = palette();
 	pal.setColor(QPalette::Base, QColor(33, 38, 38));

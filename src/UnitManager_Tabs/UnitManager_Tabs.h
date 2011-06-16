@@ -12,10 +12,9 @@ class UnitManager_Tabs : public QMainWindow, public IUnitManager
 
 public:
 	UnitManager_Tabs(QWidget *parent) : QMainWindow(parent) {};
-	virtual int  AddUnit(IUnit *unit, bool isNextToActive);
+	virtual int  AddUnit(IUnit *unit, bool isNextToActive, bool doActivate = false);
 	virtual IUnit *GetActiveUnit();
 	virtual void LinkUnits(int indexA, int indexB);
-	virtual void CloseUnit(int index);
 	virtual void AddBar(Qt::ToolBarArea area, QToolBar *bar);
 	virtual void Start();
 	virtual void SaveState();
@@ -23,23 +22,20 @@ public:
 
 	virtual void closeEvent(QCloseEvent *event);
 	void AddNewPanels();
+	void InitActions();
 
 private:
 	TabWidget *tabs;
-	QVector<QAction *> F;
+	QList<QAction *> Actions;
 	QMenuBar *menuBar;
 
 public slots:
+	virtual void CloseUnit(int index);
+
 	void CurrentUnitChanged(int index);
 	void TabMousePressed(int index, QMouseEvent *event);
 	void TabMouseDoubleClicked(int index, QMouseEvent *event);
 	void UnitTextChanged();
-	void F1_Pressed();
-	void F2_Pressed();
-	void F3_Pressed();
-	void F4_Pressed();
-	void F5_Pressed();
-	void F11_Pressed();
 	void Close_Pressed();
 };
 

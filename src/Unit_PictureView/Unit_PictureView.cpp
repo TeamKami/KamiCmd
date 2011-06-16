@@ -4,12 +4,12 @@
 Unit_PictureView::Unit_PictureView(QWidget *parent)
 	: IUnit(parent)
 {
-	layout = new QHBoxLayout(this);
-	layout->setMargin(0);
-	layout->setSpacing(0);
-	viewer = new PictureView(this);
-	layout->addWidget(viewer);
-	setFocusProxy(viewer);
+// 	layout = new QHBoxLayout(this);
+// 	layout->setMargin(0);
+// 	layout->setSpacing(0);
+	setCentralWidget(viewer = new PictureView(this));
+// 	layout->addWidget(viewer);
+//	setFocusProxy(viewer);
 
 	connect(viewer, SIGNAL(ViewPrevImage()), SLOT(ViewPrevImage()));
 	connect(viewer, SIGNAL(ViewNextImage()), SLOT(ViewNextImage()));

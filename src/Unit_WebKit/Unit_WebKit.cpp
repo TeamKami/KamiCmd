@@ -5,10 +5,10 @@
 Unit_WebKit::Unit_WebKit(QWidget *parent)
 	: IUnit(parent)
 {
-	layout = new QVBoxLayout(this);
-	layout->setMargin(0);
-	webView = new QWebView(this);
-	layout->addWidget(webView);
+// 	layout = new QVBoxLayout(this);
+// 	layout->setMargin(0);
+	setCentralWidget(webView = new QWebView(this));
+//	layout->addWidget(webView);
 }
 
 QString Unit_WebKit::GetText()

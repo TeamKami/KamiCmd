@@ -3,10 +3,10 @@
 
 #include <QtGui>
 
-class IUnit : public QWidget
+class IUnit : public QMainWindow//QWidget
 {
 public:
-	IUnit(QWidget *parent) : QWidget(parent) {};
+	IUnit(QWidget *parent) : QMainWindow(parent) { setLayout(new QVBoxLayout(this)); };
 	virtual void Create(IUnit *createdFrom = NULL) = 0;
 	virtual void Link(IUnit *withUnit = NULL) = 0;
 	virtual void Close() {};
@@ -35,7 +35,7 @@ public:
 class IUnitManager
 {
 public:
-	virtual int  AddUnit(IUnit *unit, bool isNextToActive) = 0;
+	virtual int  AddUnit(IUnit *unit, bool isNextToActive, bool doActivate = false) = 0;
 	virtual IUnit *GetActiveUnit() = 0;
 	virtual void LinkUnits(int indexA, int indexB) = 0;
 	virtual void CloseUnit(int index) = 0;

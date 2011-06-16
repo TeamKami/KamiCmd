@@ -6,11 +6,11 @@
 Unit_Console::Unit_Console(QWidget *parent)
 	: IUnit(parent)
 {
-	layout = new QVBoxLayout(this);
-	layout->setMargin(0);
+// 	layout = new QVBoxLayout(this);
+// 	layout->setMargin(0);
 	console = new ConsoleWidget(this);
 	//layout->addWidget(editor);
-	layout->addWidget(console);
+	QMainWindow::setCentralWidget(console);
 
 	connect(console, SIGNAL(ExecuteCommand(QString)), this, SLOT(ExecuteCommand(QString)));
 }

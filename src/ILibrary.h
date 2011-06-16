@@ -2,6 +2,7 @@
 #define LIBRARIES_INTERFACE_H
 
 #include <QVector>
+#define QT_NO_QT_INCLUDE_WARN
 
 struct Module;
 

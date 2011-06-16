@@ -4,6 +4,8 @@
 Panel_Classic::Panel_Classic(QWidget *parent)
 	: IPanel(parent)
 {
+	QWidget *central = new QWidget(this);
+
 	view = new FileListView();
 	view->SetModel(new FileListModel());
 	view->SetSortModel(new SortModel());
@@ -17,11 +19,15 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 // 		isFirst = false;
 // 	}
 
+	QToolBar *toolbar = addToolBar("lol");
+	toolbar->addAction(new QAction(QIcon(":/Images/F5.png"), "omg some test", this));
+	
 	pathEdit = new QLineEdit(this);
 	pathEdit->setFocusPolicy(Qt::ClickFocus);
 
 	view->setItemsExpandable(false);
 	view->setRootIsDecorated(false);
+//	view->setAlternatingRowColors(true);
 //	view->setSelectionMode(QAbstractItemView::NoSelection);
 
 	view->Sort()->setSourceModel(view->Model());
@@ -33,11 +39,13 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 	view->sortByColumn(0, Qt::AscendingOrder);
 	setFocusProxy(view);
 
-	layout = new QVBoxLayout(this);
+	layout = new QVBoxLayout(central);
 	layout->addWidget(pathEdit);
 	layout->addWidget(view);
 	layout->addWidget(view->QuickSearchBar());
 	layout->setMargin(0);
+
+	setCentralWidget(central);
 
 	connect(view, SIGNAL(EnterSelected()), this, SLOT(EnterSelected()));
 	connect(pathEdit, SIGNAL(returnPressed()), this, SLOT(pathEditReturnPressed()));

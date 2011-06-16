@@ -24,7 +24,8 @@ LinkedUnit::LinkedUnit(QWidget *parent)
 {
 	left = right = NULL;
 	splitter = new Splitter(Qt::Horizontal, this);
-	layout = new QVBoxLayout(this);
+	setCentralWidget(new QWidget(this));
+	layout = new QVBoxLayout(centralWidget());
 	layout->setMargin(0);
 }
 
