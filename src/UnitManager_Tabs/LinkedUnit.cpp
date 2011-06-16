@@ -1,5 +1,6 @@
 #include "LinkedUnit.h"
 #include "library.h"
+#include "../IPanel.h"
 
 void LinkedUnit::Create( IUnit *active, IUnit *inactive, bool isActiveLeft )
 {
@@ -13,8 +14,8 @@ void LinkedUnit::Create( IUnit *active, IUnit *inactive, bool isActiveLeft )
 	layout->addWidget(splitter);
 	left->show();
 	right->show();
-	connect(left, SIGNAL(FocusIn()), this, SLOT(LinkedUnitFocusIn()));
-	connect(right, SIGNAL(FocusIn()), this, SLOT(LinkedUnitFocusIn()));
+	connect(left, SIGNAL(FocusIn()), SLOT(LinkedUnitFocusIn()));
+	connect(right, SIGNAL(FocusIn()), SLOT(LinkedUnitFocusIn()));
 	connect(left, SIGNAL(TextChanged()), this, SIGNAL(TextChanged()));
 	connect(right, SIGNAL(TextChanged()), this, SIGNAL(TextChanged()));
 }
@@ -114,7 +115,7 @@ QIcon LinkedUnit::GetIcon()
 QSplitterHandle* Splitter::createHandle()
 {
 	SplitterHandle *splitterHandle = new SplitterHandle(orientation(), this);
-	connect(splitterHandle, SIGNAL(MouseDoubleClicked()), this, SLOT(MouseDoubleClicked()));
+	connect(splitterHandle, SIGNAL(MouseDoubleClicked()), SLOT(MouseDoubleClicked()));
 	return splitterHandle;
 }
 

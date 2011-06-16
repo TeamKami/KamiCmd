@@ -16,6 +16,7 @@ public:
 
 private:
 	Ui::ActionsDialog ui;
+	QList<QAction *> PassedActions;
 
 public slots:
 	void on_actionEditShortcut_triggered();

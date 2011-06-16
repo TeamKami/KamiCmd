@@ -28,6 +28,8 @@ private:
 	QBrush selectionActive, selectionInactive, selectionMarked, selectionMarkedInactive;
 	IAssociations *Assc;
 
+	QString quickSearch;
+
 public:
 	bool isFocused;
 	int selectedNum;
@@ -60,6 +62,9 @@ public:
 
 signals:
 	void PathChanged();
+
+public slots:
+	void QuickSearchChanged(QString search);
 };
 
 #endif // PANEL_LISTMODEL_H

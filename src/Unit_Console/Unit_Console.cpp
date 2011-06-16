@@ -12,7 +12,7 @@ Unit_Console::Unit_Console(QWidget *parent)
 	//layout->addWidget(editor);
 	QMainWindow::setCentralWidget(console);
 
-	connect(console, SIGNAL(ExecuteCommand(QString)), this, SLOT(ExecuteCommand(QString)));
+	connect(console, SIGNAL(ExecuteCommand(QString)), SLOT(ExecuteCommand(QString)));
 }
 
 QString Unit_Console::GetText()
@@ -45,7 +45,7 @@ void Unit_Console::CreateConsole()
 	cmd = new QProcess(this);
 	cmd->setProcessChannelMode(QProcess::MergedChannels);
 
-	connect(cmd, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
+	connect(cmd, SIGNAL(readyReadStandardOutput()), SLOT(readyReadStandardOutput()));
 
 #ifdef Q_OS_WIN32
 	cmd->start("cmd.exe");

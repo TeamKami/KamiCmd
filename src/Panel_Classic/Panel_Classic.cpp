@@ -11,13 +11,17 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 	view->SetSortModel(new SortModel());
 
 	FilesDelegate *filesDelegate = new FilesDelegate(this);
-	view->setItemDelegateForColumn(0, filesDelegate);
-// 	static bool isFirst = true;
-// 	if (isFirst)
-// 	{
-// 		view->setItemDelegateForColumn(0, filesDelegate);
-// 		isFirst = false;
-// 	}
+	if (1)
+		view->setItemDelegateForColumn(0, filesDelegate);
+	else
+	{
+		static bool isFirst = true;
+		if (isFirst)
+		{
+			view->setItemDelegateForColumn(0, filesDelegate);
+			isFirst = false;
+		}
+	}
 
 	QToolBar *toolbar = addToolBar("lol");
 	toolbar->addAction(new QAction(QIcon(":/Images/F5.png"), "omg some test", this));
@@ -47,13 +51,14 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 
 	setCentralWidget(central);
 
-	connect(view, SIGNAL(EnterSelected()), this, SLOT(EnterSelected()));
-	connect(pathEdit, SIGNAL(returnPressed()), this, SLOT(pathEditReturnPressed()));
+	connect(view, SIGNAL(EnterSelected()), SLOT(EnterSelected()));
+	connect(pathEdit, SIGNAL(returnPressed()), SLOT(pathEditReturnPressed()));
 	connect(view->Model(), SIGNAL(modelReset()), view, SLOT(keyboardSearchNullify()));
 	connect(view->Model(), SIGNAL(PathChanged()), this, SIGNAL(TextChanged()));
 	connect(view, SIGNAL(FocusIn()), this, SIGNAL(FocusIn()));
 	connect(view, SIGNAL(PaletteChanged()), filesDelegate, SLOT(PaletteChanged()));
 	connect(view, SIGNAL(QuickSearch(QString)), filesDelegate, SLOT(QuickSearchChanged(QString)));
+	connect(view, SIGNAL(QuickSearch(QString)), view->Model(), SLOT(QuickSearchChanged(QString)));
 	//connect(list, SIGNAL(list->header()->mouseDoubleClickEvent()), list, SLOT(list->header()->))
 
 	view->Model()->SetPath(QApplication::applicationDirPath()); // Kinda crutch. Should fix someday

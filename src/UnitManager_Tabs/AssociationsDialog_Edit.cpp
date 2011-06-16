@@ -1,5 +1,7 @@
 #include "AssociationsDialog_Edit.h"
 #include "library.h"
+#include <QColorDialog>
+#include <QFileDialog>
 
 void AssociationsDialog_Edit::SyncButtonsColors()
 {
@@ -21,8 +23,8 @@ AssociationsDialog_Edit::AssociationsDialog_Edit( QWidget *parent /*= 0*/, Assoc
 : QDialog(parent)
 {
 	ui.setupUi(this);
-	connect(ui.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-	connect(ui.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	connect(ui.buttonBox, SIGNAL(accepted()), SLOT(accept()));
+	connect(ui.buttonBox, SIGNAL(rejected()), SLOT(reject()));
 	Assc = assc;
 	Actions = actions;
 

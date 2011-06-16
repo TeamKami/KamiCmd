@@ -15,6 +15,7 @@ ActionsDialog::~ActionsDialog()
 
 void ActionsDialog::show( QList<QAction *> actions )
 {
+	PassedActions = actions;
 	for (int i = 0; i < actions.size();)
 	{
 		QString currentRoot = actions.at(i)->data().toString();
@@ -26,8 +27,9 @@ void ActionsDialog::show( QList<QAction *> actions )
 			QTreeWidgetItem *item = new QTreeWidgetItem(rootItem);
 			item->setText(0, actions.at(i)->text());
 			item->setText(1, actions.at(i)->shortcut().toString(QKeySequence::NativeText));
+			item->setDisabled(!actions.at(i)->isEnabled());
 			item->setIcon(0, actions.at(i)->icon());
-			item->setData(0, Qt::UserRole, actions.at(i));
+			item->setData(0, Qt::UserRole, i);
 		}
 	}
 
@@ -38,10 +40,10 @@ void ActionsDialog::show( QList<QAction *> actions )
 
 void ActionsDialog::on_actionEditShortcut_triggered()
 {
-	QMessageBox::information(this, "", "hjhj");
+	QMessageBox::information(this, "", "edit?");
 }
 
 void ActionsDialog::on_actionExecute_triggered()
 {
-	ui.treeWidget->currentItem()->data(0, Qt::UserRole).t();
+	PassedActions.at(ui.treeWidget->currentItem()->data(0, Qt::UserRole).toInt())->trigger();
 }

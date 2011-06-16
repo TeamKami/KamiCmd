@@ -73,6 +73,7 @@ void TabBar::tabRemoved( int index )
 	for(int i = 0; i < tabsFocus.size(); i++)
 		if (tabsFocus[i] > tabsFocus[index])
 			tabsFocus[i]--;
+
 	tabsFocus.removeAt(index);
 }
 

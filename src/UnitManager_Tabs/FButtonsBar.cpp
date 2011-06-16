@@ -16,8 +16,7 @@ FButtonsBar::FButtonsBar(QWidget *parent)
 		g_Core->DebugWrite("UnitManager", "ActionManager module not found", ICoreFunctions::Error);
 
 	// Default init of F-keys
-	Actions.reserve(13);
-	Actions << new QAction(this);
+	Actions.reserve(12);
 	Actions << new QAction(QIcon(":/Images/F1.png"), tr("F1 Help"), this);
 	Actions << new QAction(QIcon(":/Images/F2.png"), tr("F2 Assc"), this);
 	Actions << new QAction(QIcon(":/Images/F3.png"), tr("F3 View"), this);
@@ -31,35 +30,35 @@ FButtonsBar::FButtonsBar(QWidget *parent)
 	Actions << new QAction(/*QIcon(":/Images/F11.png"), */tr("F11 Modules"), this);
 	Actions << new QAction(/*QIcon(":/Images/F12.png"), */tr("F12 Tabs"), this);
 	
-	for (int i = 1; i < Actions.size(); i++)
+	for (int i = 0; i < Actions.size(); i++)
 		Actions[i]->setEnabled(false);
 
 
-	connect(Actions[1], SIGNAL(triggered()), this, SLOT(F1_Pressed()));
-	Actions[1]->setEnabled(true);
-	connect(Actions[2], SIGNAL(triggered()), this, SLOT(F2_Pressed()));
-	Actions[2]->setEnabled(true);
-	connect(Actions[3], SIGNAL(triggered()), this, SLOT(F3_Pressed()));
-	Actions[3]->setEnabled(true);
-	connect(Actions[4], SIGNAL(triggered()), this, SLOT(F4_Pressed()));
-	//	F[4]->setEnabled(true);
-	connect(Actions[5], SIGNAL(triggered()), this, SLOT(F5_Pressed()));
-	Actions[5]->setEnabled(true);
+	connect(Actions[1 -1], SIGNAL(triggered()), SLOT(F1_Pressed()));
+	Actions[1 -1]->setEnabled(true);
+	connect(Actions[2 -1], SIGNAL(triggered()), SLOT(F2_Pressed()));
+	Actions[2 -1]->setEnabled(true);
+	connect(Actions[3 -1], SIGNAL(triggered()), SLOT(F3_Pressed()));
+	Actions[3 -1]->setEnabled(true);
+	connect(Actions[4 -1], SIGNAL(triggered()), SLOT(F4_Pressed()));
+	//	F[4 -1]->setEnabled(true);
+	connect(Actions[5 -1], SIGNAL(triggered()), SLOT(F5_Pressed()));
+	Actions[5 -1]->setEnabled(true);
 
-	connect(Actions[9], SIGNAL(triggered()), this, SLOT(F9_Pressed()));
-	Actions[9]->setEnabled(true);
-	connect(Actions[10], SIGNAL(triggered()), this, SLOT(close()));
-	Actions[10]->setEnabled(true);
-	connect(Actions[11], SIGNAL(triggered()), this, SLOT(F11_Pressed()));
-	Actions[11]->setEnabled(true);
+	connect(Actions[9 -1], SIGNAL(triggered()), SLOT(F9_Pressed()));
+	Actions[9 -1]->setEnabled(true);
+	connect(Actions[10 -1], SIGNAL(triggered()), SLOT(close()));
+	Actions[10 -1]->setEnabled(true);
+	connect(Actions[11 -1], SIGNAL(triggered()), SLOT(F11_Pressed()));
+	Actions[11 -1]->setEnabled(true);
 
 	
 	
 	setWindowTitle(tr("Command Buttons Bar"));
 	setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-	for (int i = 1; i < Actions.size(); i++)
+	for (int i = 0; i < Actions.size(); i++)
 	{
-		Actions[i]->setShortcut(Qt::Key_F1 + i - 1);
+		Actions[i]->setShortcut(Qt::Key_F1 + i);
 		Actions[i]->setData("FButtonsBar");
 		addAction(Actions[i]);
 		//if (i == 2 || i == 4 || i == 8)
@@ -103,7 +102,7 @@ void FButtonsBar::F3_Pressed()
 			viewer->Create(link->GetActiveUnit());
 		else
 			viewer->Create(UnitManager->GetActiveUnit());
-		UnitManager->AddUnit(viewer, true);
+		UnitManager->AddUnit(viewer, true, true);
 	}
 }
 
@@ -116,7 +115,7 @@ void FButtonsBar::F4_Pressed()
 			editor->Create(link->GetActiveUnit());
 		else
 			editor->Create(UnitManager->GetActiveUnit());
-		UnitManager->AddUnit(editor, true);
+		UnitManager->AddUnit(editor, true, true);
 	}
 }
 

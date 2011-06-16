@@ -40,10 +40,10 @@ AssociationsDialog::AssociationsDialog(QWidget *parent)
 	ui.treeWidget->setPalette(pal);
 #endif
 
-	connect(addAct, SIGNAL(triggered()), this, SLOT(AddAssc()));
-	connect(editAct, SIGNAL(triggered()), this, SLOT(EditAssc()));
-	connect(deleteAct, SIGNAL(triggered()), this, SLOT(DeleteAssc()));
-	connect(ui.treeWidget, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(EditAssc()));
+	connect(addAct, SIGNAL(triggered()), SLOT(AddAssc()));
+	connect(editAct, SIGNAL(triggered()), SLOT(EditAssc()));
+	connect(deleteAct, SIGNAL(triggered()), SLOT(DeleteAssc()));
+	connect(ui.treeWidget, SIGNAL(doubleClicked(QModelIndex)), SLOT(EditAssc()));
 }
 
 void AssociationsDialog::PopulateList( QVector<Association> *ascs, QVector<QAction *> *actions )

@@ -72,26 +72,38 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 		break;
 
 	case Qt::ForegroundRole:
+		{
+			QVariant res;
 #ifdef DARK
-		if (index.row() == selection.row() && isFocused)
-			return QColor(255, 255, 255);
+			if (index.row() == selection.row() && isFocused)
+				res = QColor(255, 255, 255);
 #endif
 
-		if (current.attributes & FileInfo::Directory)
+			if (current.attributes & FileInfo::Directory)
 #ifdef DARK
-			return QColor(255, 255, 255);
+				res = QColor(255, 255, 255);
 #else
-			return QColor(2, 88, 112);
+				res = QColor(2, 88, 112);
 #endif
-		else
-		{
-			QColor color = Assc->GetTextColor(current.path + current.name);
-			return color.isValid() ? color :
+			else
+			{
+				QColor color = Assc->GetTextColor(current.path + current.name);
+				res = color.isValid() ? color :
 #ifdef DARK
-				QColor(175, 247, 255);
+					QColor(175, 247, 255);
 #else
-				QVariant();
+					QVariant();
 #endif
+			}
+			
+			if (!quickSearch.isEmpty() && index.data(Qt::DisplayRole).toString().indexOf(quickSearch, 0, Qt::CaseInsensitive) == -1)
+			{
+				QColor resAdj = res.value<QColor>();
+				resAdj.setHsl(resAdj.hslHue(), resAdj.hslSaturation() / 3, 180);
+				//resAdj.setHsv(resAdj.hue(), resAdj.saturation(), 200);
+				res = resAdj;
+			}
+			return res;
 		}
 		break;
 
@@ -223,6 +235,7 @@ QModelIndex FileListModel::SetPath( QString path )
 				break;
 		}
 
+	quickSearch = "";
 	this->path = GetFs()->GetPath();
 	this->reset();
 	selectedNum = 0;
@@ -293,7 +306,7 @@ Qt::ItemFlags FileListModel::flags( const QModelIndex &index ) const
 		return 0;
 	//	if (index.column()==0)
 	//		return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+	return (quickSearch.isEmpty() || index.data(Qt::DisplayRole).toString().indexOf(quickSearch, 0, Qt::CaseInsensitive) != -1 ? Qt::ItemIsEnabled : 0) | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
 }
 
 int FileListModel::rowCount( const QModelIndex& /*= QModelIndex()*/ ) const
@@ -431,4 +444,9 @@ FileListModel::FileListModel()
 IFileSystem* FileListModel::GetFs()
 {
 	return fs.top();
+}
+
+void FileListModel::QuickSearchChanged( QString search )
+{
+	quickSearch = search;
 }

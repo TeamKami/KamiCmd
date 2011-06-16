@@ -10,7 +10,7 @@ int UnitManager_Tabs::AddUnit( IUnit *unit, bool isNextToActive, bool doActivate
 		index = tabs->insertTab(tabs->currentIndex() + 1, unit, unit->GetText());
 	else
 		index = tabs->addTab(unit, unit->GetText());
-	connect(unit, SIGNAL(TextChanged()), this, SLOT(UnitTextChanged()));
+	connect(unit, SIGNAL(TextChanged()), SLOT(UnitTextChanged()));
 	if (doActivate)
 		tabs->setCurrentIndex(index);
 	return index;
@@ -55,7 +55,7 @@ void UnitManager_Tabs::LinkUnits( int indexA, int indexB )
 				link->Create(active, passive, active == left);
 				tabs->setCurrentIndex(tabs->insertTab(indexA, link, link->GetText()));
 				tabs->insertTab(indexB, inactive, inactive->GetText());
-				connect(link, SIGNAL(TextChanged()), this, SLOT(UnitTextChanged()));
+				connect(link, SIGNAL(TextChanged()), SLOT(UnitTextChanged()));
 				active->setFocus();
 				delete activeLinked;
 			}
@@ -71,7 +71,7 @@ void UnitManager_Tabs::LinkUnits( int indexA, int indexB )
 		{
 			link->Create(active, passive, indexA < indexB);
 			tabs->setCurrentIndex(tabs->insertTab(indexA - (indexB < indexA), link, link->GetText()));
-			connect(link, SIGNAL(TextChanged()), this, SLOT(UnitTextChanged()));
+			connect(link, SIGNAL(TextChanged()), SLOT(UnitTextChanged()));
 			active->setFocus();
 		}
 		else
@@ -143,10 +143,10 @@ void UnitManager_Tabs::Start()
 	tabs->setFocusPolicy(Qt::NoFocus);
 	tabs->setDocumentMode(true);
 	tabs->setMovable(true);
-	connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(CurrentUnitChanged(int)));
-	connect(tabs->tabBar_, SIGNAL(TabMousePressed(int, QMouseEvent *)), this, SLOT(TabMousePressed(int, QMouseEvent *)));
-	connect(tabs->tabBar_, SIGNAL(TabMouseDoubleClicked(int, QMouseEvent *)), this, SLOT(TabMouseDoubleClicked(int, QMouseEvent *)));
-	connect(tabs->tabBar_, SIGNAL(tabCloseRequested(int)), this, SLOT(CloseUnit(int)));
+	connect(tabs, SIGNAL(currentChanged(int)), SLOT(CurrentUnitChanged(int)));
+	connect(tabs->tabBar_, SIGNAL(TabMousePressed(int, QMouseEvent *)), SLOT(TabMousePressed(int, QMouseEvent *)));
+	connect(tabs->tabBar_, SIGNAL(TabMouseDoubleClicked(int, QMouseEvent *)), SLOT(TabMouseDoubleClicked(int, QMouseEvent *)));
+	connect(tabs->tabBar_, SIGNAL(tabCloseRequested(int)), SLOT(CloseUnit(int)));
 	//tabs->setTabsClosable(true);
 
 	// Initializing actions
@@ -315,7 +315,7 @@ void UnitManager_Tabs::InitActions()
 	Actions.last()->setShortcut(Qt::Key_Escape);
 	Actions.last()->setShortcutContext(Qt::WindowShortcut);
 	Actions.last()->setData("UnitManager_Tabs");
-	connect(Actions.last(), SIGNAL(triggered()), this, SLOT(Close_Pressed()));
+	connect(Actions.last(), SIGNAL(triggered()), SLOT(Close_Pressed()));
 
 	// Empty main toolbar
 	// 	QToolBar *toolBar = new QToolBar(this);
