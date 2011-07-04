@@ -324,7 +324,9 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 
 void FilesDelegate::PaletteChanged()
 {
+#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
 	use_xp = QWindowsXPStylePrivate_resolveSymbols() && pIsThemeActive() && (pIsAppThemed() || !QApplication::instance());
+#endif
 }
 
 FilesDelegate::FilesDelegate( QObject *parent /*= 0*/ )

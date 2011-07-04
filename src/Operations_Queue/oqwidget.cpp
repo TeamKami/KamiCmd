@@ -45,7 +45,7 @@ OQWidget::OQWidget(QWidget *parent)
 		default:
 			state = tr("Unknown state");
 		}
-		QString & t = fileOperation->GetType();
+		QString t = fileOperation->GetType();
 		items << new QTreeWidgetItem((QTreeWidget*)0, QStringList() << t
 			<< QString::number(fileOperation->GetProgress()) + "%" << state);
 	}
