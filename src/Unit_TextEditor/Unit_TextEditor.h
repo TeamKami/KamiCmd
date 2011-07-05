@@ -6,6 +6,9 @@
 #include "../IPanel.h"
 #include <QTextEdit>
 #include <QScrollBar>
+#include <map>
+
+class QsciLexer;
 
 class QsciScintilla;
 
