@@ -8,4 +8,4 @@ include ($${Root}/config.pri)
 # Input
 HEADERS += *.h
 SOURCES += *.cpp
-FORMS += *.ui
+#FORMS += *.ui
