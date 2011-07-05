@@ -40,8 +40,10 @@ FButtonsBar::FButtonsBar(QWidget *parent)
 	Actions[2 -1]->setEnabled(true);
 	connect(Actions[3 -1], SIGNAL(triggered()), SLOT(F3_Pressed()));
 	Actions[3 -1]->setEnabled(true);
+	
 	connect(Actions[4 -1], SIGNAL(triggered()), SLOT(F4_Pressed()));
-	//	F[4 -1]->setEnabled(true);
+	Actions[4 -1]->setEnabled(true);
+
 	connect(Actions[5 -1], SIGNAL(triggered()), SLOT(F5_Pressed()));
 	Actions[5 -1]->setEnabled(true);
 

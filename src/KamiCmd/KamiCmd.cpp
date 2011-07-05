@@ -40,6 +40,13 @@ bool CoreFunctions::LoadModules()
 			num++;
 			//DebugWrite(modules.last()->name, "");
         }
+		else
+		{
+			QMessageBox::warning(0, tr("Application"), tr("Failed to load %1\n%2")
+					.arg(fileName)
+					.arg(loader.errorString())
+					);
+		}
 	}
 	if (!num)
 		DebugWrite("Core", QString("Modules not found\nSearched in: \"%1\"").arg(modulesDir.absolutePath()), Error);

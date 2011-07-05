@@ -8,6 +8,7 @@ SUBDIRS = KamiCmd \
           Unit_PictureView \
           Unit_WebKit \
           UnitManager_Tabs \
+	  Unit_TextEditor
 
 win32 {
           SUBDIRS += FileCopy/FileCopy_Windows \
