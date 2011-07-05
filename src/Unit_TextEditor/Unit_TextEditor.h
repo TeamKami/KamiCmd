@@ -31,16 +31,19 @@ public:
 	virtual void LoadState(QSettings &set);
 
 private:
+	void loadModules();
+
 	QString text;
 	QString path;
-
+	bool edited;
 	QsciScintilla * editor;
 	IPanel *hostPanel;
 
 signals:
 	void TextChanged();
 
-public slots:
+private slots:
+	void onEdit();
 };
 
 #endif // UNIT_PICTUREVIEW_H
