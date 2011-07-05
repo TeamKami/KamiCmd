@@ -10,4 +10,14 @@ include ($${Root}/config.pri)
 HEADERS += *.h
 SOURCES += *.cpp
 
+CONFIG(debug, debug|release)
+{
+LIBS += -L../../debug
+}
+CONFIG(release, debug|release)
+{
+LIBS += -L../../release
+}
+
 LIBS += -lqscintilla2
+INCLUDEPATH += ../../3rdparty/QScintilla/QScintilla2

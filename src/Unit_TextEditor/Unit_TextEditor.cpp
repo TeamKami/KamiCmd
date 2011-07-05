@@ -194,6 +194,9 @@ void Unit_TextEditor::Create( IUnit *createdFrom )
 		if (lex != "")
 		{
 			editor->setLexer(getLexer(lex));
+			editor->setFolding(QsciScintilla::PlainFoldStyle);
+			editor->setAutoCompletionThreshold(2);
+			editor->setAutoCompletionSource(QsciScintilla::AcsAll);
 		}
 		
 		QApplication::restoreOverrideCursor();
