@@ -33,6 +33,15 @@
 
 TEMPLATE = lib
 TARGET = qscintilla2
+Root = ../../..
+CONFIG(debug, debug|release)
+{ 
+    DESTDIR = $${Root}/debug
+}
+CONFIG(release, debug|release)
+{ 
+    DESTDIR = $${Root}/release
+}
 CONFIG += qt warn_off release dll thread
 INCLUDEPATH = . ../include ../lexlib ../src
 DEFINES = QSCINTILLA_MAKE_DLL QT SCI_LEXER
