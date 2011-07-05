@@ -1,2 +1,4 @@
+INCLUDEPATH += 3rdparty/QScintilla/QScintilla
 TEMPLATE = subdirs
-SUBDIRS = src
+SUBDIRS = src\
+	3rdparty

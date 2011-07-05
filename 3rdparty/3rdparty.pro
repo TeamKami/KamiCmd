@@ -1,2 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = wwWidgets
+SUBDIRS = QScintilla
+#wwWidgets
