@@ -185,7 +185,7 @@ void Unit_TextEditor::selectLexer()
 
 void Unit_TextEditor::settings()
 {
-	sd->show();
+	sd->show(editor);
 }
 
 void Unit_TextEditor::setLexer(QsciLexer * l)

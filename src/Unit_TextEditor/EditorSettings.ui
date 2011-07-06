@@ -27,41 +27,34 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QCheckBox" name="autocompletionEnabled">
-        <property name="text">
-         <string>Enabled</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
        <widget class="QCheckBox" name="autocompletionCaseSensitive">
         <property name="text">
          <string>CaseSensitive</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="1" column="0">
        <widget class="QCheckBox" name="autocompletionReplaceWord">
         <property name="text">
          <string>Replace word</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="2" column="0">
        <widget class="QCheckBox" name="autocompletionShowSingle">
         <property name="text">
          <string>Show single</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="3" column="0">
        <widget class="QCheckBox" name="autocompletionFillups">
         <property name="text">
          <string>Fillups</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
+      <item row="4" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
@@ -78,7 +71,7 @@
         </item>
        </layout>
       </item>
-      <item row="6" column="0">
+      <item row="5" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QLabel" name="label_5">
@@ -113,7 +106,7 @@
         </item>
        </layout>
       </item>
-      <item row="7" column="0">
+      <item row="6" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QLabel" name="label_6">
@@ -159,7 +152,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QCheckBox" name="qutoIndent">
+       <widget class="QCheckBox" name="autoIndent">
         <property name="text">
          <string>Auto indent</string>
         </property>
@@ -194,30 +187,26 @@
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Indentation width</string>
-          </property>
-         </widget>
-        </item>
-        <item>
+       <layout class="QFormLayout" name="formLayout_5">
+        <item row="2" column="1">
          <widget class="QSpinBox" name="indentationWidth"/>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="tabWIdth"/>
+        </item>
+        <item row="1" column="0">
          <widget class="QLabel" name="label_8">
           <property name="text">
            <string>Tab width</string>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QSpinBox" name="tabWIdth"/>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Indentation width</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>

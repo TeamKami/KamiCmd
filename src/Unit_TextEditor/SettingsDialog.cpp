@@ -16,7 +16,7 @@ SettingsDialog::~SettingsDialog()
 
 }
 
-void SettingsDialog::show()
+void SettingsDialog::show(QsciScintilla * sci)
 {
 	connect(ui.buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onDialogButton(QAbstractButton*)));
 	connect(ui.navigation, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(onPageSelected(QTreeWidgetItem*, int)));
@@ -33,7 +33,7 @@ void SettingsDialog::show()
 	QTreeWidgetItem * editor = new QTreeWidgetItem(appearance);
 	appearance->addChild(editor);
 	editor->setText(0, "Editor");
-	EditorSettings * es = new EditorSettings(this);
+	EditorSettings * es = new EditorSettings(this, sci);
 	editor->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(dynamic_cast<QWidget*>(es))));	
 	connect(this, SIGNAL(save()), es, SLOT(save()));
 	es->hide();
