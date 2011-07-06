@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <Qsci/qsciscintilla.h>
+#include <Qsci/qscilexer.h>
 
 #include "ILexerPlugin.h"
 std::map<QString, QsciLexer*> & lexers()
@@ -144,6 +145,13 @@ void Unit_TextEditor::SaveState(QSettings & set)
 	set.setValue("wrapMode", QVariant::fromValue(static_cast<int>(editor->wrapMode())));
 	set.setValue("wrapIndentation", QVariant::fromValue(static_cast<int>(editor->wrapIndentMode())));
 
+	for (std::map<QString, QsciLexer*>::iterator it = lexers().begin(); it != lexers().end(); ++it)
+	{
+		set.beginGroup("Lexer_" + it->first);
+		it->second->writeSettings(set);
+		set.endGroup();
+	}
+
 	set.endGroup();
 }
 
@@ -175,6 +183,14 @@ void Unit_TextEditor::LoadState(QSettings & set)
 
 	editor->setWrapMode(static_cast<QsciScintilla::WrapMode>(set.value("wrapMode").value<int>()));
 	editor->setWrapIndentMode(static_cast<QsciScintilla::WrapIndentMode>(set.value("wrapIndentation").value<int>()));
+
+	for (std::map<QString, QsciLexer*>::iterator it = lexers().begin(); it != lexers().end(); ++it)
+	{
+		set.beginGroup("Lexer_" + it->first);
+		it->second->readSettings(set);
+		set.endGroup();
+	}
+
 
 	set.endGroup();
 }
