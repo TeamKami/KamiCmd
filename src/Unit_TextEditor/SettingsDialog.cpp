@@ -26,6 +26,7 @@ void SettingsDialog::show(QsciScintilla * sci)
 
 		QTreeWidgetItem * appearance = new QTreeWidgetItem();
 		appearance->setText(0, "Appearance");
+		appearance->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(0)));	
 		QTreeWidgetItem * lexer = new QTreeWidgetItem(appearance);
 		appearance->addChild(lexer);
 		lexer->setText(0, "Coloring");
@@ -61,10 +62,12 @@ void SettingsDialog::onDialogButton(QAbstractButton * button)
 void SettingsDialog::onPageSelected(QTreeWidgetItem * item, int column)
 {
 	QWidget * page = static_cast<QWidget*>(item->data(0, Qt::UserRole).value<void*>());
-	
-	ui.settings->takeWidget();
-	ui.settings->setWidget(page);
-	page->show();
-	ui.settings->show();
+	if (page)
+	{
+		ui.settings->takeWidget();
+		ui.settings->setWidget(page);
+		page->show();
+		ui.settings->show();
+	}
 }
 
