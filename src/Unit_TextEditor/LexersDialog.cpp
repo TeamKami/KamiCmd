@@ -14,15 +14,28 @@ LexersDialog::~LexersDialog()
 
 }
 
-void LexersDialog::show(std::map<QString, QsciLexer *> const & lexers)
+void LexersDialog::show(std::map<QString, QsciLexer *> const & lexers, QsciLexer * lexer)
 {
+	int active = 0, id = 1;
+
+	ui.lexers->addItem("(None)", QVariant::fromValue(static_cast<void*>(0)));
+	
 	for (std::map<QString, QsciLexer *>::const_iterator it = lexers.begin(); it != lexers.end(); ++it)
 	{
 		//ui.lexers->addItem(it->first, it->second);
+		if (it->second == lexer)
+		{
+			active = id;
+		}
+
 		ui.lexers->addItem(QString(it->second->language()), 
 			QVariant::fromValue(static_cast<void*>(it->second)));
+
+		id++;
 	}
 	
+	ui.lexers->setCurrentIndex(active);
+
 	QMainWindow::show();
 }
 

@@ -173,7 +173,7 @@ void Unit_TextEditor::onEdit()
 
 void Unit_TextEditor::selectLexer()
 {
-	ld->show(lexers());
+	ld->show(lexers(), editor->lexer());
 }
 
 void Unit_TextEditor::setLexer(QsciLexer * l)

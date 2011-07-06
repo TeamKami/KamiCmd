@@ -15,7 +15,7 @@ public:
 	LexersDialog(QWidget *parent = 0);
 	~LexersDialog();
 
-	void show(std::map<QString, QsciLexer *> const & lexers);
+	void show(std::map<QString, QsciLexer *> const & lexers, QsciLexer * lexer);
 
 private:
 	Ui::LexersDialog ui;
