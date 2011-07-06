@@ -28,14 +28,14 @@ void SettingsDialog::show(QsciScintilla * sci)
 	lexer->setText(0, "Coloring");
 	LexerSettings * ls = new LexerSettings(this);
 	lexer->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(dynamic_cast<QWidget*>(ls))));	
-	connect(this, SIGNAL(save()), ls, SLOT(save()));
+	connect(this, SIGNAL(saveSettings()), ls, SLOT(save()));
 	ls->hide();
 	QTreeWidgetItem * editor = new QTreeWidgetItem(appearance);
 	appearance->addChild(editor);
 	editor->setText(0, "Editor");
 	EditorSettings * es = new EditorSettings(this, sci);
 	editor->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(dynamic_cast<QWidget*>(es))));	
-	connect(this, SIGNAL(save()), es, SLOT(save()));
+	connect(this, SIGNAL(saveSettings()), es, SLOT(save()));
 	es->hide();
 
 	ui.navigation->addTopLevelItem(appearance);
