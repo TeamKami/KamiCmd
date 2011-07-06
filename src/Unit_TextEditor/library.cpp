@@ -25,7 +25,7 @@ QObject* Unit_TextEditor_Library::CreateModuleInstance( int id, QObject *parent 
 	{
 	case MUnit_TextEditor:
 		Unit_TextEditor * e = new Unit_TextEditor(qobject_cast<QWidget *>(parent));
-		connect(this, SIGNAL(settingsChanged()), e, SLOT(LoadSettings()));
+		connect(this, SIGNAL(settingsChanged(QSettings &)), e, SLOT(LoadSettings(QSettings &)));
 		connect(e, SIGNAL(settingsChanged()), this, SLOT(updateSettings()));
 		return e;
 	}
@@ -34,7 +34,8 @@ QObject* Unit_TextEditor_Library::CreateModuleInstance( int id, QObject *parent 
 
 void Unit_TextEditor_Library::updateSettings()
 {
-	emit settingsChanged();
+	QSettings set;
+	emit settingsChanged(set);
 }
 
 QT_BEGIN_NAMESPACE

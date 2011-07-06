@@ -167,6 +167,11 @@ void Unit_TextEditor::LoadState(QSettings & set)
 void Unit_TextEditor::LoadSettings()
 {
 	QSettings set;
+	LoadSettings(set);
+}
+
+void Unit_TextEditor::LoadSettings(QSettings & set)
+{
 	set.setIniCodec("UTF-8");
 	set.beginGroup("TextEditor");
 	

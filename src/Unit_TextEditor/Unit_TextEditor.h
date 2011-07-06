@@ -58,6 +58,7 @@ private slots:
 
 public slots:
 	void LoadSettings();
+	void LoadSettings(QSettings & set);
 	void SaveSettings();
 	
 };

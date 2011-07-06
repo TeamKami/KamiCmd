@@ -20,7 +20,7 @@ private slots:
 	void updateSettings();
 
 signals:
-	void settingsChanged();
+	void settingsChanged(QSettings &);
 };
 
 #endif // UNIT_PICTUREVIEW_LIBRARY_H
