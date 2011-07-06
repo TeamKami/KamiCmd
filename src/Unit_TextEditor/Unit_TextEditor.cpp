@@ -117,6 +117,35 @@ QString Unit_TextEditor::GetText()
 
 void Unit_TextEditor::SaveState( QSettings &/*set*/ )
 {
+	QSettings set;
+	set.setIniCodec("UTF-8");
+	set.beginGroup("TextEditor");
+	
+	set.setValue("autoIndent", QVariant::fromValue(editor->autoIndent()));
+	set.setValue("backspaceUnindents", QVariant::fromValue(editor->backspaceUnindents()));
+	set.setValue("indentationGuides", QVariant::fromValue(editor->indentationGuides()));
+	set.setValue("useTabs", QVariant::fromValue(editor->indentationsUseTabs()));
+	set.setValue("tabIndents", QVariant::fromValue(editor->tabIndents()));
+	set.setValue("indentationWidth", QVariant::fromValue(editor->indentationWidth()));
+	set.setValue("tabWidth", QVariant::fromValue(editor->tabWidth()));
+
+	set.setValue("foldingStyle", QVariant::fromValue(static_cast<int>(editor->folding())));
+
+	set.setValue("edgeColumn", QVariant::fromValue(editor->edgeColumn()));
+	set.setValue("edgeType", QVariant::fromValue(static_cast<int>(editor->edgeMode())));
+
+	set.setValue("autocompletionCaseSensitive", QVariant::fromValue(editor->autoCompletionCaseSensitivity()));
+	set.setValue("autocompletionReplaceWord", QVariant::fromValue(editor->autoCompletionReplaceWord()));
+	set.setValue("autocompletionShowSingle", QVariant::fromValue(editor->autoCompletionShowSingle()));
+	set.setValue("autocompletionFillups", QVariant::fromValue(editor->autoCompletionFillupsEnabled()));
+	set.setValue("autocompletionTreshold", QVariant::fromValue(editor->autoCompletionThreshold()));
+	set.setValue("autocompletionSource", QVariant::fromValue(static_cast<int>(editor->autoCompletionSource())));
+	set.setValue("autocompletionUseSingle", QVariant::fromValue(static_cast<int>(editor->autoCompletionUseSingle())));
+
+	set.setValue("wrapMode", QVariant::fromValue(static_cast<int>(editor->wrapMode())));
+	set.setValue("wrapIndentation", QVariant::fromValue(static_cast<int>(editor->wrapIndentMode())));
+
+	set.endGroup();
 }
 
 void Unit_TextEditor::LoadState( QSettings &/*set*/ )
