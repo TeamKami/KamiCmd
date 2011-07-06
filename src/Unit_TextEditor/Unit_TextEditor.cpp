@@ -1,6 +1,6 @@
 #include "Unit_TextEditor.h"
 #include "library.h"
-
+#include "../UnitManager_Tabs/ActionManager.h"
 #include <QRegExp>
 #include <vector>
 
@@ -80,6 +80,24 @@ Unit_TextEditor::Unit_TextEditor(QWidget *parent)
 	setCentralWidget(editor = new QsciScintilla(this));	
 	connect(editor, SIGNAL(textChanged()), this, SLOT(onEdit()));
 	loadModules();
+
+	ld = new LexersDialog(this);
+	connect(ld, SIGNAL(setLexer(QsciLexer*)), this, SLOT(setLexer(QsciLexer*)));
+
+	ActionManager *am;
+	if (!(am = dynamic_cast<ActionManager *>(g_Core->QueryModule("ActionManager", 1))))
+	{
+		g_Core->DebugWrite("TextEditor", "ActionManager module not found", ICoreFunctions::Error);
+		QMessageBox::warning(this, "TextEditor", "ActionManager module not found");
+	}
+
+	Actions << new QAction(QIcon(), tr("Select Lexer"), this);
+	Actions.last()->setShortcut(Qt::CTRL + Qt::Key_L);
+	Actions.last()->setShortcutContext(Qt::WindowShortcut);
+	Actions.last()->setData("TextEditor");
+	connect(Actions.last(), SIGNAL(triggered()), SLOT(selectLexer()));
+	am->RegisterActions(Actions);
+	addActions(Actions);
 }
 
 QString Unit_TextEditor::GetText()
@@ -151,4 +169,14 @@ void Unit_TextEditor::onEdit()
 	edited = true;
 	text = text + "*";
 	emit TextChanged();
+}
+
+void Unit_TextEditor::selectLexer()
+{
+	ld->show(lexers());
+}
+
+void Unit_TextEditor::setLexer(QsciLexer * l)
+{
+	editor->setLexer(l);
 }

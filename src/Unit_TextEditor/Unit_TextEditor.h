@@ -8,9 +8,12 @@
 #include <QScrollBar>
 #include <map>
 
+#include "LexersDialog.h"
+
 class QsciLexer;
 
 class QsciScintilla;
+class Action;
 
 /**
  * \author Nikolay Filchenko <finomen812@gmail.com>
@@ -38,12 +41,16 @@ private:
 	bool edited;
 	QsciScintilla * editor;
 	IPanel *hostPanel;
+	LexersDialog * ld;
+	QList<QAction *> Actions;
 
 signals:
 	void TextChanged();
 
 private slots:
 	void onEdit();
+	void selectLexer();
+	void setLexer(QsciLexer * l);
 };
 
 #endif // UNIT_PICTUREVIEW_H
