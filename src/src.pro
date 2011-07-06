@@ -9,7 +9,7 @@ SUBDIRS = KamiCmd \
           Unit_WebKit \
           UnitManager_Tabs \
 	  Unit_TextEditor \
-	  Unit_Lexers
+	  Lib_Lexers
 
 win32 {
           SUBDIRS += FileCopy/FileCopy_Windows \

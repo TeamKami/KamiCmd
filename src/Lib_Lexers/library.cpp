@@ -10,7 +10,7 @@ ICoreFunctions *g_Core;
 
 std::vector<ILexer *> & getLexers();
 
-QVector<Module *> Unit_Lexers_Library::ListModulesAndGetCore( ICoreFunctions *core )
+QVector<Module *> Lexers_Library::ListModulesAndGetCore( ICoreFunctions *core )
 {
 	g_Core = core;
 
@@ -20,13 +20,13 @@ QVector<Module *> Unit_Lexers_Library::ListModulesAndGetCore( ICoreFunctions *co
 
 	for (std::vector<ILexer *>::iterator it = getLexers().begin(); it != getLexers().end(); ++it)
 	{
-		arr << new Module("LexerUnit", 1, (*it)->getName(), 1, id++);
+		arr << new Module("LexerModule", 1, (*it)->getName(), 1, id++);
 	}
 
 	return arr;
 }
 
-QObject* Unit_Lexers_Library::CreateModuleInstance( int id, QObject *parent )
+QObject* Lexers_Library::CreateModuleInstance( int id, QObject *parent )
 {
 	if (id < getLexers().size())
 	{
@@ -36,5 +36,5 @@ QObject* Unit_Lexers_Library::CreateModuleInstance( int id, QObject *parent )
 }
 
 QT_BEGIN_NAMESPACE
-Q_EXPORT_PLUGIN2(Unit_Lexers, Unit_Lexers_Library)
+Q_EXPORT_PLUGIN2(Lib_Lexers, Lexers_Library)
 QT_END_NAMESPACE

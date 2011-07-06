@@ -6,7 +6,7 @@
 
 extern ICoreFunctions *g_Core;
 
-class Unit_Lexers_Library : public QObject, public ILibrary
+class Lexers_Library : public QObject, public ILibrary
 {
 	Q_OBJECT
 	Q_INTERFACES(ILibrary)

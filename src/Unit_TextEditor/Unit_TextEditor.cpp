@@ -60,7 +60,7 @@ void Unit_TextEditor::loadModules()
 		
 	foreach(const Module * lexerUnit, lexerUnits)
 	{
-		ILexer * lexer = dynamic_cast<ILexer*>(g_Core->QueryModule("LexerUnit", 1, lexerUnit->name));
+		ILexer * lexer = dynamic_cast<ILexer*>(g_Core->QueryModule("LexerModule", 1, lexerUnit->name));
 		if (lexer)
 		{
 			lexers()[lexer->getName()] = lexer->getLexer();
