@@ -15,6 +15,12 @@ class Unit_TextEditor_Library : public QObject, public ILibrary
 public:
 	QVector<Module *> ListModulesAndGetCore(ICoreFunctions *core);
 	QObject* CreateModuleInstance(int id, QObject *parent);
+
+private slots:
+	void updateSettings();
+
+signals:
+	void settingsChanged();
 };
 
 #endif // UNIT_PICTUREVIEW_LIBRARY_H

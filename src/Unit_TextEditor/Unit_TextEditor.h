@@ -47,12 +47,19 @@ private:
 
 signals:
 	void TextChanged();
+	void settingsChanged();
 
 private slots:
 	void onEdit();
 	void selectLexer();
 	void setLexer(QsciLexer * l);
 	void settings();
+	void updateSettings();
+
+public slots:
+	void LoadSettings();
+	void SaveSettings();
+	
 };
 
 #endif // UNIT_PICTUREVIEW_H

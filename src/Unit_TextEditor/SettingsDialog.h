@@ -25,6 +25,7 @@ public slots:
 	void onPageSelected(QTreeWidgetItem * item, int column);
 signals:
 	void saveSettings();
+	void settingsChanged();
 };
 
 #endif // LEXERSDIALOG_H

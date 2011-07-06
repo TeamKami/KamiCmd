@@ -85,6 +85,7 @@ Unit_TextEditor::Unit_TextEditor(QWidget *parent)
 	ld = new LexersDialog(this);
 	sd = new SettingsDialog(this);
 	connect(ld, SIGNAL(setLexer(QsciLexer*)), this, SLOT(setLexer(QsciLexer*)));
+	connect(sd, SIGNAL(settingsChanged()), this, SLOT(updateSettings()));
 
 	ActionManager *am;
 	if (!(am = dynamic_cast<ActionManager *>(g_Core->QueryModule("ActionManager", 1))))
@@ -105,6 +106,8 @@ Unit_TextEditor::Unit_TextEditor(QWidget *parent)
 	connect(Actions.last(), SIGNAL(triggered()), SLOT(settings()));
 	am->RegisterActions(Actions);
 	addActions(Actions);
+
+	LoadSettings();
 }
 
 QString Unit_TextEditor::GetText()
@@ -114,6 +117,12 @@ QString Unit_TextEditor::GetText()
 
 void Unit_TextEditor::SaveState(QSettings & set)
 {
+
+}
+
+void Unit_TextEditor::SaveSettings()
+{
+	QSettings set;
 	set.setIniCodec("UTF-8");
 	set.beginGroup("TextEditor");
 	
@@ -153,6 +162,11 @@ void Unit_TextEditor::SaveState(QSettings & set)
 
 void Unit_TextEditor::LoadState(QSettings & set)
 {
+}
+
+void Unit_TextEditor::LoadSettings()
+{
+	QSettings set;
 	set.setIniCodec("UTF-8");
 	set.beginGroup("TextEditor");
 	
@@ -259,4 +273,10 @@ void Unit_TextEditor::settings()
 void Unit_TextEditor::setLexer(QsciLexer * l)
 {
 	editor->setLexer(l);
+}
+
+void Unit_TextEditor::updateSettings()
+{
+	SaveSettings();
+	emit settingsChanged();
 }

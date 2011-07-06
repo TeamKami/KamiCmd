@@ -18,28 +18,33 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::show(QsciScintilla * sci)
 {
-	connect(ui.buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onDialogButton(QAbstractButton*)));
-	connect(ui.navigation, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(onPageSelected(QTreeWidgetItem*, int)));
+	static bool created = false;
+	if (!created)
+	{
+		connect(ui.buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onDialogButton(QAbstractButton*)));
+		connect(ui.navigation, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(onPageSelected(QTreeWidgetItem*, int)));
 
-	QTreeWidgetItem * appearance = new QTreeWidgetItem();
-	appearance->setText(0, "Appearance");
-	QTreeWidgetItem * lexer = new QTreeWidgetItem(appearance);
-	appearance->addChild(lexer);
-	lexer->setText(0, "Coloring");
-	LexerSettings * ls = new LexerSettings(this);
-	lexer->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(dynamic_cast<QWidget*>(ls))));	
-	connect(this, SIGNAL(saveSettings()), ls, SLOT(save()));
-	ls->hide();
-	QTreeWidgetItem * editor = new QTreeWidgetItem(appearance);
-	appearance->addChild(editor);
-	editor->setText(0, "Editor");
-	EditorSettings * es = new EditorSettings(this, sci);
-	editor->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(dynamic_cast<QWidget*>(es))));	
-	connect(this, SIGNAL(saveSettings()), es, SLOT(save()));
-	es->hide();
+		QTreeWidgetItem * appearance = new QTreeWidgetItem();
+		appearance->setText(0, "Appearance");
+		QTreeWidgetItem * lexer = new QTreeWidgetItem(appearance);
+		appearance->addChild(lexer);
+		lexer->setText(0, "Coloring");
+		LexerSettings * ls = new LexerSettings(this);
+		lexer->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(dynamic_cast<QWidget*>(ls))));	
+		connect(this, SIGNAL(saveSettings()), ls, SLOT(save()));
+		ls->hide();
+		QTreeWidgetItem * editor = new QTreeWidgetItem(appearance);
+		appearance->addChild(editor);
+		editor->setText(0, "Editor");
+		EditorSettings * es = new EditorSettings(this, sci);
+		editor->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(dynamic_cast<QWidget*>(es))));	
+		connect(this, SIGNAL(saveSettings()), es, SLOT(save()));
+		es->hide();
 
-	ui.navigation->addTopLevelItem(appearance);
+		ui.navigation->addTopLevelItem(appearance);
 
+		created = true;
+	}
 	QDialog::show();
 }
 
@@ -49,6 +54,7 @@ void SettingsDialog::onDialogButton(QAbstractButton * button)
 		|| ui.buttonBox->standardButton(button) == QDialogButtonBox::Apply)
 	{
 		emit saveSettings();
+		emit settingsChanged();
 	}
 }
 
