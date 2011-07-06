@@ -105,10 +105,6 @@ Unit_TextEditor::Unit_TextEditor(QWidget *parent)
 	connect(Actions.last(), SIGNAL(triggered()), SLOT(settings()));
 	am->RegisterActions(Actions);
 	addActions(Actions);
-
-	editor->setFolding(QsciScintilla::PlainFoldStyle);
-	editor->setAutoCompletionThreshold(2);
-	editor->setAutoCompletionSource(QsciScintilla::AcsAll);
 }
 
 QString Unit_TextEditor::GetText()
@@ -160,29 +156,29 @@ void Unit_TextEditor::LoadState(QSettings & set)
 	set.setIniCodec("UTF-8");
 	set.beginGroup("TextEditor");
 	
-	editor->setAutoIndent(set.value("autoIndent").value<bool>());
-	editor->setBackspaceUnindents(set.value("backspaceUnindents").value<bool>());
-	editor->setIndentationGuides(set.value("indentationGuides").value<bool>());
-	editor->setIndentationsUseTabs(set.value("useTabs").value<bool>());
-	editor->setTabIndents(set.value("tabIndents").value<bool>());
-	editor->setIndentationWidth(set.value("indentationWidth").value<int>());
-	editor->setTabWidth(set.value("tabWidth").value<int>());
+	editor->setAutoIndent(set.value("autoIndent", QVariant::fromValue(false)).value<bool>());
+	editor->setBackspaceUnindents(set.value("backspaceUnindents", QVariant::fromValue(false)).value<bool>());
+	editor->setIndentationGuides(set.value("indentationGuides", QVariant::fromValue(false)).value<bool>());
+	editor->setIndentationsUseTabs(set.value("useTabs", QVariant::fromValue(true)).value<bool>());
+	editor->setTabIndents(set.value("tabIndents", QVariant::fromValue(false)).value<bool>());
+	editor->setIndentationWidth(set.value("indentationWidth", QVariant::fromValue(0)).value<int>());
+	editor->setTabWidth(set.value("tabWidth", QVariant::fromValue(8)).value<int>());
 
-	editor->setFolding(static_cast<QsciScintilla::FoldStyle>(set.value("foldingStyle").value<int>()));
+	editor->setFolding(static_cast<QsciScintilla::FoldStyle>(set.value("foldingStyle", QVariant::fromValue(0)).value<int>()));
 
-	editor->setEdgeColumn(set.value("edgeColumn").value<int>());
-	editor->setEdgeMode(static_cast<QsciScintilla::EdgeMode>(set.value("edgeType").value<int>()));
+	editor->setEdgeColumn(set.value("edgeColumn", QVariant::fromValue(0)).value<int>());
+	editor->setEdgeMode(static_cast<QsciScintilla::EdgeMode>(set.value("edgeType", QVariant::fromValue(0)).value<int>()));
 
-	editor->setAutoCompletionCaseSensitivity(set.value("autocompletionCaseSensitive").value<bool>());
-	editor->setAutoCompletionReplaceWord(set.value("autocompletionReplaceWord").value<bool>());
-	editor->setAutoCompletionShowSingle(set.value("autocompletionShowSingle").value<bool>());
-	editor->setAutoCompletionFillupsEnabled(set.value("autocompletionFillups").value<bool>());
-	editor->setAutoCompletionThreshold(set.value("autocompletionTreshold").value<bool>());
-	editor->setAutoCompletionSource(static_cast<QsciScintilla::AutoCompletionSource>(set.value("autocompletionSource").value<int>()));
-	editor->setAutoCompletionUseSingle(static_cast<QsciScintilla::AutoCompletionUseSingle>(set.value("autocompletionUseSingle").value<int>()));
+	editor->setAutoCompletionCaseSensitivity(set.value("autocompletionCaseSensitive", QVariant::fromValue(false)).value<bool>());
+	editor->setAutoCompletionReplaceWord(set.value("autocompletionReplaceWord", QVariant::fromValue(false)).value<bool>());
+	editor->setAutoCompletionShowSingle(set.value("autocompletionShowSingle", QVariant::fromValue(false)).value<bool>());
+	editor->setAutoCompletionFillupsEnabled(set.value("autocompletionFillups", QVariant::fromValue(false)).value<bool>());
+	editor->setAutoCompletionThreshold(set.value("autocompletionTreshold", QVariant::fromValue(2)).value<bool>());
+	editor->setAutoCompletionSource(static_cast<QsciScintilla::AutoCompletionSource>(set.value("autocompletionSource", QVariant::fromValue(0)).value<int>()));
+	editor->setAutoCompletionUseSingle(static_cast<QsciScintilla::AutoCompletionUseSingle>(set.value("autocompletionUseSingle", QVariant::fromValue(0)).value<int>()));
 
-	editor->setWrapMode(static_cast<QsciScintilla::WrapMode>(set.value("wrapMode").value<int>()));
-	editor->setWrapIndentMode(static_cast<QsciScintilla::WrapIndentMode>(set.value("wrapIndentation").value<int>()));
+	editor->setWrapMode(static_cast<QsciScintilla::WrapMode>(set.value("wrapMode", QVariant::fromValue(0)).value<int>()));
+	editor->setWrapIndentMode(static_cast<QsciScintilla::WrapIndentMode>(set.value("wrapIndentation", QVariant::fromValue(0)).value<int>()));
 
 	for (std::map<QString, QsciLexer*>::iterator it = lexers().begin(); it != lexers().end(); ++it)
 	{
