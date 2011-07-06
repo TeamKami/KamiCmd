@@ -115,9 +115,8 @@ QString Unit_TextEditor::GetText()
 	return text;
 }
 
-void Unit_TextEditor::SaveState( QSettings &/*set*/ )
+void Unit_TextEditor::SaveState(QSettings & set)
 {
-	QSettings set;
 	set.setIniCodec("UTF-8");
 	set.beginGroup("TextEditor");
 	
@@ -148,8 +147,36 @@ void Unit_TextEditor::SaveState( QSettings &/*set*/ )
 	set.endGroup();
 }
 
-void Unit_TextEditor::LoadState( QSettings &/*set*/ )
+void Unit_TextEditor::LoadState(QSettings & set)
 {
+	set.setIniCodec("UTF-8");
+	set.beginGroup("TextEditor");
+	
+	editor->setAutoIndent(set.value("autoIndent").value<bool>());
+	editor->setBackspaceUnindents(set.value("backspaceUnindents").value<bool>());
+	editor->setIndentationGuides(set.value("indentationGuides").value<bool>());
+	editor->setIndentationsUseTabs(set.value("useTabs").value<bool>());
+	editor->setTabIndents(set.value("tabIndents").value<bool>());
+	editor->setIndentationWidth(set.value("indentationWidth").value<int>());
+	editor->setTabWidth(set.value("tabWidth").value<int>());
+
+	editor->setFolding(static_cast<QsciScintilla::FoldStyle>(set.value("foldingStyle").value<int>()));
+
+	editor->setEdgeColumn(set.value("edgeColumn").value<int>());
+	editor->setEdgeMode(static_cast<QsciScintilla::EdgeMode>(set.value("edgeType").value<int>()));
+
+	editor->setAutoCompletionCaseSensitivity(set.value("autocompletionCaseSensitive").value<bool>());
+	editor->setAutoCompletionReplaceWord(set.value("autocompletionReplaceWord").value<bool>());
+	editor->setAutoCompletionShowSingle(set.value("autocompletionShowSingle").value<bool>());
+	editor->setAutoCompletionFillupsEnabled(set.value("autocompletionFillups").value<bool>());
+	editor->setAutoCompletionThreshold(set.value("autocompletionTreshold").value<bool>());
+	editor->setAutoCompletionSource(static_cast<QsciScintilla::AutoCompletionSource>(set.value("autocompletionSource").value<int>()));
+	editor->setAutoCompletionUseSingle(static_cast<QsciScintilla::AutoCompletionUseSingle>(set.value("autocompletionUseSingle").value<int>()));
+
+	editor->setWrapMode(static_cast<QsciScintilla::WrapMode>(set.value("wrapMode").value<int>()));
+	editor->setWrapIndentMode(static_cast<QsciScintilla::WrapIndentMode>(set.value("wrapIndentation").value<int>()));
+
+	set.endGroup();
 }
 
 void Unit_TextEditor::Create( IUnit *createdFrom )
