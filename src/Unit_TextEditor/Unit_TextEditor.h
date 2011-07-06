@@ -9,7 +9,7 @@
 #include <map>
 
 #include "LexersDialog.h"
-
+#include "SettingsDialog.h"
 class QsciLexer;
 
 class QsciScintilla;
@@ -42,6 +42,7 @@ private:
 	QsciScintilla * editor;
 	IPanel *hostPanel;
 	LexersDialog * ld;
+	SettingsDialog * sd;
 	QList<QAction *> Actions;
 
 signals:
@@ -51,6 +52,7 @@ private slots:
 	void onEdit();
 	void selectLexer();
 	void setLexer(QsciLexer * l);
+	void settings();
 };
 
 #endif // UNIT_PICTUREVIEW_H

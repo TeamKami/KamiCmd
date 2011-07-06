@@ -82,6 +82,7 @@ Unit_TextEditor::Unit_TextEditor(QWidget *parent)
 	loadModules();
 
 	ld = new LexersDialog(this);
+	sd = new SettingsDialog(this);
 	connect(ld, SIGNAL(setLexer(QsciLexer*)), this, SLOT(setLexer(QsciLexer*)));
 
 	ActionManager *am;
@@ -96,8 +97,17 @@ Unit_TextEditor::Unit_TextEditor(QWidget *parent)
 	Actions.last()->setShortcutContext(Qt::WindowShortcut);
 	Actions.last()->setData("TextEditor");
 	connect(Actions.last(), SIGNAL(triggered()), SLOT(selectLexer()));
+	Actions << new QAction(QIcon(), tr("Editor settings"), this);
+	Actions.last()->setShortcut(Qt::CTRL + Qt::Key_E);
+	Actions.last()->setShortcutContext(Qt::WindowShortcut);
+	Actions.last()->setData("TextEditor");
+	connect(Actions.last(), SIGNAL(triggered()), SLOT(settings()));
 	am->RegisterActions(Actions);
 	addActions(Actions);
+
+	editor->setFolding(QsciScintilla::PlainFoldStyle);
+	editor->setAutoCompletionThreshold(2);
+	editor->setAutoCompletionSource(QsciScintilla::AcsAll);
 }
 
 QString Unit_TextEditor::GetText()
@@ -147,9 +157,6 @@ void Unit_TextEditor::Create( IUnit *createdFrom )
 		if (lex != "")
 		{
 			editor->setLexer(getLexer(lex));
-			editor->setFolding(QsciScintilla::PlainFoldStyle);
-			editor->setAutoCompletionThreshold(2);
-			editor->setAutoCompletionSource(QsciScintilla::AcsAll);
 		}
 		
 		QApplication::restoreOverrideCursor();
@@ -174,6 +181,11 @@ void Unit_TextEditor::onEdit()
 void Unit_TextEditor::selectLexer()
 {
 	ld->show(lexers(), editor->lexer());
+}
+
+void Unit_TextEditor::settings()
+{
+	sd->show();
 }
 
 void Unit_TextEditor::setLexer(QsciLexer * l)
