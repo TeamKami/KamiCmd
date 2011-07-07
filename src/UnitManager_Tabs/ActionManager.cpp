@@ -4,7 +4,6 @@
 ActionManager::ActionManager(QObject *parent)
 	: QObject(parent)
 {
-
 }
 
 ActionManager::~ActionManager()
@@ -29,4 +28,10 @@ void ActionManager::ShowDialog( QWidget *parent )
 void ActionManager::RegisterActions( QList<QAction *> actions )
 {
 	Actions.append(actions);
+}
+
+void ActionManager::UnregisterActions( QList<QAction *> actions )
+{
+	foreach (QAction *act, actions)
+		Actions.removeOne(act);
 }

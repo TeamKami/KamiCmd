@@ -86,6 +86,7 @@ void UnitManager_Tabs::CloseUnit( int index )
 	if (tabs->count() != 1)
 	{
 		QWidget *widget = tabs->widget(index);
+		tabs->tabBar_->ActivateLastActive();
 		tabs->removeTab(index);
 		delete widget;
 	}
@@ -312,10 +313,22 @@ void UnitManager_Tabs::InitActions()
 		g_Core->DebugWrite("UnitManager", "ActionManager module not found", ICoreFunctions::Error);
 
 	Actions << new QAction(QIcon(), tr("Close active tab"), this);
-	Actions.last()->setShortcut(Qt::Key_Escape);
+	Actions.last()->setShortcuts(QList<QKeySequence>() << Qt::Key_Escape << QKeySequence("Ctrl+W"));
 	Actions.last()->setShortcutContext(Qt::WindowShortcut);
 	Actions.last()->setData("UnitManager_Tabs");
 	connect(Actions.last(), SIGNAL(triggered()), SLOT(Close_Pressed()));
+
+	Actions << new QAction(QIcon(), tr("Activate next tab"), this);
+	Actions.last()->setShortcuts(QList<QKeySequence>() << QKeySequence("Ctrl+Tab"));
+	Actions.last()->setShortcutContext(Qt::WindowShortcut);
+	Actions.last()->setData("UnitManager_Tabs");
+	connect(Actions.last(), SIGNAL(triggered()), tabs->tabBar_, SLOT(ActivateNext()));
+
+	Actions << new QAction(QIcon(), tr("Activate previous tab"), this);
+	Actions.last()->setShortcuts(QList<QKeySequence>() << QKeySequence("Ctrl+Shift+Tab"));
+	Actions.last()->setShortcutContext(Qt::WindowShortcut);
+	Actions.last()->setData("UnitManager_Tabs");
+	connect(Actions.last(), SIGNAL(triggered()), tabs->tabBar_, SLOT(ActivatePrev()));
 
 	// Empty main toolbar
 	// 	QToolBar *toolBar = new QToolBar(this);
@@ -324,4 +337,9 @@ void UnitManager_Tabs::InitActions()
 
 	am->RegisterActions(Actions);
 	addActions(Actions);
+}
+
+QMainWindow * UnitManager_Tabs::GetMainWindow()
+{
+	return this;
 }

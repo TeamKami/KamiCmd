@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'LexersDialog.ui'
 **
-** Created: Wed 6. Jul 00:42:23 2011
-**      by: Qt User Interface Compiler version 4.7.3
+** Created: Thu 7. Jul 13:48:06 2011
+**      by: Qt User Interface Compiler version 4.7.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/

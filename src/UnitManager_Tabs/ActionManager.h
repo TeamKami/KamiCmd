@@ -14,6 +14,7 @@ public:
 
 	virtual void ShowDialog(QWidget *parent);
 	virtual void RegisterActions(QList<QAction *> actions);
+	virtual void UnregisterActions(QList<QAction *> actions);
 private:
 	QList<QAction *> Actions;
 };

@@ -12,8 +12,8 @@ int main(int argc, char *argv[])
 		QCoreApplication::setApplicationName("KamiCmd");
 		{
 			QFileInfo settings(QCoreApplication::applicationDirPath() + "/Settings/KamiCmd.ini");
-			if (settings.isFile() && settings.isWritable())
-			{
+			if (1) //settings.isFile() && settings.isWritable())
+			{ // For now - always locally stored settings
 				QCoreApplication::setOrganizationName("Settings");
 				QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::applicationDirPath());
 			}

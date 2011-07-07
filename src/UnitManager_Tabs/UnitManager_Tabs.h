@@ -21,6 +21,9 @@ public:
 	virtual void LoadState();
 
 	virtual void closeEvent(QCloseEvent *event);
+
+	virtual QMainWindow *GetMainWindow();
+
 	void AddNewPanels();
 	void InitActions();
 

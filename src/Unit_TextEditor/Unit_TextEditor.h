@@ -14,6 +14,7 @@ class QsciLexer;
 
 class QsciScintilla;
 class Action;
+class ActionManager;
 
 /**
  * \author Nikolay Filchenko <finomen812@gmail.com>
@@ -25,6 +26,7 @@ class Unit_TextEditor : public IUnit
 
 public:
 	Unit_TextEditor(QWidget *parent);
+	~Unit_TextEditor();
 	virtual void Create(IUnit *createdFrom);
 	virtual void Link(IUnit * /*withUnit*/) {};
 	virtual QString GetText();
@@ -44,6 +46,7 @@ private:
 	LexersDialog * ld;
 	SettingsDialog * sd;
 	QList<QAction *> Actions;
+	ActionManager *am;
 
 signals:
 	void TextChanged();

@@ -1,9 +1,8 @@
 #include "Unit_TextEditor.h"
 #include "library.h"
-#include "../UnitManager_Tabs/ActionManager.h"
 #include <QRegExp>
 #include <vector>
-
+#include "../UnitManager_Tabs/ActionManager.h"
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
 
@@ -87,7 +86,6 @@ Unit_TextEditor::Unit_TextEditor(QWidget *parent)
 	connect(ld, SIGNAL(setLexer(QsciLexer*)), this, SLOT(setLexer(QsciLexer*)));
 	connect(sd, SIGNAL(settingsChanged()), this, SLOT(updateSettings()));
 
-	ActionManager *am;
 	if (!(am = dynamic_cast<ActionManager *>(g_Core->QueryModule("ActionManager", 1))))
 	{
 		g_Core->DebugWrite("TextEditor", "ActionManager module not found", ICoreFunctions::Error);
@@ -269,4 +267,9 @@ void Unit_TextEditor::updateSettings()
 {
 	SaveSettings();
 	emit settingsChanged();
+}
+
+Unit_TextEditor::~Unit_TextEditor()
+{
+	am->UnregisterActions(Actions);
 }

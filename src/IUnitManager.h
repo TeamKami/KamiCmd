@@ -45,6 +45,8 @@ public:
 	virtual void Start() = 0;
 	virtual void SaveState() = 0;
 	virtual void LoadState() = 0;
+
+	virtual QMainWindow *GetMainWindow() = 0;
 };
 
 #endif // UNITMANAGER_INTERFACE_H

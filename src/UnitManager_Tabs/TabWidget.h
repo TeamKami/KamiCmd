@@ -15,8 +15,6 @@ private:
 	virtual void mouseDoubleClickEvent(QMouseEvent *event);
 	virtual void mouseReleaseEvent(QMouseEvent *event);
 
-	void ActivateLastActive();
-
 	QList<int> tabsFocus;
 	int mousePressCurrentIndex;
 	int mousePressIndex;
@@ -34,6 +32,9 @@ private slots:
 
 public slots:
 	void CurrentChanged(int index);
+	void ActivateLastActive();
+	void ActivateNext();
+	void ActivatePrev();
 };
 
 
@@ -45,7 +46,7 @@ public:
 	TabWidget(QWidget *parent) : QTabWidget(parent)
 	{
 		tabBar_ = new TabBar(this);
-		tabBar_->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
+		//tabBar_->setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
 		setTabBar(tabBar_);
 	};
 

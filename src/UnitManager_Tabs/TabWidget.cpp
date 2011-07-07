@@ -29,10 +29,14 @@ void TabBar::mouseReleaseEvent( QMouseEvent *event )
 			index = i;
 			break;
 		}
-	if (event->button() == Qt::LeftButton && event->modifiers() & Qt::ControlModifier)
-		return;
-	else if (index == mousePressCurrentIndex && mousePressIndex != -1)
-		ActivateLastActive();
+
+	if (event->button() == Qt::LeftButton)
+	{
+		if (event->modifiers() & Qt::ControlModifier)
+			return;
+		else if (index == mousePressCurrentIndex && mousePressIndex != -1)
+			ActivateLastActive();
+	}
 	QTabBar::mouseReleaseEvent(event);
 }
 
@@ -75,6 +79,7 @@ void TabBar::tabRemoved( int index )
 			tabsFocus[i]--;
 
 	tabsFocus.removeAt(index);
+	//ActivateLastActive();
 }
 
 void TabBar::tabInserted( int index )
@@ -111,8 +116,18 @@ void TabBar::ActivateLastActive()
 	tabsFocus[currentIndex()] = 0;
 	
 	disconnect(this, SLOT(CurrentChanged(int)));
-//	bool isSignalsBlocked = blockSignals(true);
+	//bool isSignalsBlocked = blockSignals(true);
 	QTabBar::setCurrentIndex(lastActive);
 	connect(this, SIGNAL(currentChanged(int)), SLOT(CurrentChanged(int)));
-//	blockSignals(isSignalsBlocked);
+	//blockSignals(isSignalsBlocked);
+}
+
+void TabBar::ActivatePrev()
+{
+	QTabBar::setCurrentIndex((currentIndex() - 1 + tabsFocus.size()) % tabsFocus.size());
+}
+
+void TabBar::ActivateNext()
+{
+	QTabBar::setCurrentIndex((currentIndex() + 1) % tabsFocus.size());
 }

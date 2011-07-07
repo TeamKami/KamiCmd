@@ -43,7 +43,7 @@
      <x>0</x>
      <y>0</y>
      <width>416</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -65,7 +65,7 @@
     <string>Edit Shortcut</string>
    </property>
    <property name="toolTip">
-    <string>Change shortcuts for selected action</string>
+    <string>Change shortcuts for selected action (F4)</string>
    </property>
    <property name="shortcut">
     <string>F4</string>
@@ -76,10 +76,18 @@
     <string>Execute</string>
    </property>
    <property name="toolTip">
-    <string>Execute selected action</string>
+    <string>Execute selected action (Enter)</string>
    </property>
    <property name="shortcut">
-    <string>Enter</string>
+    <string>Return</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Esc</string>
    </property>
   </action>
  </widget>

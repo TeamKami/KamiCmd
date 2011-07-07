@@ -79,7 +79,7 @@ void Associations::ShowDialog( QWidget *parent )
 	AssociationsDialog *dialog = new AssociationsDialog(parent);
 	Dialog = dialog;
 	dialog->PopulateList(&Ascs, &Actions);
-	dialog->exec();
+	dialog->show();
 	SaveSettings();
 }
 

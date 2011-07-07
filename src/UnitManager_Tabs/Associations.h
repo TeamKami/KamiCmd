@@ -3,6 +3,7 @@
 
 #include "../IAssociations.h"
 #include <QFileIconProvider>
+#include <QMainWindow>
 
 class Associations : public QObject, public IAssociations
 {
@@ -26,7 +27,7 @@ public:
 private:
 	QVector<Association> Ascs;
 	QVector<QAction *> Actions;
-	QDialog *Dialog;
+	QMainWindow *Dialog;
 	QFileIconProvider provider;
 };
 

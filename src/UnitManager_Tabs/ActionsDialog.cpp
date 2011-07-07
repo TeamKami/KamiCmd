@@ -6,6 +6,14 @@ ActionsDialog::ActionsDialog(QWidget *parent)
 {
 	ui.setupUi(this);
 	setWindowFlags(Qt::Dialog);
+ 	if (parent)
+ 		move(parent->frameGeometry().center() - geometry().center());
+
+	addAction(ui.actionClose);
+	connect(ui.actionClose, SIGNAL(triggered()), SLOT(close()));
+
+	ui.actionExecute->setShortcuts(QList<QKeySequence>() << ui.actionExecute->shortcut() << QKeySequence("Enter"));
+	connect(ui.treeWidget, SIGNAL(doubleClicked(QModelIndex)), ui.actionExecute, SLOT(trigger()));
 }
 
 ActionsDialog::~ActionsDialog()
@@ -45,5 +53,6 @@ void ActionsDialog::on_actionEditShortcut_triggered()
 
 void ActionsDialog::on_actionExecute_triggered()
 {
-	PassedActions.at(ui.treeWidget->currentItem()->data(0, Qt::UserRole).toInt())->trigger();
+	if (ui.treeWidget->currentItem()->parent())
+		PassedActions.at(ui.treeWidget->currentItem()->data(0, Qt::UserRole).toInt())->trigger();
 }

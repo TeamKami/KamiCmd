@@ -80,8 +80,7 @@ void FButtonsBar::F11_Pressed()
 {
 	if (ModulesDialog *modWin = dynamic_cast<ModulesDialog *>(g_Core->QueryModule("ModulesDialog", 1, "", -1, this)))
 	{
-		modWin->exec();
-		delete modWin;
+		modWin->show();
 	}
 	else
 		g_Core->DebugWrite("UnitManager_Tabs", "ModulesDialog module not found", ICoreFunctions::Error);
@@ -90,7 +89,7 @@ void FButtonsBar::F11_Pressed()
 void FButtonsBar::F2_Pressed()
 {
 	if (Associations *assc = dynamic_cast<Associations *>(g_Core->QueryModule("Associations", 1)))
-		assc->ShowDialog(this);
+		assc->ShowDialog(UnitManager->GetMainWindow());
 	else
 		g_Core->DebugWrite("UnitManager_Tabs", "Associations module not found", ICoreFunctions::Error);
 }
@@ -152,5 +151,5 @@ void FButtonsBar::F5_Pressed()
 
 void FButtonsBar::F9_Pressed()
 {
-	AM->ShowDialog(this);
+	AM->ShowDialog(UnitManager->GetMainWindow());
 }

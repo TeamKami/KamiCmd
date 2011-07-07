@@ -5,34 +5,16 @@
 
 //#define DARK
 
-AssociationsDialog::~AssociationsDialog()
-{
-
-}
-
 AssociationsDialog::AssociationsDialog(QWidget *parent)
-: QDialog(parent)
+: QMainWindow(parent)
 {
 	QPixmap pix(16, 16);
 	pix.fill(QColor(0, 0, 0, 0));
 	emptyIcon.addPixmap(pix);
 
 	ui.setupUi(this);
-	QToolBar *toolBar = new QToolBar(this);
-	toolBar->setAllowedAreas(Qt::TopToolBarArea);
-	ui.verticalLayout->addWidget(toolBar);
-	
-	QAction *addAct = new QAction(tr("Ins Add"), this);
-	addAct->setShortcut(Qt::Key_Insert);
-	toolBar->addAction(addAct);
-	toolBar->addSeparator();
-	QAction *editAct = new QAction(tr("F4 Edit"), this);
-	editAct->setShortcuts(QList<QKeySequence>() << Qt::Key_F4 << Qt::Key_Return << Qt::Key_Enter);
-	toolBar->addAction(editAct);
-	toolBar->addSeparator();
-	QAction *deleteAct = new QAction(tr("F8 Delete"), this);
-	deleteAct->setShortcuts(QList<QKeySequence>() << Qt::Key_F8 << Qt::Key_Delete);
-	toolBar->addAction(deleteAct);
+	if (parent)
+		move(parent->frameGeometry().center() - geometry().center());
 
 #ifdef DARK
 	QPalette pal = ui.treeWidget->palette();
@@ -40,10 +22,14 @@ AssociationsDialog::AssociationsDialog(QWidget *parent)
 	ui.treeWidget->setPalette(pal);
 #endif
 
-	connect(addAct, SIGNAL(triggered()), SLOT(AddAssc()));
-	connect(editAct, SIGNAL(triggered()), SLOT(EditAssc()));
-	connect(deleteAct, SIGNAL(triggered()), SLOT(DeleteAssc()));
-	connect(ui.treeWidget, SIGNAL(doubleClicked(QModelIndex)), SLOT(EditAssc()));
+	addAction(ui.actionClose);
+	connect(ui.actionClose, SIGNAL(triggered()), SLOT(close()));
+
+	connect(ui.treeWidget, SIGNAL(doubleClicked(QModelIndex)), SLOT(on_actionEdit_triggered()));
+
+	ui.actionAdd->setShortcuts(QList<QKeySequence>() << ui.actionAdd->shortcut() << QKeySequence("Shift+F4"));
+	ui.actionEdit->setShortcuts(QList<QKeySequence>() << ui.actionEdit->shortcut() << QKeySequence("Enter") << QKeySequence("F4"));
+	ui.actionDelete->setShortcuts(QList<QKeySequence>() << ui.actionDelete->shortcut() << QKeySequence("F8"));
 }
 
 void AssociationsDialog::PopulateList( QVector<Association> *ascs, QVector<QAction *> *actions )
@@ -72,7 +58,7 @@ void AssociationsDialog::PopulateList( QVector<Association> *ascs, QVector<QActi
 		ui.treeWidget->setCurrentIndex(ui.treeWidget->model()->index(0, 0));
 }
 
-void AssociationsDialog::AddAssc()
+void AssociationsDialog::on_actionAdd_triggered()
 {
 	Association newAssc;
 	for (int i = 0; i < Actions->size(); i++)
@@ -86,7 +72,7 @@ void AssociationsDialog::AddAssc()
 	}
 }
 
-void AssociationsDialog::EditAssc()
+void AssociationsDialog::on_actionEdit_triggered()
 {
 	if (!Ascs->isEmpty())
 	{
@@ -100,7 +86,7 @@ void AssociationsDialog::EditAssc()
 	}
 }
 
-void AssociationsDialog::DeleteAssc()
+void AssociationsDialog::on_actionDelete_triggered()
 {
 	if (!Ascs->isEmpty())
 	{

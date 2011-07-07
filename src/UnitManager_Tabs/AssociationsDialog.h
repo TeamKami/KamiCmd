@@ -1,18 +1,18 @@
 #ifndef ASSOCIATIONSDIALOG_H
 #define ASSOCIATIONSDIALOG_H
 
-#include <QDialog>
+#include <QMainWindow>
 #include "ui_AssociationsDialog.h"
 #include "Associations.h"
 
-class AssociationsDialog : public QDialog
+class AssociationsDialog : public QMainWindow
 {
 	Q_OBJECT
 
 public:
 	AssociationsDialog(QWidget *parent = 0);
 	void PopulateList(QVector<Association> *ascs, QVector<QAction *> *actions);
-	~AssociationsDialog();
+	~AssociationsDialog() {};
 
 private:
 	Ui::AssociationsDialogClass ui;
@@ -21,9 +21,9 @@ private:
 	QIcon emptyIcon;
 
 private slots:
-	void EditAssc();
-	void AddAssc();
-	void DeleteAssc();
+	void on_actionEdit_triggered();
+	void on_actionAdd_triggered();
+	void on_actionDelete_triggered();
 };
 
 #endif // ASSOCIATIONSDIALOG_H
