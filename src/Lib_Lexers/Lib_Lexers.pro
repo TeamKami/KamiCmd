@@ -7,8 +7,12 @@ Root = ../..
 include ($${Root}/config.pri)
 
 # Input
-HEADERS += *.h
-SOURCES += *.cpp
+HEADERS += getLexers.h \
+	library.h \
+	ObjectWrapper.h
+
+SOURCES += getLexers.cpp \
+	library.cpp
 
 CONFIG(debug, debug|release)
 {
