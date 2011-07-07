@@ -27,6 +27,7 @@ public:
 	  name_(name), ext_(ext), lexer(new T)
 	{
 		QSettings set;
+		set.setIniCodec("UTF-8");
 		set.beginGroup("ILexerPlugin");
 		lexer->readSettings(set);
 		set.endGroup();
@@ -35,6 +36,7 @@ public:
     ~ILexerPlugin()
 	{
 		QSettings set;
+		set.setIniCodec("UTF-8");
 		set.beginGroup("ILexerPlugin");
 		lexer->writeSettings(set);
 		set.endGroup();

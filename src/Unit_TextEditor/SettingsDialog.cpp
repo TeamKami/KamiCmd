@@ -4,8 +4,8 @@
 #include "LexerSettings.h"
 #include "EditorSettings.h"
 
-SettingsDialog::SettingsDialog(QWidget *parent)
-	: QDialog(parent)
+SettingsDialog::SettingsDialog(QWidget * parent, SciSettings * set)
+	: QDialog(parent), created(false), settings(set)
 {
 	ui.setupUi(this);
 	setWindowFlags(Qt::Dialog);
@@ -16,9 +16,8 @@ SettingsDialog::~SettingsDialog()
 
 }
 
-void SettingsDialog::show(QsciScintilla * sci)
+void SettingsDialog::show()
 {
-	static bool created = false;
 	if (!created)
 	{
 		connect(ui.buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onDialogButton(QAbstractButton*)));
@@ -37,7 +36,7 @@ void SettingsDialog::show(QsciScintilla * sci)
 		QTreeWidgetItem * editor = new QTreeWidgetItem(appearance);
 		appearance->addChild(editor);
 		editor->setText(0, "Editor");
-		EditorSettings * es = new EditorSettings(this, sci);
+		EditorSettings * es = new EditorSettings(this, settings);
 		editor->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(dynamic_cast<QWidget*>(es))));	
 		connect(this, SIGNAL(saveSettings()), es, SLOT(save()));
 		es->hide();

@@ -27,28 +27,28 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QCheckBox" name="autocompletionCaseSensitive">
+       <widget class="QCheckBox" name="autoCompletionCaseSensitivity">
         <property name="text">
          <string>CaseSensitive</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QCheckBox" name="autocompletionReplaceWord">
+       <widget class="QCheckBox" name="autoCompletionReplaceWord">
         <property name="text">
          <string>Replace word</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QCheckBox" name="autocompletionShowSingle">
+       <widget class="QCheckBox" name="autoCompletionShowSingle">
         <property name="text">
          <string>Show single</string>
         </property>
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QCheckBox" name="autocompletionFillups">
+       <widget class="QCheckBox" name="autoCompletionFillupsEnabled">
         <property name="text">
          <string>Fillups</string>
         </property>
@@ -67,7 +67,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="autocompletionTreshold"/>
+         <widget class="QSpinBox" name="autoCompletionThreshold"/>
         </item>
        </layout>
       </item>
@@ -81,7 +81,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="autocompletionSource">
+         <widget class="QComboBox" name="autoCompletionSource">
           <item>
            <property name="text">
             <string>None</string>
@@ -116,7 +116,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="autocompletionUseSingle">
+         <widget class="QComboBox" name="autoCompletionUseSingle">
           <item>
            <property name="text">
             <string>Never</string>
@@ -173,7 +173,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="useTabs">
+       <widget class="QCheckBox" name="indentationsUseTabs">
         <property name="text">
          <string>Use tabs</string>
         </property>
@@ -240,7 +240,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QComboBox" name="edgeType">
+       <widget class="QComboBox" name="edgeMode">
         <item>
          <property name="text">
           <string>None</string>
@@ -358,7 +358,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="wrapIndentation">
+       <widget class="QComboBox" name="wrapIndentMode">
         <item>
          <property name="text">
           <string>Fixed</string>

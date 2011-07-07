@@ -6,19 +6,22 @@
 #include <map>
 
 class QsciScintilla;
+class SciSettings;
 
 class SettingsDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	SettingsDialog(QWidget *parent = 0);
+	SettingsDialog(QWidget * parent = 0, SciSettings * set = 0);
 	~SettingsDialog();
 
-	void show(QsciScintilla * sci);
+	void show();
 
 private:
 	Ui::SettingsDialog ui;
+	bool created;
+	SciSettings * settings;
 	
 public slots:
 	void onDialogButton(QAbstractButton * button);

@@ -2,19 +2,20 @@
 #define UNIT_PICTUREVIEW_H
 
 #include <QtGui>
-#include "../IUnitManager.h"
-#include "../IPanel.h"
+#include "IUnitManager.h"
+#include "IPanel.h"
 #include <QTextEdit>
 #include <QScrollBar>
 #include <map>
 
-#include "LexersDialog.h"
-#include "SettingsDialog.h"
-class QsciLexer;
+#include "Unit_TextEditor/LexersDialog.h"
 
+class QsciLexer;
+class ICoreFunctions;
 class QsciScintilla;
 class Action;
 class ActionManager;
+class SciSettings;
 
 /**
  * \author Nikolay Filchenko <finomen812@gmail.com>
@@ -25,7 +26,7 @@ class Unit_TextEditor : public IUnit
 	Q_OBJECT
 
 public:
-	Unit_TextEditor(QWidget *parent);
+	Unit_TextEditor(QWidget *parent = 0, SciSettings * settings = 0, ICoreFunctions * core = 0);
 	~Unit_TextEditor();
 	virtual void Create(IUnit *createdFrom);
 	virtual void Link(IUnit * /*withUnit*/) {};
@@ -44,25 +45,16 @@ private:
 	QsciScintilla * editor;
 	IPanel *hostPanel;
 	LexersDialog * ld;
-	SettingsDialog * sd;
 	QList<QAction *> Actions;
 	ActionManager *am;
-
-signals:
-	void TextChanged();
-	void settingsChanged();
+	SciSettings * settings_;
+	ICoreFunctions * g_Core;
 
 private slots:
 	void onEdit();
 	void selectLexer();
 	void setLexer(QsciLexer * l);
-	void settings();
 	void updateSettings();
-
-public slots:
-	void LoadSettings();
-	void LoadSettings(QSettings & set);
-	void SaveSettings();
 	
 };
 

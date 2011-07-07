@@ -1,12 +1,15 @@
-#include "Unit_TextEditor.h"
-#include "library.h"
+#include "Unit_TextEditor/Unit_TextEditor.h"
+#include "Unit_TextEditor/library.h"
+#include "UnitManager_Tabs/ActionManager.h"
 #include <QRegExp>
 #include <vector>
 #include "../UnitManager_Tabs/ActionManager.h"
+#include "Unit_TextEditor/SciSettings.h"
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
 
 #include "ILexerPlugin.h"
+
 std::map<QString, QsciLexer*> & lexers()
 {
 	static std::map<QString, QsciLexer*> lexers_;
@@ -74,17 +77,16 @@ void Unit_TextEditor::loadModules()
 	lexersLoaded() = true;
 }
 
-Unit_TextEditor::Unit_TextEditor(QWidget *parent)
-	: IUnit(parent)
+Unit_TextEditor::Unit_TextEditor(QWidget *parent, SciSettings * settings, ICoreFunctions * core)
+	: IUnit(parent), settings_(settings), g_Core(core)
 {
 	setCentralWidget(editor = new QsciScintilla(this));	
 	connect(editor, SIGNAL(textChanged()), this, SLOT(onEdit()));
 	loadModules();
 
 	ld = new LexersDialog(this);
-	sd = new SettingsDialog(this);
+
 	connect(ld, SIGNAL(setLexer(QsciLexer*)), this, SLOT(setLexer(QsciLexer*)));
-	connect(sd, SIGNAL(settingsChanged()), this, SLOT(updateSettings()));
 
 	if (!(am = dynamic_cast<ActionManager *>(g_Core->QueryModule("ActionManager", 1))))
 	{
@@ -96,16 +98,17 @@ Unit_TextEditor::Unit_TextEditor(QWidget *parent)
 	Actions.last()->setShortcut(Qt::CTRL + Qt::Key_L);
 	Actions.last()->setShortcutContext(Qt::WindowShortcut);
 	Actions.last()->setData("TextEditor");
-	connect(Actions.last(), SIGNAL(triggered()), SLOT(selectLexer()));
+	connect(Actions.last(), SIGNAL(triggered()), this, SLOT(selectLexer()));
 	Actions << new QAction(QIcon(), tr("Editor settings"), this);
 	Actions.last()->setShortcut(Qt::CTRL + Qt::Key_E);
 	Actions.last()->setShortcutContext(Qt::WindowShortcut);
 	Actions.last()->setData("TextEditor");
-	connect(Actions.last(), SIGNAL(triggered()), SLOT(settings()));
+	connect(Actions.last(), SIGNAL(triggered()), settings, SLOT(showSettings()));
 	am->RegisterActions(Actions);
 	addActions(Actions);
 
-	LoadSettings();
+	connect(settings_, SIGNAL(settingsChanged()), this, SLOT(updateSettings()));
+	settings_->applySettings(editor);
 }
 
 QString Unit_TextEditor::GetText()
@@ -118,79 +121,8 @@ void Unit_TextEditor::SaveState(QSettings & set)
 
 }
 
-void Unit_TextEditor::SaveSettings()
-{
-	QSettings set;
-	set.setIniCodec("UTF-8");
-	set.beginGroup("TextEditor");
-	
-	set.setValue("autoIndent", QVariant::fromValue(editor->autoIndent()));
-	set.setValue("backspaceUnindents", QVariant::fromValue(editor->backspaceUnindents()));
-	set.setValue("indentationGuides", QVariant::fromValue(editor->indentationGuides()));
-	set.setValue("useTabs", QVariant::fromValue(editor->indentationsUseTabs()));
-	set.setValue("tabIndents", QVariant::fromValue(editor->tabIndents()));
-	set.setValue("indentationWidth", QVariant::fromValue(editor->indentationWidth()));
-	set.setValue("tabWidth", QVariant::fromValue(editor->tabWidth()));
-
-	set.setValue("foldingStyle", QVariant::fromValue(static_cast<int>(editor->folding())));
-
-	set.setValue("edgeColumn", QVariant::fromValue(editor->edgeColumn()));
-	set.setValue("edgeType", QVariant::fromValue(static_cast<int>(editor->edgeMode())));
-
-	set.setValue("autocompletionCaseSensitive", QVariant::fromValue(editor->autoCompletionCaseSensitivity()));
-	set.setValue("autocompletionReplaceWord", QVariant::fromValue(editor->autoCompletionReplaceWord()));
-	set.setValue("autocompletionShowSingle", QVariant::fromValue(editor->autoCompletionShowSingle()));
-	set.setValue("autocompletionFillups", QVariant::fromValue(editor->autoCompletionFillupsEnabled()));
-	set.setValue("autocompletionTreshold", QVariant::fromValue(editor->autoCompletionThreshold()));
-	set.setValue("autocompletionSource", QVariant::fromValue(static_cast<int>(editor->autoCompletionSource())));
-	set.setValue("autocompletionUseSingle", QVariant::fromValue(static_cast<int>(editor->autoCompletionUseSingle())));
-
-	set.setValue("wrapMode", QVariant::fromValue(static_cast<int>(editor->wrapMode())));
-	set.setValue("wrapIndentation", QVariant::fromValue(static_cast<int>(editor->wrapIndentMode())));
-
-	set.endGroup();
-}
-
 void Unit_TextEditor::LoadState(QSettings & set)
 {
-}
-
-void Unit_TextEditor::LoadSettings()
-{
-	QSettings set;
-	LoadSettings(set);
-}
-
-void Unit_TextEditor::LoadSettings(QSettings & set)
-{
-	set.setIniCodec("UTF-8");
-	set.beginGroup("TextEditor");
-	
-	editor->setAutoIndent(set.value("autoIndent", QVariant::fromValue(false)).value<bool>());
-	editor->setBackspaceUnindents(set.value("backspaceUnindents", QVariant::fromValue(false)).value<bool>());
-	editor->setIndentationGuides(set.value("indentationGuides", QVariant::fromValue(false)).value<bool>());
-	editor->setIndentationsUseTabs(set.value("useTabs", QVariant::fromValue(true)).value<bool>());
-	editor->setTabIndents(set.value("tabIndents", QVariant::fromValue(false)).value<bool>());
-	editor->setIndentationWidth(set.value("indentationWidth", QVariant::fromValue(0)).value<int>());
-	editor->setTabWidth(set.value("tabWidth", QVariant::fromValue(8)).value<int>());
-
-	editor->setFolding(static_cast<QsciScintilla::FoldStyle>(set.value("foldingStyle", QVariant::fromValue(0)).value<int>()));
-
-	editor->setEdgeColumn(set.value("edgeColumn", QVariant::fromValue(0)).value<int>());
-	editor->setEdgeMode(static_cast<QsciScintilla::EdgeMode>(set.value("edgeType", QVariant::fromValue(0)).value<int>()));
-
-	editor->setAutoCompletionCaseSensitivity(set.value("autocompletionCaseSensitive", QVariant::fromValue(false)).value<bool>());
-	editor->setAutoCompletionReplaceWord(set.value("autocompletionReplaceWord", QVariant::fromValue(false)).value<bool>());
-	editor->setAutoCompletionShowSingle(set.value("autocompletionShowSingle", QVariant::fromValue(false)).value<bool>());
-	editor->setAutoCompletionFillupsEnabled(set.value("autocompletionFillups", QVariant::fromValue(false)).value<bool>());
-	editor->setAutoCompletionThreshold(set.value("autocompletionTreshold", QVariant::fromValue(2)).value<bool>());
-	editor->setAutoCompletionSource(static_cast<QsciScintilla::AutoCompletionSource>(set.value("autocompletionSource", QVariant::fromValue(0)).value<int>()));
-	editor->setAutoCompletionUseSingle(static_cast<QsciScintilla::AutoCompletionUseSingle>(set.value("autocompletionUseSingle", QVariant::fromValue(0)).value<int>()));
-
-	editor->setWrapMode(static_cast<QsciScintilla::WrapMode>(set.value("wrapMode", QVariant::fromValue(0)).value<int>()));
-	editor->setWrapIndentMode(static_cast<QsciScintilla::WrapIndentMode>(set.value("wrapIndentation", QVariant::fromValue(0)).value<int>()));
-
-	set.endGroup();
 }
 
 void Unit_TextEditor::Create( IUnit *createdFrom )
@@ -200,7 +132,6 @@ void Unit_TextEditor::Create( IUnit *createdFrom )
 		const FileInfo *const info = hostPanel->GetCurrentFile();
 	
 		QFile file(info->path + info->name);
-
 
 		if (!file.open(QFile::ReadOnly)) {
 			QMessageBox::warning(this, tr("Application"),
@@ -253,11 +184,6 @@ void Unit_TextEditor::selectLexer()
 	ld->show(lexers(), editor->lexer());
 }
 
-void Unit_TextEditor::settings()
-{
-	sd->show(editor);
-}
-
 void Unit_TextEditor::setLexer(QsciLexer * l)
 {
 	editor->setLexer(l);
@@ -265,8 +191,7 @@ void Unit_TextEditor::setLexer(QsciLexer * l)
 
 void Unit_TextEditor::updateSettings()
 {
-	SaveSettings();
-	emit settingsChanged();
+	settings_->applySettings(editor);
 }
 
 Unit_TextEditor::~Unit_TextEditor()

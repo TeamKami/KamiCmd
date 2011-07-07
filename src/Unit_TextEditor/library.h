@@ -5,7 +5,7 @@
 #include "../ILibrary.h"
 #include "Unit_TextEditor.h"
 
-extern ICoreFunctions *g_Core;
+class SciSettings;
 
 class Unit_TextEditor_Library : public QObject, public ILibrary
 {
@@ -16,11 +16,9 @@ public:
 	QVector<Module *> ListModulesAndGetCore(ICoreFunctions *core);
 	QObject* CreateModuleInstance(int id, QObject *parent);
 
-private slots:
-	void updateSettings();
-
-signals:
-	void settingsChanged(QSettings &);
+private:
+	SciSettings * settings;
+	ICoreFunctions *g_Core;
 };
 
 #endif // UNIT_PICTUREVIEW_LIBRARY_H

@@ -1,9 +1,8 @@
-#include "library.h"
-#include "Unit_TextEditor.h"
-#include "ILexerPlugin.h"
+#include "Unit_TextEditor/library.h"
+#include "Unit_TextEditor/Unit_TextEditor.h"
+#include "Unit_TextEditor/ILexerPlugin.h"
 #include <QRegExp>
-
-ICoreFunctions *g_Core;
+#include "Unit_TextEditor/SciSettings.h"
 
 enum Modules {MUnit_TextEditor};
 
@@ -13,7 +12,7 @@ std::vector<std::pair<QRegExp, QString> > & assoc();
 QVector<Module *> Unit_TextEditor_Library::ListModulesAndGetCore( ICoreFunctions *core )
 {
 	g_Core = core;
-
+	settings = 0;
 	QVector<Module *> arr;
 	arr << new Module("TextEditorUnit", 1, "Unit_TextEditor", 1, MUnit_TextEditor);
 	return arr;
@@ -24,19 +23,14 @@ QObject* Unit_TextEditor_Library::CreateModuleInstance( int id, QObject *parent 
 	switch (id)
 	{
 	case MUnit_TextEditor:
-		Unit_TextEditor * e = new Unit_TextEditor(qobject_cast<QWidget *>(parent));
-		connect(this, SIGNAL(settingsChanged(QSettings &)), e, SLOT(LoadSettings(QSettings &)));
-		connect(e, SIGNAL(settingsChanged()), this, SLOT(updateSettings()));
+		if (!settings)
+			settings = new SciSettings(this, g_Core);
+		Unit_TextEditor * e = new Unit_TextEditor(qobject_cast<QWidget *>(parent), settings, g_Core);
 		return e;
 	}
 	return NULL;
 }
 
-void Unit_TextEditor_Library::updateSettings()
-{
-	QSettings set;
-	emit settingsChanged(set);
-}
 
 QT_BEGIN_NAMESPACE
 Q_EXPORT_PLUGIN2(Unit_TextEditor, Unit_TextEditor_Library)
