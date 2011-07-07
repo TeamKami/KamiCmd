@@ -96,13 +96,13 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 #endif
 			}
 			
-			if (!quickSearch.isEmpty() && index.data(Qt::DisplayRole).toString().indexOf(quickSearch, 0, Qt::CaseInsensitive) == -1)
+			/*if (!quickSearch.isEmpty() && index.data(Qt::DisplayRole).toString().indexOf(quickSearch, 0, Qt::CaseInsensitive) == -1)
 			{
 				QColor resAdj = res.value<QColor>();
 				resAdj.setHsl(resAdj.hslHue(), resAdj.hslSaturation() / 3, 180);
 				//resAdj.setHsv(resAdj.hue(), resAdj.saturation(), 200);
 				res = resAdj;
-			}
+			}*/
 			return res;
 		}
 		break;
@@ -306,7 +306,7 @@ Qt::ItemFlags FileListModel::flags( const QModelIndex &index ) const
 		return 0;
 	//	if (index.column()==0)
 	//		return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	return (quickSearch.isEmpty() || index.data(Qt::DisplayRole).toString().indexOf(quickSearch, 0, Qt::CaseInsensitive) != -1 ? Qt::ItemIsEnabled : (Qt::ItemFlags)0) | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+	return /*(quickSearch.isEmpty() || index.data(Qt::DisplayRole).toString().indexOf(quickSearch, 0, Qt::CaseInsensitive) != -1 ?*/ Qt::ItemIsEnabled /*: (Qt::ItemFlags)0)*/ | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
 }
 
 int FileListModel::rowCount( const QModelIndex& /*= QModelIndex()*/ ) const

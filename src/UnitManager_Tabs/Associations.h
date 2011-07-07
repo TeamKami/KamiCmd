@@ -18,7 +18,6 @@ public:
 	virtual void GetIcon(QIcon &outIcon, QString path);
 
 	Association* GetAssociation(QString path);
-	void SaveSettings();
 	void LoadSettings();
 
 	static QColor QColorFromQString(QString str);
@@ -29,6 +28,9 @@ private:
 	QVector<QAction *> Actions;
 	QMainWindow *Dialog;
 	QFileIconProvider provider;
+
+public slots:
+	void SaveSettings();
 };
 
 #endif // ASSOCIATIONS_H

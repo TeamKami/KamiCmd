@@ -79,8 +79,8 @@ void Associations::ShowDialog( QWidget *parent )
 	AssociationsDialog *dialog = new AssociationsDialog(parent);
 	Dialog = dialog;
 	dialog->PopulateList(&Ascs, &Actions);
+	connect(dialog, SIGNAL(Closing()), SLOT(SaveSettings()));
 	dialog->show();
-	SaveSettings();
 }
 
 Associations::~Associations()
@@ -276,7 +276,7 @@ void Associations::LoadSettings()
 			set.setArrayIndex(j);
 			Ascs.last().actions.append(set.value("Path").toString());
 		}
-		for (int j = 0; j < Actions.size(); j++) // Case when appended new action
+		for (int j = 0; j < Actions.size() - n2; j++) // Case when appended new action
 			Ascs.last().actions.append(QString());
 		set.endArray();
 	}

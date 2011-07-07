@@ -55,7 +55,10 @@ private slots:
 	void selectLexer();
 	void setLexer(QsciLexer * l);
 	void updateSettings();
-	
+
+signals:
+	void TextChanged();
+
 };
 
 #endif // UNIT_PICTUREVIEW_H
