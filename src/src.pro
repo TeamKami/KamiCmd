@@ -15,3 +15,5 @@ win32 {
           SUBDIRS += FileCopy/FileCopy_Windows \
                      FS_Windows
 }
+
+INCLUDEPATH += .

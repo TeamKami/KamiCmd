@@ -1,5 +1,3 @@
-#include "../Unit_TextEditor/ILexerPlugin.h"
-
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerbatch.h>
 #include <Qsci/qscilexercmake.h>
@@ -33,16 +31,20 @@
 #include <Qsci/qscilexerxml.h>
 #include <Qsci/qscilexeryaml.h>
 
-#include "ObjectWrapper.h"
+#include "Lib_Lexers/getLexers.h"
+#include "Lib_Lexers/ObjectWrapper.h"
+#include "Unit_TextEditor/ILexerPlugin.h"
+#include "Unit_TextEditor/Extension.h"
 
-std::vector<ILexer *> & getLexers()
+QVector<ILexer *> & getLexers(QObject * parent)
 {
-	static std::vector<ILexer*> lexers;
+	static QVector<ILexer*> lexers;
+
 	if (lexers.empty())
 	{
-		#define LEXER(cls, name, wildcard) LEXER_R(cls, name, extension() | wildcard)
-		#define LEXER_N(cls, name) LEXER_R(cls, name, extension())
-		#define LEXER_R(cls, name, wildcard) lexers.push_back(new LexerWrapper<cls>(#name, wildcard))
+		#define LEXER(cls, name, wildcard) LEXER_R(cls, name, Extension() | wildcard)
+		#define LEXER_N(cls, name) LEXER_R(cls, name, Extension())
+		#define LEXER_R(cls, name, wildcard) lexers.push_back(new LexerWrapper<cls>(parent, #name, wildcard))
 
 		LEXER(QsciLexerBash, Bash, "*.sh");
 		LEXER(QsciLexerBatch, Batch, "*.bat");

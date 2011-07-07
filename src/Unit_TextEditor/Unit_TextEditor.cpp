@@ -65,9 +65,9 @@ void Unit_TextEditor::loadModules()
 		if (lexer)
 		{
 			lexers()[lexer->getName()] = lexer->getLexer();
-			for (std::vector<QString>::const_iterator it = lexer->getMask().ext.begin(); it != lexer->getMask().ext.end(); ++it)
+			foreach(QString const & wildcard, lexer->getMask().ext)
 			{
-				assoc().push_back(std::make_pair(QRegExp(*it, Qt::CaseInsensitive, QRegExp::Wildcard), lexer->getName()));
+				assoc().push_back(std::make_pair(QRegExp(wildcard, Qt::CaseInsensitive, QRegExp::Wildcard), lexer->getName()));
 			}
 		}
 	}

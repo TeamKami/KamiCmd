@@ -1,38 +1,29 @@
 #ifndef _H_I_LEXER_PLUGIN_
 #define _H_I_LEXER_PLUGIN_
 
+#include <Unit_TextEditor/Extension.h>
+
 #include <QObject>
 #include <QString>
 #include <QRegExp>
-#include <vector>
+#include <QVector>
 #include <map>
 
 class QsciLexer;
-
-struct extension
-{
-	extension & operator | (QString const & e)
-	{
-		ext.push_back(e);
-		return *this;
-	}
-
-	std::vector<QString> ext;
-};
 
 class ILexer
 {
 public:
 	virtual QsciLexer * getLexer() const = 0;
 	virtual QString const & getName() const = 0;
-	virtual extension const & getMask() const = 0;
+	virtual Extension const & getMask() const = 0;
 };
 
 template <typename T>
 class ILexerPlugin : public ILexer
 {
 public:
-	ILexerPlugin(QString const & name, extension const & ext) :
+	ILexerPlugin(QString const & name, Extension const & ext) :
 	  name_(name), ext_(ext)
 	{
 	}
@@ -47,14 +38,14 @@ public:
 		return name_;
 	}
 
-	virtual extension const & getMask() const
+	virtual Extension const & getMask() const
 	{
 		return ext_;
 	}
 
 private:
 	QString name_;
-	extension ext_;
+	Extension ext_;
 
 };
 

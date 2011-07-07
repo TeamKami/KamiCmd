@@ -1,14 +1,12 @@
-#include "library.h"
-#include "../IUnitManager.h"
-#include "../Unit_TextEditor/ILexerPlugin.h"
+#include "Lib_Lexers/library.h"
+#include "IUnitManager.h"
+#include "Unit_TextEditor/ILexerPlugin.h"
+#include "Lib_Lexers/getLexers.h"
+
 class Unit_Lexers : public IUnit
 {
     Q_OBJECT
 };
-
-ICoreFunctions *g_Core;
-
-std::vector<ILexer *> & getLexers();
 
 QVector<Module *> Lexers_Library::ListModulesAndGetCore( ICoreFunctions *core )
 {
@@ -18,15 +16,15 @@ QVector<Module *> Lexers_Library::ListModulesAndGetCore( ICoreFunctions *core )
 
 	size_t id = 0;
 
-	for (std::vector<ILexer *>::iterator it = getLexers().begin(); it != getLexers().end(); ++it)
+	foreach(ILexer * lexer, getLexers())
 	{
-		arr << new Module("LexerModule", 1, (*it)->getName(), 1, id++);
+		arr << new Module("LexerModule", 1, lexer->getName(), 1, id++);
 	}
 
 	return arr;
 }
 
-QObject* Lexers_Library::CreateModuleInstance( int id, QObject *parent )
+QObject* Lexers_Library::CreateModuleInstance(int id, QObject *parent)
 {
 	if (id < getLexers().size())
 	{
