@@ -57,7 +57,7 @@ void Unit_TextEditor::loadModules()
 	if (lexersLoaded())
 		return;
 
-	QVector<const Module *> lexerUnits = g_Core->GetModulesInfo("LexerUnit", 1);
+	QVector<const Module *> lexerUnits = g_Core->GetModulesInfo("LexerModule", 1);
 		
 	foreach(const Module * lexerUnit, lexerUnits)
 	{
@@ -150,13 +150,6 @@ void Unit_TextEditor::SaveSettings()
 	set.setValue("wrapMode", QVariant::fromValue(static_cast<int>(editor->wrapMode())));
 	set.setValue("wrapIndentation", QVariant::fromValue(static_cast<int>(editor->wrapIndentMode())));
 
-	for (std::map<QString, QsciLexer*>::iterator it = lexers().begin(); it != lexers().end(); ++it)
-	{
-		set.beginGroup("Lexer_" + it->first);
-		it->second->writeSettings(set);
-		set.endGroup();
-	}
-
 	set.endGroup();
 }
 
@@ -198,14 +191,6 @@ void Unit_TextEditor::LoadSettings(QSettings & set)
 
 	editor->setWrapMode(static_cast<QsciScintilla::WrapMode>(set.value("wrapMode", QVariant::fromValue(0)).value<int>()));
 	editor->setWrapIndentMode(static_cast<QsciScintilla::WrapIndentMode>(set.value("wrapIndentation", QVariant::fromValue(0)).value<int>()));
-
-	for (std::map<QString, QsciLexer*>::iterator it = lexers().begin(); it != lexers().end(); ++it)
-	{
-		set.beginGroup("Lexer_" + it->first);
-		it->second->readSettings(set);
-		set.endGroup();
-	}
-
 
 	set.endGroup();
 }

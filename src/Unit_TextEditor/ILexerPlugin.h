@@ -7,7 +7,7 @@
 #include <QString>
 #include <QRegExp>
 #include <QVector>
-#include <map>
+#include <QSettings>
 
 class QsciLexer;
 
@@ -24,13 +24,26 @@ class ILexerPlugin : public ILexer
 {
 public:
 	ILexerPlugin(QString const & name, Extension const & ext) :
-	  name_(name), ext_(ext)
+	  name_(name), ext_(ext), lexer(new T)
 	{
+		QSettings set;
+		set.beginGroup("ILexerPlugin");
+		lexer->readSettings(set);
+		set.endGroup();
+	}
+
+    ~ILexerPlugin()
+	{
+		QSettings set;
+		set.beginGroup("ILexerPlugin");
+		lexer->writeSettings(set);
+		set.endGroup();
+		delete lexer;
 	}
 
 	virtual QsciLexer * getLexer() const
 	{
-		return new T;
+		return lexer;
 	}
 
 	virtual QString const & getName() const
@@ -46,7 +59,7 @@ public:
 private:
 	QString name_;
 	Extension ext_;
-
+	T * lexer;
 };
 
 
