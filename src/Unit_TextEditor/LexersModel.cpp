@@ -2,8 +2,8 @@
 #include "Unit_TextEditor/ILexerPlugin.h"
 #include <Qsci/qscilexer.h>
 
-LexersModelNode::LexersModelNode(int lexer, int style, LexersModelLeafType type, QObject * parent) :
-	QObject(parent), lexer_(lexer), style_(style), type_(type)
+LexersModelNode::LexersModelNode(int lexer, int style, LexersModelLeafType type, LexersModelCacheItem * cache, QObject * parent) :
+	QObject(parent), lexer_(lexer), style_(style), type_(type), cache_(cache)
 {
 }
 
@@ -22,12 +22,62 @@ LexersModelLeafType LexersModelNode::type() const
 	return type_;
 }
 
+QFont & LexersModelNode::font() const
+{
+	return cache_->font();
+}
+
+QColor & LexersModelNode::color() const
+{
+	return cache_->color();
+}
+
+LexersModelCacheItem::LexersModelCacheItem(ILexer * lexer, int style, QObject * parent) :
+	QObject(parent), lexer_(lexer), style_(style)
+{
+	reset();
+}
+
+void LexersModelCacheItem::save(QSettings & set) const
+{
+	if (font_ != lexer_->getLexer()->font(style_) || color_ != lexer_->getLexer()->color(style_))
+	{
+		lexer_->getLexer()->setFont(font_, style_);
+		lexer_->getLexer()->setColor(color_, style_);
+		lexer_->getLexer()->writeSettings(set);
+	}
+}
+
+void LexersModelCacheItem::reset()
+{
+	font_ = lexer_->getLexer()->font(style_);
+	color_ = lexer_->getLexer()->color(style_);
+}
+
+QFont & LexersModelCacheItem::font()
+{
+	return font_;
+}
+
+QColor & LexersModelCacheItem::color()
+{
+	return color_;
+}
+
 LexersModelNode * LexersModel::createNode(int lexer, int style, LexersModelLeafType type) const
 {
 	QString key = QString() + lexer + " - " + style + " - " + type;
 	if (!nodes[key])
 	{
-		nodes[key] = new LexersModelNode(lexer, style, type, 0/*this*/);
+		LexersModelCacheItem * ci = cache_[QString() + lexer + " - " + style];
+		
+		if (!ci && (type == Style || type < Properties))
+		{
+			ci = new LexersModelCacheItem(lexers()[lexer], style, 0/*this*/);
+			cache_[QString() + lexer + " - " + style] = ci;
+		}
+
+		nodes[key] = new LexersModelNode(lexer, style, type, ci, 0/*this*/);
 	}
 
 	return nodes[key];
@@ -197,4 +247,38 @@ QVariant LexersModel::headerData(int section, Qt::Orientation orientation, int r
 	}
 
 	return QAbstractItemModel::headerData(section, orientation, role);
+}
+
+Qt::ItemFlags LexersModel::flags(const QModelIndex & index) const
+{
+	if (index.isValid())
+	{
+		LexersModelNode * node = static_cast<LexersModelNode*>(index.internalPointer());
+		if (node)
+		{
+			if (node->type() < Properties)
+			{
+				return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+			}
+		}
+	}
+
+	return QAbstractItemModel::flags(index);
+}
+
+void LexersModel::save()
+{
+	QSettings set;
+	set.setIniCodec("UTF-8");
+	set.beginGroup("ILexerPlugin");
+
+	foreach(LexersModelCacheItem* it, cache_)
+	{
+		if (it)
+		{
+			it->save(set);
+		}
+	}
+
+	set.endGroup();
 }

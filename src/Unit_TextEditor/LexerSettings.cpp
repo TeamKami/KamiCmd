@@ -14,8 +14,15 @@ LexerSettings::LexerSettings(QWidget *parent)
 
 void LexerSettings::showEvent(QShowEvent * event)
 {
-	ui.lexers->setModel(new LexersModel(this));
+	ui.lexers->setEditTriggers(QAbstractItemView::DoubleClicked
+                                 | QAbstractItemView::SelectedClicked);
+	ui.lexers->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+	LexersModel * model = new LexersModel(this);
+	connect(this, SIGNAL(updateLexers()), model, SLOT(save()));
+	ui.lexers->setModel(model);
 	ui.lexers->setItemDelegate(new LexersDelegate(this));
+	
 }
 
 LexerSettings::~LexerSettings()
