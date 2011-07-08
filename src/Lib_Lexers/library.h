@@ -4,8 +4,6 @@
 #include <QtPlugin>
 #include "ILibrary.h"
 
-extern ICoreFunctions *g_Core;
-
 /**
  * \author Nikolay Filchenko <finomen812@gmail.com>
  * \headerfile Lib_Lexers/library.h
