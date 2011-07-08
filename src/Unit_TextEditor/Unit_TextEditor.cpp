@@ -149,7 +149,7 @@ void Unit_TextEditor::Create( IUnit *createdFrom )
 		text = info->name;
 		path = info->path;
 		edited = false;
-		emit TextChanged();
+		//emit TextChanged();
 
 		QFileInfo qinfo(info->path + info->name);
 
@@ -176,7 +176,7 @@ void Unit_TextEditor::onEdit()
 
 	edited = true;
 	text = text + "*";
-	emit TextChanged();
+	//emit TextChanged();
 }
 
 void Unit_TextEditor::selectLexer()

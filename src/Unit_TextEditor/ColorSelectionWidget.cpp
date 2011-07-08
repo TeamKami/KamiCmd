@@ -2,6 +2,7 @@
 #include <Qsci/qscilexer.h>
 #include <QPainter>
 #include <QMessageBox>
+#include <QSettings>
 
 ColorSelectionWidget::ColorSelectionWidget(QWidget * parent, QsciLexer * lexer, int style) :
 	QWidget(parent), lexer_(lexer), style_(style)
@@ -30,7 +31,15 @@ void ColorSelectionWidget::paintEvent(QPaintEvent *event)
 
 void ColorSelectionWidget::save()
 {
-	lexer_->setColor(color_, style_);	
+	if (color_ != lexer_->color(style_))
+	{
+		lexer_->setColor(color_, style_);	
+		QSettings set;
+		set.setIniCodec("UTF-8");
+		set.beginGroup("ILexerPlugin");
+		lexer_->writeSettings(set);
+		set.endGroup();
+	}
 }
 
 void ColorSelectionWidget::selectColor(QColor const & color)
