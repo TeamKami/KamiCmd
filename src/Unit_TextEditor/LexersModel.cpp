@@ -73,11 +73,11 @@ LexersModelNode * LexersModel::createNode(int lexer, int style, LexersModelLeafT
 		
 		if (!ci && (type == Style || type < Properties))
 		{
-			ci = new LexersModelCacheItem(lexers()[lexer], style, 0/*this*/);
+			ci = new LexersModelCacheItem(lexers()[lexer], style, const_cast<LexersModel*>(this));
 			cache_[QString() + lexer + " - " + style] = ci;
 		}
 
-		nodes[key] = new LexersModelNode(lexer, style, type, ci, 0/*this*/);
+		nodes[key] = new LexersModelNode(lexer, style, type, ci, const_cast<LexersModel*>(this));
 	}
 
 	return nodes[key];
