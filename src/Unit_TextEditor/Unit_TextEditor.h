@@ -15,6 +15,7 @@ class QsciScintilla;
 class Action;
 class ActionManager;
 class SciSettings;
+struct FileInfo;
 
 /**
  * \author Nikolay Filchenko <finomen812@gmail.com>
@@ -48,10 +49,12 @@ private:
 	ActionManager *am;
 	SciSettings * settings_;
 	ICoreFunctions * g_Core;
+	const FileInfo * info;
 
 private slots:
 	void onEdit();
 	void selectLexer();
+	void save();
 	void setLexer(QsciLexer * l);
 	void updateSettings();
 

@@ -77,6 +77,11 @@ Unit_TextEditor::Unit_TextEditor(QWidget *parent, SciSettings * settings, ICoreF
 	Actions.last()->setShortcutContext(Qt::WindowShortcut);
 	Actions.last()->setData("TextEditor");
 	connect(Actions.last(), SIGNAL(triggered()), settings, SLOT(showSettings()));
+	Actions << new QAction(QIcon(), tr("Save file"), this);
+	Actions.last()->setShortcut(Qt::CTRL + Qt::Key_S);
+	Actions.last()->setShortcutContext(Qt::WindowShortcut);
+	Actions.last()->setData("TextEditor");
+	connect(Actions.last(), SIGNAL(triggered()), this, SLOT(save()));
 	am->RegisterActions(Actions);
 	addActions(Actions);
 
@@ -102,7 +107,7 @@ void Unit_TextEditor::Create( IUnit *createdFrom )
 {
 	if (hostPanel = dynamic_cast<IPanel *>(createdFrom))
 	{
-		const FileInfo *const info = hostPanel->GetCurrentFile();
+		info = hostPanel->GetCurrentFile();
 	
 		QFile file(info->path + info->name);
 
@@ -135,6 +140,36 @@ void Unit_TextEditor::Create( IUnit *createdFrom )
 QIcon Unit_TextEditor::GetIcon()
 {
 	return QIcon();
+}
+
+void Unit_TextEditor::save()
+{
+	if (!edited)
+		return;
+
+	QFile file(info->path + info->name);
+
+	if (!file.open(QFile::WriteOnly)) {
+		QMessageBox::warning(this, tr("Application"),
+							 tr("Cannot write file %1:\n%2.")
+							 .arg(info->path + info->name)
+							 .arg(file.errorString()));
+		return;
+	}
+
+	QTextStream out(&file);
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+
+	out << editor->text();
+
+	out.flush();
+	file.close();
+
+	QApplication::restoreOverrideCursor();
+
+	text = info->name;
+	edited = false;
+	emit TextChanged();
 }
 
 void Unit_TextEditor::onEdit()
