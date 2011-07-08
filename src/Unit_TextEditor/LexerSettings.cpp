@@ -12,7 +12,7 @@ LexerSettings::LexerSettings(QWidget *parent)
 	ui.setupUi(this);
 }
 
-void LexerSettings::showEvent(QShowEvent * event)
+void LexerSettings::showEvent(QShowEvent *)
 {
 	ui.lexers->setEditTriggers(QAbstractItemView::DoubleClicked
                                  | QAbstractItemView::SelectedClicked);

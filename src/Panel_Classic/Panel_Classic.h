@@ -21,9 +21,9 @@ public:
 	virtual void LoadState(QSettings &set);
 
 	virtual QString GetPath();
-	virtual const FileInfo *const GetCurrentFile();
-	virtual const FileInfo *const SetCurrentFileToPrev();
-	virtual const FileInfo *const SetCurrentFileToNext();
+        virtual const FileInfo * GetCurrentFile();
+        virtual const FileInfo * SetCurrentFileToPrev();
+        virtual const FileInfo * SetCurrentFileToNext();
 	virtual QVector<const FileInfo*> GetSelectedFiles();
 	virtual bool SetCurrentIndex(int index);
 	virtual int  GetCurrentIndex();

@@ -117,19 +117,19 @@ QString Panel_Classic::GetText()
 	return str;
 }
 
-const FileInfo *const Panel_Classic::GetCurrentFile()
+const FileInfo * Panel_Classic::GetCurrentFile()
 {
 	return view->Model()->GetFileInfo(view->Sort()->mapToSource(view->currentIndex()).row());
 }
 
-const FileInfo *const Panel_Classic::SetCurrentFileToPrev()
+const FileInfo * Panel_Classic::SetCurrentFileToPrev()
 {
 	if (SetCurrentIndex(view->currentIndex().row() - 1))
 		return GetCurrentFile();
 	return NULL;
 }
 
-const FileInfo *const Panel_Classic::SetCurrentFileToNext()
+const FileInfo * Panel_Classic::SetCurrentFileToNext()
 {
 	if (SetCurrentIndex(view->currentIndex().row() + 1))
 		return GetCurrentFile();

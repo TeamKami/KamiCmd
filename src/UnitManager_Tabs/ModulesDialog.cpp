@@ -37,7 +37,7 @@ bool moduleLessThan( const Module *first, const Module *second )
 		if (first->type == second->type)
 		{
 			if (first->interfaceVersion > second->interfaceVersion || 
-				first->interfaceVersion == second->interfaceVersion && first->moduleVersion > second->moduleVersion)
+                                (first->interfaceVersion == second->interfaceVersion && first->moduleVersion > second->moduleVersion))
 				return true;
 			return false;
 		}

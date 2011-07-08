@@ -18,7 +18,7 @@ QVector<Module *> Lexers_Library::ListModulesAndGetCore( ICoreFunctions *core )
 	return arr;
 }
 
-QObject* Lexers_Library::CreateModuleInstance(int id, QObject *parent)
+QObject* Lexers_Library::CreateModuleInstance(int id, QObject *)
 {
 	if (id < getLexers().size())
 	{

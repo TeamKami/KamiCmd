@@ -164,7 +164,7 @@ int LexersModel::rowCount(const QModelIndex & parent) const
 	return 0;
 }
 
-int LexersModel::columnCount(const QModelIndex & parent) const
+int LexersModel::columnCount(const QModelIndex &) const
 {
 	return 2;
 }

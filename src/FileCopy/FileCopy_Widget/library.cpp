@@ -13,7 +13,7 @@ QVector<Module *> FC_Library::ListModulesAndGetCore( ICoreFunctions *core )
 	return arr;
 }
 
-QObject* FC_Library::CreateModuleInstance( int id, QObject *parent )
+QObject* FC_Library::CreateModuleInstance(int, QObject *parent)
 {
 	return new CopyWidget(qobject_cast<QDialog *>(parent));
 }

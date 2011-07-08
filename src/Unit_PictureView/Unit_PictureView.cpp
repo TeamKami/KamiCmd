@@ -30,7 +30,7 @@ void Unit_PictureView::LoadState( QSettings &/*set*/ )
 
 void Unit_PictureView::Create( IUnit *createdFrom )
 {
-	if (hostPanel = dynamic_cast<IPanel *>(createdFrom))
+        if ((hostPanel = dynamic_cast<IPanel *>(createdFrom)) != 0)
 	{
 		const FileInfo *const info = hostPanel->GetCurrentFile();
 		text = info->name;
@@ -105,7 +105,7 @@ void PictureView::OpenFile( QString path )
 	file->open(QIODevice::ReadOnly);
 
 	uchar *txt;
-	if (txt = file->map(0, file->size()))
+        if ((txt = file->map(0, file->size())) != 0)
 	{
 		img.loadFromData(txt, file->size());
 		update();

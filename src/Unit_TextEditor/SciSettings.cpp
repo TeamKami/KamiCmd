@@ -144,10 +144,10 @@ public:
 	
 
 private:
-	typename UiSetting<T>::widgetPtr widget;
 	QString name;
 	S setter;
 	G getter;
+        typename UiSetting<T>::widgetPtr widget;
 protected:
 	T value;
 };
@@ -168,7 +168,7 @@ public:
 };
 
 
-#define SETTING(name, Name, type) settings.push_back(new Setting<type>(#name, &QsciScintilla::##name, &QsciScintilla::set##Name, &Ui::EditorSettings::##name));
+#define SETTING(name, Name, type) settings.push_back(new Setting<type>(#name, &QsciScintilla:: name, &QsciScintilla:: set##Name, &Ui::EditorSettings:: name));
 
 
 SciSettings::SciSettings(QObject * parent, ICoreFunctions *core) :

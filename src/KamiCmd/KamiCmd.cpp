@@ -4,8 +4,8 @@ bool moduleLessThan( Module *first, Module *second )
 {
 	if (first->type == second->type)
 	{
-		if (first->interfaceVersion > second->interfaceVersion || 
-			first->interfaceVersion == second->interfaceVersion && first->moduleVersion > second->moduleVersion)
+                if (first->interfaceVersion > second->interfaceVersion ||
+                        (first->interfaceVersion == second->interfaceVersion && first->moduleVersion > second->moduleVersion))
 			return true;
 		return false;
 	}
@@ -93,7 +93,7 @@ QVector<const Module *> CoreFunctions::GetModulesInfo(QString type /*= ""*/, int
 	QVector<const Module *> arr;
 
 	for (int i = 0; i < modules.size(); i++)
-		if (type.isEmpty() || modules[i]->type == type && interfaceVersion == modules[i]->interfaceVersion)
+                if (type.isEmpty() || (modules[i]->type == type && interfaceVersion == modules[i]->interfaceVersion))
 			arr.append(modules[i]);
 
 	return arr;

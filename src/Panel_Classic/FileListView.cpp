@@ -71,7 +71,7 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 		}
 
 	bool modified = (event->modifiers() & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier));
-	if (isControlEnter && isSearchMode || !event->text().isEmpty() && event->text() != "\x0d" && !modified && !edit(currentIndex(), AnyKeyPressed, event))
+        if ((isControlEnter && isSearchMode) || (!event->text().isEmpty() && event->text() != "\x0d" && !modified && !edit(currentIndex(), AnyKeyPressed, event)))
 	{
 		if (!isSearchMode)
 		{
@@ -150,7 +150,7 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 		event->ignore();
 
 		if (overridden_key)
-			QTreeView::keyPressEvent(&QKeyEvent(event->type(), overridden_key,
+                        QTreeView::keyPressEvent(&QKeyEvent(event->type(), overridden_key, //FIXME: Warning:Taking address of temporary.
 			event->modifiers() & overridden_modifiers, event->text(), event->isAutoRepeat(), event->count()));
 		else
 			QTreeView::keyPressEvent(event);

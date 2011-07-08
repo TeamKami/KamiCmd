@@ -94,18 +94,18 @@ QString Unit_TextEditor::GetText()
 	return text;
 }
 
-void Unit_TextEditor::SaveState(QSettings & set)
+void Unit_TextEditor::SaveState(QSettings & /*set*/)
 {
 
 }
 
-void Unit_TextEditor::LoadState(QSettings & set)
+void Unit_TextEditor::LoadState(QSettings & /*set*/)
 {
 }
 
 void Unit_TextEditor::Create( IUnit *createdFrom )
 {
-	if (hostPanel = dynamic_cast<IPanel *>(createdFrom))
+        if ((hostPanel = dynamic_cast<IPanel *>(createdFrom)) != 0)
 	{
 		info = hostPanel->GetCurrentFile();
 	

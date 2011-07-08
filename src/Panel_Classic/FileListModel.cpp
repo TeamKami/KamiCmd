@@ -324,7 +324,7 @@ bool FileListModel::setData( const QModelIndex & /*index*/, const QVariant & /*v
 	return true;
 }
 
-const FileInfo *const FileListModel::GetFileInfo( int index )
+const FileInfo * FileListModel::GetFileInfo( int index )
 {
 	return (const FileInfo *const)(&list[index]);
 }
@@ -436,9 +436,8 @@ FileListModel::FileListModel()
 	if (Archivers.size())
 		qSort(Archivers.begin(), Archivers.end(), archiverLessThan);
 
-	if (Assc = dynamic_cast<IAssociations *>(g_Core->QueryModule("Associations", 1)));
-	else
-		g_Core->DebugWrite("UnitManager_Tabs", "Associations module not found", ICoreFunctions::Error);
+        if ((Assc = dynamic_cast<IAssociations *>(g_Core->QueryModule("Associations", 1))) == 0)
+            g_Core->DebugWrite("UnitManager_Tabs", "Associations module not found", ICoreFunctions::Error);
 }
 
 IFileSystem* FileListModel::GetFs()

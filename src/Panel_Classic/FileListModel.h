@@ -53,7 +53,7 @@ public:
 	QString GetPath();
 	QModelIndex Enter(QModelIndex selected); // Return value is row count
 	QModelIndex UpOneLevel(); // Return value is index of element for selection
-	const FileInfo *const GetFileInfo(int index);
+        const FileInfo * GetFileInfo(int index);
 	enum SelectAction {SA_None, SA_Select, SA_Deselect, SA_Toggle};
 	bool Select(QModelIndex index, int selectAction = SA_Toggle);
 	bool SelectRange(QVector<QModelIndex> &range, int selectAction = SA_Toggle);

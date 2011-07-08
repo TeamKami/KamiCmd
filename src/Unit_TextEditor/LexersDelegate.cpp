@@ -72,6 +72,8 @@ QWidget * LexersDelegate::createEditor(QWidget *parent, const QStyleOptionViewIt
 		{
 		case Font:
 			return new QFontComboBox(parent);
+                default:
+                    break;
 		}
 	}
 
@@ -86,17 +88,21 @@ void LexersDelegate::setEditorData(QWidget *editor, const QModelIndex &index) co
 		switch (node->type())
 		{
 		case Font:
+                {
 			QFontComboBox * fb = dynamic_cast<QFontComboBox*>(editor);
 			if (fb)
 			{
 				fb->setCurrentFont(node->font());
 			}
 			break;
+                }
+                default:
+                    break;
 		}
 	}
 }
 
-void LexersDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+void LexersDelegate::setModelData(QWidget *editor, QAbstractItemModel *, const QModelIndex &index) const
 {
 	if (index.column() == 1)
 	{
@@ -104,22 +110,26 @@ void LexersDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, co
 		switch (node->type())
 		{
 		case Font:
+                {
 			QFontComboBox * fb = dynamic_cast<QFontComboBox*>(editor);
 			if (fb)
 			{
 				node->font() = fb->currentFont();
 			}
 			break;
+                }
+                default:
+                    break;
 		}
 	}
 }
 
-void LexersDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index)const
+void LexersDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &)const
 {
 	editor->setGeometry(option.rect);
 }
 
-bool LexersDelegate::editorEvent(QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index)
+bool LexersDelegate::editorEvent(QEvent *, QAbstractItemModel *, const QStyleOptionViewItem &, const QModelIndex & index)
 {
 	if (cache)
 		return false;

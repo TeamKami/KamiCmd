@@ -58,7 +58,7 @@ void SettingsDialog::onDialogButton(QAbstractButton * button)
 	}
 }
 
-void SettingsDialog::onPageSelected(QTreeWidgetItem * item, int column)
+void SettingsDialog::onPageSelected(QTreeWidgetItem * item, int)
 {
 	QWidget * page = static_cast<QWidget*>(item->data(0, Qt::UserRole).value<void*>());
 	if (page)
