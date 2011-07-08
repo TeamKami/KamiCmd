@@ -83,6 +83,11 @@ private:
 	T * lexer;
 };
 
+inline QVector<ILexer*> & lexers()
+{
+	static QVector<ILexer*> lexers_;
+	return lexers_;
+}
 
 #endif //_H_I_LEXER_PLUGIN_
 

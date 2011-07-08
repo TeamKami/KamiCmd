@@ -12,12 +12,6 @@
 
 #include <QVector>
 
-QVector<ILexer*> & lexers()
-{
-	static QVector<ILexer*> lexers_;
-	return lexers_;
-}
-
 QsciLexer * getLexer(QString const & fileName)
 {
 	foreach(ILexer * lexer, lexers())

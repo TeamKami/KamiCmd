@@ -6,9 +6,6 @@
 
 enum Modules {MUnit_TextEditor};
 
-std::map<QString, QsciLexer*> & lexers();
-std::vector<std::pair<QRegExp, QString> > & assoc();
-
 QVector<Module *> Unit_TextEditor_Library::ListModulesAndGetCore( ICoreFunctions *core )
 {
 	g_Core = core;

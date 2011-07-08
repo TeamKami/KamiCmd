@@ -26,13 +26,13 @@ void SettingsDialog::show()
 		QTreeWidgetItem * appearance = new QTreeWidgetItem();
 		appearance->setText(0, "Appearance");
 		appearance->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(0)));	
-		/*QTreeWidgetItem * lexer = new QTreeWidgetItem(appearance);
+		QTreeWidgetItem * lexer = new QTreeWidgetItem(appearance);
 		appearance->addChild(lexer);
 		lexer->setText(0, "Coloring");
 		LexerSettings * ls = new LexerSettings(this);
 		lexer->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(dynamic_cast<QWidget*>(ls))));	
 		connect(this, SIGNAL(saveSettings()), ls, SLOT(save()));
-		ls->hide();*/
+		ls->hide();
 		QTreeWidgetItem * editor = new QTreeWidgetItem(appearance);
 		appearance->addChild(editor);
 		editor->setText(0, "Editor");
