@@ -49,4 +49,13 @@ public:
 	virtual QMainWindow *GetMainWindow() = 0;
 };
 
+class IActionManager
+{
+public:
+    virtual void RegisterActions(QList<QAction *> actions) = 0;
+    virtual void UnregisterActions(QList<QAction *> actions) = 0;
+};
+
+
+
 #endif // UNITMANAGER_INTERFACE_H

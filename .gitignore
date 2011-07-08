@@ -483,3 +483,7 @@ src/Unit_TextEditor/moc_Unit_TextEditor.cpp
 src/Unit_TextEditor/moc_Unit_TextEditor.o
 src/Unit_TextEditor/moc_library.cpp
 src/Unit_TextEditor/moc_library.o
+build
+dist
+.project
+.cproject

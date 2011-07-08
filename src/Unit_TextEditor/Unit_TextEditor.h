@@ -46,7 +46,7 @@ private:
 	IPanel *hostPanel;
 	LexersDialog * ld;
 	QList<QAction *> Actions;
-	ActionManager *am;
+	IActionManager *am;
 	SciSettings * settings_;
 	ICoreFunctions * g_Core;
 	const FileInfo * info;

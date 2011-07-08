@@ -1,9 +1,7 @@
 #include "Unit_TextEditor/Unit_TextEditor.h"
 #include "Unit_TextEditor/library.h"
-#include "UnitManager_Tabs/ActionManager.h"
 #include <QRegExp>
 #include <vector>
-#include "../UnitManager_Tabs/ActionManager.h"
 #include "Unit_TextEditor/SciSettings.h"
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
@@ -61,7 +59,7 @@ Unit_TextEditor::Unit_TextEditor(QWidget *parent, SciSettings * settings, ICoreF
 
 	connect(ld, SIGNAL(setLexer(QsciLexer*)), this, SLOT(setLexer(QsciLexer*)));
 
-	if (!(am = dynamic_cast<ActionManager *>(g_Core->QueryModule("ActionManager", 1))))
+	if (!(am = dynamic_cast<IActionManager *>(g_Core->QueryModule("ActionManager", 1))))
 	{
 		g_Core->DebugWrite("TextEditor", "ActionManager module not found", ICoreFunctions::Error);
 		QMessageBox::warning(this, "TextEditor", "ActionManager module not found");

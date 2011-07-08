@@ -3,8 +3,9 @@
 
 #include <QObject>
 #include <QDialog>
+#include "IUnitManager.h"
 
-class ActionManager : public QObject
+class ActionManager : public QObject, public IActionManager
 {
 	Q_OBJECT
 
