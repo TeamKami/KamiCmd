@@ -58,7 +58,6 @@ private slots:
 
 signals:
 	void TextChanged();
-
 };
 
 #endif // UNIT_PICTUREVIEW_H
