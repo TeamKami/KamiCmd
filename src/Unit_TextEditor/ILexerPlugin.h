@@ -16,7 +16,9 @@ class ILexer
 public:
 	virtual QsciLexer * getLexer() const = 0;
 	virtual QString const & getName() const = 0;
-	virtual Extension const & getMask() const = 0;
+	virtual QVector<QString> const & getMask() const = 0;
+	virtual void setMask(QVector<QString> const & mask) = 0;
+	virtual bool match(QString const & fileName) const = 0;
 };
 
 template <typename T>
@@ -31,15 +33,12 @@ public:
 		set.beginGroup("ILexerPlugin");
 		lexer->readSettings(set);
 		set.endGroup();
+
+		setMask(ext_.ext);
 	}
 
     ~ILexerPlugin()
 	{
-		/*QSettings set;
-		set.setIniCodec("UTF-8");
-		set.beginGroup("ILexerPlugin");
-		lexer->writeSettings(set);
-		set.endGroup();*/
 		delete lexer;
 	}
 
@@ -53,14 +52,34 @@ public:
 		return name_;
 	}
 
-	virtual Extension const & getMask() const
+	virtual QVector<QString> const & getMask() const
 	{
-		return ext_;
+		return ext_.ext;
+	}
+
+	virtual void setMask(QVector<QString> const & m)
+	{
+		foreach(QString const & s, m)
+		{
+			mask.push_back(QRegExp(s, Qt::CaseInsensitive, QRegExp::Wildcard));
+		}
+	}
+
+	virtual bool match(QString const & fileName) const
+	{
+		foreach(QRegExp const & wildcard, mask)
+		{
+			if (wildcard.exactMatch(fileName))
+				return true;
+		}
+
+		return false;
 	}
 
 private:
 	QString name_;
 	Extension ext_;
+	QVector<QRegExp> mask;
 	T * lexer;
 };
 

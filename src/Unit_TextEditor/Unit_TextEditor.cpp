@@ -10,42 +10,25 @@
 
 #include "ILexerPlugin.h"
 
-std::map<QString, QsciLexer*> & lexers()
+#include <QVector>
+
+QVector<ILexer*> & lexers()
 {
-	static std::map<QString, QsciLexer*> lexers_;
+	static QVector<ILexer*> lexers_;
 	return lexers_;
 }
 
-std::vector<std::pair<QRegExp, QString> > & assoc()
+QsciLexer * getLexer(QString const & fileName)
 {
-	static std::vector<std::pair<QRegExp, QString> > assoc_;
-	return assoc_;
-}
-
-QsciLexer * getLexer(QString const & name)
-{
-	if (lexers().count(name))
+	foreach(ILexer * lexer, lexers())
 	{
-		return lexers()[name];
-	}
-	
-	return 0;
-}
-
-QString const & extToLexer(QString const & name)
-{
-	static QString empty;
-
-	for (std::vector<std::pair<QRegExp, QString> >::iterator it = 
-		assoc().begin(); it != assoc().end(); ++it)
-	{
-		if (it->first.exactMatch(name))
+		if (lexer->match(fileName))
 		{
-			return it->second;
+			return lexer->getLexer();
 		}
 	}
-	
-	return empty;
+
+	return 0;
 }
 
 bool & lexersLoaded()
@@ -66,11 +49,7 @@ void Unit_TextEditor::loadModules()
 		ILexer * lexer = dynamic_cast<ILexer*>(g_Core->QueryModule("LexerModule", 1, lexerUnit->name));
 		if (lexer)
 		{
-			lexers()[lexer->getName()] = lexer->getLexer();
-			foreach(QString const & wildcard, lexer->getMask().ext)
-			{
-				assoc().push_back(std::make_pair(QRegExp(wildcard, Qt::CaseInsensitive, QRegExp::Wildcard), lexer->getName()));
-			}
+			lexers().push_back(lexer);
 		}
 	}
 
@@ -153,12 +132,7 @@ void Unit_TextEditor::Create( IUnit *createdFrom )
 
 		QFileInfo qinfo(info->path + info->name);
 
-		QString lex = extToLexer(info->name);
-
-		if (lex != "")
-		{
-			editor->setLexer(getLexer(lex));
-		}
+		editor->setLexer(getLexer(info->name));
 		
 		QApplication::restoreOverrideCursor();
 	}

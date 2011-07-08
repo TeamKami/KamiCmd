@@ -1,6 +1,7 @@
 #include "LexersDialog.h"
 #include <QMessageBox>
 #include <Qsci/qscilexer.h>
+#include "Unit_TextEditor/ILexerPlugin.h"
 
 LexersDialog::LexersDialog(QWidget *parent)
 	: QMainWindow(parent)
@@ -14,22 +15,21 @@ LexersDialog::~LexersDialog()
 
 }
 
-void LexersDialog::show(std::map<QString, QsciLexer *> const & lexers, QsciLexer * lexer)
+void LexersDialog::show(QVector<ILexer*> const & lexers, QsciLexer * cLexer)
 {
 	int active = 0, id = 1;
 
 	ui.lexers->addItem("(None)", QVariant::fromValue(static_cast<void*>(0)));
 	
-	for (std::map<QString, QsciLexer *>::const_iterator it = lexers.begin(); it != lexers.end(); ++it)
+	foreach(ILexer * lexer, lexers)
 	{
-		//ui.lexers->addItem(it->first, it->second);
-		if (it->second == lexer)
+		if (lexer->getLexer() == cLexer)
 		{
 			active = id;
 		}
 
-		ui.lexers->addItem(QString(it->second->language()), 
-			QVariant::fromValue(static_cast<void*>(it->second)));
+		ui.lexers->addItem(QString(lexer->getLexer()->language()), 
+			QVariant::fromValue(static_cast<void*>(lexer->getLexer())));
 
 		id++;
 	}

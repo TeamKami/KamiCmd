@@ -3,9 +3,10 @@
 
 #include <QMainWindow>
 #include "ui_LexersDialog.h"
-#include <map>
+#include <QVector>
 
 class QsciLexer;
+class ILexer;
 
 class LexersDialog : public QMainWindow
 {
@@ -15,7 +16,7 @@ public:
 	LexersDialog(QWidget *parent = 0);
 	~LexersDialog();
 
-	void show(std::map<QString, QsciLexer *> const & lexers, QsciLexer * lexer);
+	void show(QVector<ILexer*> const & lexers, QsciLexer * lexer);
 
 private:
 	Ui::LexersDialog ui;

@@ -6,7 +6,6 @@
 #include "IPanel.h"
 #include <QTextEdit>
 #include <QScrollBar>
-#include <map>
 
 #include "Unit_TextEditor/LexersDialog.h"
 

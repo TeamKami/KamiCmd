@@ -20,7 +20,7 @@ LexerSettings::LexerSettings(QWidget *parent)
 
 void LexerSettings::showEvent(QShowEvent * event)
 {
-	static bool first = true;
+	/*static bool first = true;
 	if (!first)
 		return;
 	first = false;
@@ -51,7 +51,7 @@ void LexerSettings::showEvent(QShowEvent * event)
 			connect(this, SIGNAL(updateLexers()), fw, SLOT(save()));
 			connect(this, SIGNAL(updateLexers()), cw, SLOT(save()));
 		}
-	}
+	}*/
 }
 
 LexerSettings::~LexerSettings()
