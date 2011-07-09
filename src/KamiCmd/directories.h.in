@@ -1,6 +1,10 @@
 #ifndef DIRECTORIES_H
 #define DIRECTORIES_H
 
+#ifndef Q_WS_WIN
 #define MODULES_DIR "${CMAKE_INSTALL_PREFIX}/${INSTALL_MODULES_DIR}"
+#else
+#define MODULES_DIR QApplication::applicationDirPath() + "/Modules"
+#endif
 
 #endif //DIRECTORIES_H
