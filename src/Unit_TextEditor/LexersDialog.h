@@ -8,23 +8,37 @@
 class QsciLexer;
 class ILexer;
 
-class LexersDialog : public QMainWindow
+/**
+ * \headerfile Unit_TextEditor/LexersDialog.h
+ * \author Nikolay Filchenko <finomen812@gmail.com>
+ * \brief Lexer selection dialog
+ */
+class LexersDialog: public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	LexersDialog(QWidget *parent = 0);
-	~LexersDialog();
+    /**
+     * \param parent passed to QWidget(QWidget*)
+     */
+    LexersDialog(QWidget *parent = 0);
 
-	void show(QVector<ILexer*> const & lexers, QsciLexer * lexer);
+    ~LexersDialog();
+
+    /**
+     * \brief open dialog
+     * \param lexers Array of availiable lexers
+     * \param lexer Pointer to current lexer
+     */
+    void show(QVector<ILexer*> const & lexers, QsciLexer * lexer);
 
 private:
-	Ui::LexersDialog ui;
+    Ui::LexersDialog ui;
 
 public slots:
-	void on_actionSelect_triggered();
+    void on_actionSelect_triggered();
 signals:
-	void setLexer(QsciLexer * l);
+    void setLexer(QsciLexer * l);
 };
 
 #endif // LEXERSDIALOG_H
