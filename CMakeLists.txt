@@ -31,11 +31,12 @@ set(QT_USE_QPLUGIN TRUE)
 set(QT_USE_QTCORE TRUE)
 include (${QT_USE_FILE})
 
-
+if (WIN32)
 add_definitions(
 	-DUNICODE
 	 /Zc:wchar_t-
 )
+endif()
 
 add_subdirectory(3rdparty)
 
