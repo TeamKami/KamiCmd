@@ -1,0 +1,1 @@
+KamiCmdModuleDev(Panel_Classic)

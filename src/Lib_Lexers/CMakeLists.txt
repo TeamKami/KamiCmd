@@ -1,0 +1,2 @@
+KamiCmdModuleDev(Lib_Lexers)
+target_link_libraries(Lib_Lexers qscintilla2)
