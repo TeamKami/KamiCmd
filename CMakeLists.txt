@@ -53,6 +53,20 @@ include_directories(${3RDPARTY_INCLUDES})
 
 add_subdirectory(src)
 
+if(WIN32)
+install(FILES 
+	"${QT_LIBRARY_DIR}/QtCore${QT_VERSION_MAJOR}.dll"
+	"${QT_LIBRARY_DIR}/QtXml${QT_VERSION_MAJOR}.dll"
+	"${QT_LIBRARY_DIR}/QtWebKit${QT_VERSION_MAJOR}.dll"
+	"${QT_LIBRARY_DIR}/QtGui${QT_VERSION_MAJOR}.dll"
+	"${QT_LIBRARY_DIR}/QtNetwork${QT_VERSION_MAJOR}.dll"
+	"${QT_LIBRARY_DIR}/QtScript${QT_VERSION_MAJOR}.dll"
+	DESTINATION ${INSTALL_LIB_DIR}
+)
+
+endif()
+
+
 if (UNIX OR APPLE)
 set(CPACK_BINARY_STGZ true)
 set(CPACK_BINARY_TGZ true)
