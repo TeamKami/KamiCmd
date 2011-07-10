@@ -1,1 +1,0 @@
-KamiCmdModuleDev(FileCopy_Widget)

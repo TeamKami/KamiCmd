@@ -1,2 +1,0 @@
-add_subdirectory(QScintilla/QScintilla2)
-set(3RDPARTY_INCLUDES ${QSCINTILLA_INCLUDES} PARENT_SCOPE)

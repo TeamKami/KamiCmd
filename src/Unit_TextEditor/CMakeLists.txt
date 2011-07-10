@@ -1,2 +1,0 @@
-KamiCmdModuleDev(Unit_TextEditor)
-target_link_libraries(Unit_TextEditor qscintilla2)
