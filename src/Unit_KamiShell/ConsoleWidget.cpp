@@ -49,13 +49,16 @@ void ConsoleWidget::keyPressEvent(QKeyEvent *event)
         {
             int ms = tabPressed.restart();
 
+            QString cmd = toPlainText().right(toPlainText().size() - commandPos);
+                            cmd.replace("\\\n" + shortWelcome, "\n");
+
             if (ms < 1000)
             {
-                emit tabTab();
+                emit tabTab(cmd);
             }
             else
             {
-                emit tab();
+                emit tab(cmd);
             }
             return;
         }
@@ -174,6 +177,27 @@ void ConsoleWidget::setWelcome(QString text)
 void ConsoleWidget::setShortWelcome(QString text)
 {
     shortWelcome = text;
+}
+
+void ConsoleWidget::complete(const QString &text)
+{
+    QTextEdit::setPlainText(QTextEdit::toPlainText().left(commandPos));
+    SetCursorPos(commandPos);
+    insertPlainText(text);
+}
+
+void ConsoleWidget::hint(const QString &text)
+{
+    QString cmd = toPlainText().right(toPlainText().size() - commandPos);
+    append(text);
+
+    QTextCursor cursor = textCursor();
+    cursor.movePosition(QTextCursor::End);
+    setTextCursor(cursor);
+    QTextEdit::insertPlainText(cmd);
+    cursor = textCursor();
+    cursor.movePosition(QTextCursor::End);
+    setTextCursor(cursor);
 }
 
 void ConsoleWidget::append(const QString &text)

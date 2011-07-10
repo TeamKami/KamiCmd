@@ -19,6 +19,11 @@ Unit_KamiShell::Unit_KamiShell(QWidget *parent) :
     connect(console, SIGNAL(read(QString)),
                     SLOT(keyPress(QString)));
 
+    connect(console, SIGNAL(tab(const QString &)),
+                        SLOT(tab(const QString &)));
+    connect(console, SIGNAL(tabTab(const QString &)),
+                            SLOT(tabTab(const QString &)));
+
     directory = QDir::current();
     console->setWelcome(directory.path() + " $ ");
     console->append("Welcome to KamiShell");
@@ -217,4 +222,131 @@ void Unit_KamiShell::cd(QStringList const & args)
     directory = d;
     console->setWelcome(directory.path() + " $ ");
     console->append("");
+}
+
+void common(QString & s1, QString const & s2)
+{
+    int len = 0;
+
+    for (; len < s1.size() && len < s2.size() && s1[len] == s2[len]; ++len);
+
+    s1 = s1.left(len);
+
+}
+
+void Unit_KamiShell::tab(QString const & command)
+{
+    QStringList names = complete(command, true);
+
+    if (names.size() == 0)
+    {
+        return;
+    }
+
+    QString name = names[0];
+
+    foreach(QString const & s, names)
+    {
+        common(name, s);
+    }
+
+    if (name.size())
+    {
+        QStringList sl = command.split(" ", QString::KeepEmptyParts);
+
+        if (sl.size())
+        {
+            sl[sl.size() - 1] = name;
+        }
+        else
+        {
+            sl.push_back(name);
+        }
+
+        QString cmd;
+
+        QString space = "";
+
+        foreach (QString const & s, sl)
+        {
+            cmd += space + s;
+            space = " ";
+        }
+
+        console->complete(cmd);
+    }
+}
+
+void Unit_KamiShell::tabTab(QString const & command)
+{
+    QStringList names = complete(command);
+
+    if (names.size() > 1)
+    {
+        QString hint;
+        QString delim = "\n  ";
+
+        foreach (QString const & s, names)
+        {
+            hint += delim + s;
+        }
+
+        console->hint(hint);
+    }
+
+    tab(command);
+
+}
+
+QStringList Unit_KamiShell::complete(QString const & command, bool full)
+{
+    QStringList sl = command.split(" ", QString::KeepEmptyParts);
+    QString ac = sl.size() ? sl[sl.size() - 1] : "";
+
+    int end = ac.lastIndexOf("/");
+
+    QString prefix = ac;
+    QDir d = directory;
+
+    if (end != -1)
+    {
+        prefix = ac.right(ac.size() - end - 1);
+
+        d = QDir(ac.left(end + 1));
+    }
+
+    QString cpath = d.path();
+
+    if (cpath.size() && cpath[cpath.size() - 1] != '/')
+    {
+        cpath += "/";
+    }
+
+    if (d.isRelative())
+    {
+        QDir t = directory;
+        t.cd(d.path());
+    }
+
+    if (d.exists())
+    {
+#ifndef Q_OS_WIN32
+#define PFILTER | QDir::CaseSensitive
+#else
+#define PFILTER
+#endif
+        QStringList names = d.entryList(QStringList(prefix + "*"), QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot PFILTER);
+#undef PFILTER
+        if (full)
+        {
+            for (int i = 0; i < names.size(); ++i)
+            {
+                names[i] = cpath + names[i];
+            }
+        }
+
+        return names;
+    }
+
+    return QStringList();
 }

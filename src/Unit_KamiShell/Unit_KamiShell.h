@@ -48,6 +48,9 @@ private slots:
     void error(QProcess::ProcessError);
     void terminate();
     void keyPress(QString);
+    void tab(QString const &);
+    void tabTab(QString const &);
+    QStringList complete(QString const &, bool full = false);
 };
 
 #endif // UNIT_KAMISHELL_H

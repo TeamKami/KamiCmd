@@ -27,6 +27,8 @@ public slots:
     void changeMode(ConsoleMode);
     void reset();
     virtual void append(const QString &);
+    virtual void hint(const QString &);
+    virtual void complete(const QString &);
 private:
     int hindex;
     QStringList history;
@@ -41,8 +43,8 @@ signals:
     void command(QString);
     void read(QString);
     void terminate();
-    void tab();
-    void tabTab();
+    void tab(QString const & command);
+    void tabTab(QString const & command);
 };
 
 #endif // CONSOLEWIDGET_H
