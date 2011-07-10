@@ -2,33 +2,47 @@
 #define CONSOLEWIDGET_H
 
 #include <QTextEdit>
+#include <QTime>
+
+enum ConsoleMode {
+    NORMAL,
+    PLAIN,
+    READONLY
+};
 
 class ConsoleWidget: public QTextEdit
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     ConsoleWidget(QWidget *parent);
     ~ConsoleWidget();
 
+protected:
     virtual void keyPressEvent(QKeyEvent *event);
 
 public slots:
-    virtual void append(const QString &text);
-    virtual void plainOutput(const QString &text);
-    virtual void setWelcome(const QString &text);
-    virtual void unlock();
+    void setWelcome(QString);
+    void setShortWelcome(QString);
+    void changeMode(ConsoleMode);
+    void reset();
+    virtual void append(const QString &);
 private:
-    bool readOnly;
-    int commandPos;
+    int hindex;
+    QStringList history;
+    QTime tabPressed;
+    ConsoleMode mode;
     QString welcome, shortWelcome;
+    int commandPos;
     void SetCursorPos(int pos, bool isKeepAnchor = false);
     void LimitCursorSelectionTo(int start);
 
 signals:
-    void ExecuteCommand(QString command);
+    void command(QString);
+    void read(QString);
     void terminate();
-    void keyPress(QString);
+    void tab();
+    void tabTab();
 };
 
 #endif // CONSOLEWIDGET_H

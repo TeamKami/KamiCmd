@@ -12,11 +12,11 @@ Unit_KamiShell::Unit_KamiShell(QWidget *parent) :
     //layout->addWidget(editor);
     QMainWindow::setCentralWidget(console);
 
-    connect(console, SIGNAL(ExecuteCommand(QString)),
+    connect(console, SIGNAL(command(QString)),
             SLOT(ExecuteCommand(QString)));
     connect(console, SIGNAL(terminate()),
                 SLOT(terminate()));
-    connect(console, SIGNAL(keyPress(QString)),
+    connect(console, SIGNAL(read(QString)),
                     SLOT(keyPress(QString)));
 
     directory = QDir::current();
@@ -43,7 +43,7 @@ void Unit_KamiShell::Create(IUnit *createdFrom)
         path = panel->GetPath();
     else
         path = "/";
-    text = "Console";
+    text = "KamiShell";
     emit
     TextChanged();
 
@@ -54,19 +54,19 @@ void Unit_KamiShell::finished(int status, QProcess::ExitStatus exitStatus)
 {
     if (cmd)
     {
-        directory = QDir(cmd->workingDirectory());
         console->setWelcome(directory.path() + ": ");
 
         if (exitStatus == QProcess::NormalExit)
         {
             //console->append(QString("Exited with code ") + status);
-            console->unlock();
+            //console->unlock();
         }
         else
         {
             console->append("Command failed (" + cmd->errorString() + ")");
         }
 
+        console->changeMode(NORMAL);
         //delete cmd;
         cmd = 0;
     }
@@ -95,7 +95,7 @@ void Unit_KamiShell::CreateConsole()
 
 void Unit_KamiShell::readyReadStandardOutput()
 {
-    console->plainOutput(ConvertFromConsoleCP(cmd->readAllStandardOutput()));
+    console->append(ConvertFromConsoleCP(cmd->readAllStandardOutput()));
 }
 
 void Unit_KamiShell::keyPress(QString s)
@@ -127,8 +127,10 @@ void Unit_KamiShell::ExecuteCommand(QString command)
             SLOT(finished(int, QProcess::ExitStatus)));
 
     cmd->setWorkingDirectory(directory.path());
+
+    console->changeMode(PLAIN);
+
     cmd->start(program, sl);
-    console->plainOutput("");
 
     //console->append("Command not found: " + command);
     //console->setWelcome(QDir::current().path() + ": ");

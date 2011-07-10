@@ -4,17 +4,13 @@
 #include <QTextLayout>
 
 ConsoleWidget::ConsoleWidget(QWidget *parent) :
-    QTextEdit(parent), commandPos(0), readOnly(true)
+    QTextEdit(parent), commandPos(0), welcome(">>"), shortWelcome(">"), mode(NORMAL), hindex(-1)
 {
     QPalette pal = palette();
     pal.setColor(QPalette::Text, QColor(236, 233, 216));
     pal.setColor(QPalette::Base, Qt::black);
-// 	pal.setColor(QPalette::Light, Qt::black);
-// 	pal.setColor(QPalette::Midlight, Qt::black);
-// 	pal.setColor(QPalette::Dark, Qt::black);
-// 	pal.setColor(QPalette::Mid, Qt::black);
     setPalette(pal);
-    shortWelcome = ">";
+    tabPressed.start();
 }
 
 ConsoleWidget::~ConsoleWidget()
@@ -24,36 +20,45 @@ ConsoleWidget::~ConsoleWidget()
 
 void ConsoleWidget::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_C && event->modifiers().testFlag(Qt::ControlModifier))
+    if (event->key() == Qt::Key_C && event->modifiers().testFlag(
+            Qt::ControlModifier))
     {
         emit terminate();
     }
 
-    if (readOnly)
+    if (mode == READONLY)
     {
-        if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
-        {
-            emit keyPress("\n");
-        }
-        else
-        {
-            emit keyPress(event->text());
-        }
-
-        QTextEdit::keyPressEvent(event);
-
         return;
+    }
+
+    if (mode == PLAIN)
+    {
+        append(event->text());
+        emit read(event->text());
     }
 
     switch (event->key())
     {
     case Qt::Key_Tab:
-        case Qt::Key_Backtab:
-        event->ignore();
-        return;
+        {
+            int ms = tabPressed.restart();
 
+            if (ms < 1000)
+            {
+                emit tabTab();
+            }
+            else
+            {
+                emit tab();
+            }
+            return;
+        }
+        break;
+    case Qt::Key_Backtab:
+        event->ignore();
+        break;
     case Qt::Key_Backspace:
-        case Qt::Key_Left:
+    case Qt::Key_Left:
         if (event->key() == Qt::Key_Backspace)
             LimitCursorSelectionTo(commandPos);
 
@@ -64,12 +69,24 @@ void ConsoleWidget::keyPressEvent(QKeyEvent *event)
         }
         break;
 
-    case Qt::Key_Delete:
-        case Qt::Key_Down:
-        case Qt::Key_Right:
-        if (event->key() == Qt::Key_Delete)
-            LimitCursorSelectionTo(commandPos);
+    case Qt::Key_Down:
+        if (hindex > 0)
+        {
+            QTextEdit::setPlainText(QTextEdit::toPlainText().left(commandPos));
+            SetCursorPos(commandPos);
+            insertPlainText(history[--hindex]);
+        }
+        else
+        {
+            QTextEdit::setPlainText(QTextEdit::toPlainText().left(commandPos));
+            SetCursorPos(commandPos);
+        }
+        return;
+        break;
 
+    case Qt::Key_Delete:
+        LimitCursorSelectionTo(commandPos);
+    case Qt::Key_Right:
         if (textCursor().position() < commandPos)
         {
             SetCursorPos(commandPos, event->modifiers() & Qt::ShiftModifier);
@@ -78,22 +95,29 @@ void ConsoleWidget::keyPressEvent(QKeyEvent *event)
         break;
 
     case Qt::Key_Up:
-        case Qt::Key_Home:
+        if (history.size() > hindex + 1)
         {
-        int line = textCursor().block().layout()->lineForTextPosition(
-                textCursor().positionInBlock()).lineNumber();
-        if (!line
-                || (event->key() == Qt::Key_Home
-                        && event->modifiers() & Qt::ControlModifier))
-        {
-            SetCursorPos(commandPos, event->modifiers() & Qt::ShiftModifier);
-            return;
+            QTextEdit::setPlainText(QTextEdit::toPlainText().left(commandPos));
+            SetCursorPos(commandPos);
+            insertPlainText(history[++hindex]);
         }
-    }
+        return;
+        break;
+    case Qt::Key_Home:
+        {
+            int line = textCursor().block().layout()->lineForTextPosition(
+                    textCursor().positionInBlock()).lineNumber();
+            if (!line || (event->key() == Qt::Key_Home && event->modifiers()
+                    & Qt::ControlModifier))
+            {
+                SetCursorPos(commandPos, event->modifiers() & Qt::ShiftModifier);
+                return;
+            }
+        }
         break;
 
-// 	case Qt::Key_PageUp:
-// 	case Qt::Key_PageDown:
+    // 	case Qt::Key_PageUp:
+    // 	case Qt::Key_PageDown:
 
     case Qt::Key_Return:
     case Qt::Key_Enter:
@@ -108,6 +132,7 @@ void ConsoleWidget::keyPressEvent(QKeyEvent *event)
             }
 
             QString cmd = toPlainText().right(toPlainText().size() - commandPos);
+
             cmd.replace("\\\n" + shortWelcome, "\n");
 
             if (cmd.size())
@@ -117,7 +142,10 @@ void ConsoleWidget::keyPressEvent(QKeyEvent *event)
                 cursor.movePosition(QTextCursor::End);
                 setTextCursor(cursor);
                 commandPos = textCursor().position();
-                emit ExecuteCommand(cmd);
+
+                history.push_front(cmd);
+                hindex = -1;
+                emit command(cmd);
             }
             else
             {
@@ -128,75 +156,76 @@ void ConsoleWidget::keyPressEvent(QKeyEvent *event)
         }
         break;
 
-    case 'C':
-        if (event->modifiers() & Qt::ControlModifier)
-        {
-            emit ExecuteCommand("\x03\n");
-            return;
-        }
-        break;
     }
     QTextEdit::keyPressEvent(event);
 }
 
-void ConsoleWidget::setWelcome(const QString &text)
+void ConsoleWidget::setWelcome(QString text)
 {
     welcome = text;
+}
+
+void ConsoleWidget::setShortWelcome(QString text)
+{
+    shortWelcome = text;
 }
 
 void ConsoleWidget::append(const QString &text)
 {
     QString newText = text;
 
-    if (newText.size() != 0 && newText[newText.size() - 1] != '\n')
-        newText += "\n";
+    if (mode == NORMAL)
+    {
+        if (newText.size() != 0 && newText[newText.size() - 1] != '\n')
+            newText += "\n";
+        newText += welcome;
+    }
 
-    QTextEdit::append(newText + welcome);
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::End);
     setTextCursor(cursor);
-    commandPos = textCursor().position();
-    readOnly = false;
-}
-
-void ConsoleWidget::plainOutput(const QString &text)
-{
-    readOnly = true;
-
-    QTextEdit::insertPlainText(text);
-    QTextCursor cursor = textCursor();
+    QTextEdit::insertPlainText(newText);
+    cursor = textCursor();
     cursor.movePosition(QTextCursor::End);
     setTextCursor(cursor);
-    commandPos = textCursor().position();
-}
 
-void ConsoleWidget::unlock()
-{
-    QTextEdit::insertPlainText(welcome);
-    QTextCursor cursor = textCursor();
-    cursor.movePosition(QTextCursor::End);
-    setTextCursor(cursor);
     commandPos = textCursor().position();
-    readOnly = false;
 }
 
 void ConsoleWidget::SetCursorPos(int pos, bool isKeepAnchor)
 {
     QTextCursor cursor = textCursor();
-    cursor.setPosition(pos,
-            isKeepAnchor ? QTextCursor::KeepAnchor : QTextCursor::MoveAnchor);
+    cursor.setPosition(pos, isKeepAnchor ? QTextCursor::KeepAnchor
+            : QTextCursor::MoveAnchor);
     setTextCursor(cursor);
 }
 
 void ConsoleWidget::LimitCursorSelectionTo(int start)
 {
     QTextCursor cursor = textCursor();
-    int anchor = cursor.anchor(),
-            position = cursor.position();
+    int anchor = cursor.anchor(), position = cursor.position();
     if (anchor != position && (anchor < start || position < start))
     {
         cursor.setPosition(qMax(start, anchor), QTextCursor::MoveAnchor);
         cursor.setPosition(qMax(start, position), QTextCursor::KeepAnchor);
         setTextCursor(cursor);
     }
+}
+
+void ConsoleWidget::changeMode(ConsoleMode m)
+{
+    if (m == mode)
+        return;
+
+    mode = m;
+
+    if (mode == NORMAL)
+    {
+        append("");
+    }
+}
+
+void ConsoleWidget::reset()
+{
+    setPlainText("");
 }
