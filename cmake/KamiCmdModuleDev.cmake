@@ -15,7 +15,6 @@ qt4_wrap_ui(UI_HEADERS ${UI})
 qt4_add_resources(QRC_SOURCES ${RESOURCES})
 
 add_library(${name} SHARED ${SOURCES} ${HEADERS} ${UI_HEADERS} ${MOC_SOURCES} ${QRC_SOURCES})
-target_link_libraries(${name} ${QT_LIBRARIES})
 install(TARGETS ${name} DESTINATION ${INSTALL_MODULES_DIR})
 
 endmacro(KamiCmdModuleDev)

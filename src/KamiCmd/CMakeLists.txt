@@ -19,9 +19,6 @@ set(PLATFORM_SPECIFIC
     ${PLATFORM_SPECIFIC}
     KamiCmd.rc
 )
-    SET(GUI_TYPE WIN32)
-    SET(LIB_PLATFORM ${QT_QTMAIN_LIBRARY})
-
 endif()
 
 if(APPLE)
@@ -31,7 +28,7 @@ SET(PLATFORM_SPECIFIC "KamiCmd.icns")
       PROPERTIES
       MACOSX_PACKAGE_LOCATION Resources
     )
-    SET(GUI_TYPE MACOSX_BUNDLE)
+
     SET(MACOSX_BUNDLE_ICON_FILE MacIcon.icns)
 endif()
 
@@ -49,7 +46,7 @@ set (GENERATED
     ${CMAKE_CURRENT_BINARY_DIR}/directories.h
 )
 
-add_executable(KamiCmd ${GUI_TYPE} ${SOURCES} ${HEADERS} ${MOC_SOURCES} ${PLATFORM_SPECIFIC} ${GENERATED})
-target_link_libraries(KamiCmd ${QT_LIBRARIES} ${LIB_PLATFORM})
+add_executable(KamiCmd ${SOURCES} ${HEADERS} ${MOC_SOURCES} ${PLATFORM_SPECIFIC} ${GENERATED})
+target_link_libraries(KamiCmd ${QT_LIBRARIES})
 
 install(TARGETS KamiCmd DESTINATION ${INSTALL_BIN_DIR})
