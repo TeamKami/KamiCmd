@@ -40,7 +40,12 @@ void ConsoleWidget::keyPressEvent(QKeyEvent *event)
     if (mode == PLAIN)
     {
         append(event->text());
-        emit read(event->text());
+
+        if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+            emit read("\n");
+        else
+            emit read(event->text());
+        return;
     }
 
     switch (event->key())
