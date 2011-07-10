@@ -39,14 +39,7 @@ if(UNIX)
     install(FILES KamiCmd.png KamiCmd.ico DESTINATION ${INSTALL_SHARE_DIR})
 endif()
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-configure_file(directories.h.in ${CMAKE_CURRENT_BINARY_DIR}/directories.h)
-
-set (GENERATED
-    ${CMAKE_CURRENT_BINARY_DIR}/directories.h
-)
-
-add_executable(KamiCmd ${SOURCES} ${HEADERS} ${MOC_SOURCES} ${PLATFORM_SPECIFIC} ${GENERATED})
+add_executable(KamiCmd ${SOURCES} ${HEADERS} ${MOC_SOURCES} ${PLATFORM_SPECIFIC})
 target_link_libraries(KamiCmd ${QT_LIBRARIES})
 
 install(TARGETS KamiCmd DESTINATION ${INSTALL_BIN_DIR})

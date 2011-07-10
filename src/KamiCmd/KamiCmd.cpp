@@ -1,5 +1,4 @@
 #include "KamiCmd.h"
-#include "directories.h"
 
 bool moduleLessThan( Module *first, Module *second )
 {
@@ -16,12 +15,13 @@ bool moduleLessThan( Module *first, Module *second )
 bool CoreFunctions::LoadModules()
 {
 	int num = 0;
-	QDir modulesDir(MODULES_DIR);
+	QDir modulesDir(QApplication::applicationDirPath());
+	modulesDir.cd("Modules");
 
 #ifdef Q_WS_WIN
  	foreach (QString fileName, modulesDir.entryList(QStringList("*.dll"), QDir::Files))
 #else
-	foreach (QString fileName, modulesDir.entryList(QStringList("*.so"), QDir::Files))
+	foreach (QString fileName, modulesDir.entryList(QDir::Files))
 #endif // Q_WS_WIN
 	{
         QPluginLoader loader(modulesDir.absoluteFilePath(fileName));

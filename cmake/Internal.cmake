@@ -32,7 +32,7 @@ set(INSTALL_DATA_DIR ${_DEFAULT_DATA_DIR} CACHE PATH "Install dir for data files
 set(INSTALL_TOOLS_DIR ${_DEFAULT_TOOLS_DIR} CACHE PATH "Install dir for internal tools")
 set(INSTALL_SBIN_DIR ${_DEFAULT_SBIN_DIR} CACHE PATH "Install dir for daemons")
 set(INSTALL_SHARE_DIR ${_DEFAULT_SHARE_DIR} CACHE PATH "Install dir for miscelanious files")
-set(INSTALL_MODULES_DIR ${_DEFAULT_LIB_DIR}/Modules CACHE PATH "Install dir for modules")
+set(INSTALL_MODULES_DIR ${_DEFAULT_BIN_DIR}/Modules CACHE PATH "Install dir for modules")
 
 function(get_absolute_path OUT DIR)
     get_filename_component(_ABS_PATH ${DIR} ABSOLUTE)
