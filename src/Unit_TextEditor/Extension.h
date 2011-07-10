@@ -10,16 +10,19 @@
  */
 struct Extension
 {
-	/**
-	 * \param e QString to be added
-	 */
-	Extension & operator | (QString const & e)
-	{
-		ext.push_back(e);
-		return *this;
-	}
+    /**
+     * \param e QString to be added
+     */
+    Extension & operator |(QString const & e)
+    {
+        ext.push_back(e);
+        return *this;
+    }
 
-	QVector<QString> ext;
+    /**
+     * \brief Array of wildcards
+     */
+    QVector<QString> ext;
 };
 
 #endif //EXTENSION_H

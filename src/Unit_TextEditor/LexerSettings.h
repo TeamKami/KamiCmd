@@ -7,25 +7,33 @@
 
 class QsciLexer;
 
-class LexerSettings : public QWidget
+/**
+ * \headerfile Unit_TextEditor/LexersSettings.h
+ * \author Nikolay Filchenko <finomen812@gmail.com>
+ * \brief Lexer settings page widget
+ */
+class LexerSettings: public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	LexerSettings(QWidget *parent = 0);
-	~LexerSettings();
+    /**
+     * \param parent Parent passed to QWidget(QWidget*)
+     */
+    LexerSettings(QWidget *parent = 0);
+
+    ~LexerSettings();
 
 protected:
-	void showEvent(QShowEvent * event);
+    void showEvent(QShowEvent * event);
 
 private:
-	Ui::LexerSettings ui;
-	
-public slots:
-	void save();
-signals:
-	void updateLexers();
-};
+    Ui::LexerSettings ui;
 
+public slots:
+    void save();
+signals:
+    void updateLexers();
+};
 
 #endif // LEXERSDIALOG_H

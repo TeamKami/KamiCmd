@@ -9,27 +9,27 @@
  * \headerfile Lib_Lexers/library.h
  * \brief Lexers package for Unit_TextEditor
  */
-class Lexers_Library : public QObject, public ILibrary
+class Lexers_Library: public QObject, public ILibrary
 {
-	Q_OBJECT
-	Q_INTERFACES(ILibrary)
+    Q_OBJECT
+    Q_INTERFACES(ILibrary)
 
 public:
-	/**
-	 * \brief Return list of availiable modules
-	 * \param core Pointer to KamiCmd core
-	 */
-	QVector<Module *> ListModulesAndGetCore(ICoreFunctions *core);
+    /**
+     * \brief Return list of availiable modules
+     * \param core Pointer to KamiCmd core
+     */
+    QVector<Module *> ListModulesAndGetCore(ICoreFunctions *core);
 
-	/**
-	 * \brief Return instance of lexer. All lexers created when library loaded.
-	 * \param id Lexer id
-	 * \parent Not used, only for compatibility with ILibrary
-	 */
-	QObject* CreateModuleInstance(int id, QObject *parent);
+    /**
+     * \brief Return instance of lexer. All lexers created when library loaded.
+     * \param id Lexer id
+     * \parent Not used, only for compatibility with ILibrary
+     */
+    QObject* CreateModuleInstance(int id, QObject *parent);
 
 private:
-	ICoreFunctions *g_Core;
+    ICoreFunctions *g_Core;
 };
 
 #endif // LIB_LEXERS_LIBRARY_H

@@ -38,51 +38,51 @@
 
 QVector<ILexer *> & getLexers(QObject * parent)
 {
-	static QVector<ILexer*> lexers;
+    static QVector<ILexer*> lexers;
 
-	if (lexers.empty())
-	{
-		#define LEXER(cls, name, wildcard) LEXER_R(cls, name, Extension() | wildcard)
-		#define LEXER_N(cls, name) LEXER_R(cls, name, Extension())
-		#define LEXER_R(cls, name, wildcard) lexers.push_back(new LexerWrapper<cls>(parent, #name, wildcard))
+    if (lexers.empty())
+    {
+#define LEXER(cls, name, wildcard) LEXER_R(cls, name, Extension() | wildcard)
+#define LEXER_N(cls, name) LEXER_R(cls, name, Extension())
+#define LEXER_R(cls, name, wildcard) lexers.push_back(new LexerWrapper<cls>(parent, #name, wildcard))
 
-		LEXER(QsciLexerBash, Bash, "*.sh");
-		LEXER(QsciLexerBatch, Batch, "*.bat");
-		LEXER(QsciLexerCMake, CMake, "*.cmake" | "CMakeLists.txt");
-		LEXER(QsciLexerCPP, CPP, "*.cpp" | "*.cxx" | "*.c" | "*.h" | "*.hpp");
-		LEXER(QsciLexerCSharp, CSharp, "*.cs");
-		LEXER(QsciLexerCSS, CSS, "*.css");
-		LEXER(QsciLexerD, D, "*.d");
-		LEXER(QsciLexerDiff, Diff, "*.diff" | "*.patch");
-		LEXER_N(QsciLexerFortran, Fortran);
-		LEXER_N(QsciLexerFortran77, Fortran77);
-		LEXER(QsciLexerHTML, HTML, "*.html" | "*.htm" | "*.xhtml");
-		LEXER_N(QsciLexerIDL, IDL);
-		LEXER(QsciLexerJava, Java, "*.java");
-		LEXER(QsciLexerJavaScript, JavaScript, "*.js");
-		LEXER(QsciLexerLua, Lua, "*.lua");
-		LEXER(QsciLexerMakefile, Makefile, "*.m4" | "Makefile");
-		LEXER_N(QsciLexerMatlab, Matlab);
-		LEXER_N(QsciLexerOctave, Octave);
-		LEXER(QsciLexerPascal, Pascal, "*.pas");
-		LEXER(QsciLexerPerl, Perl, "*.pl");
-		LEXER(QsciLexerPostScript, PostScript, "*.ps");
-		LEXER_N(QsciLexerPOV, POV);
-		LEXER(QsciLexerPython, Python, "*.py");
-		LEXER_N(QsciLexerRuby, Ruby);
-		LEXER_N(QsciLexerSpice, Spice);
-		LEXER(QsciLexerSQL, SQL, "*.sql");
-		LEXER_N(QsciLexerTCL, TCL);
-		LEXER(QsciLexerTeX, TeX, "*.tex");
-		LEXER_N(QsciLexerVerilog, Verilog);
-		LEXER_N(QsciLexerVHDL, VHDL);
-		LEXER(QsciLexerXML, XML, "*.xml" | "*.xsl");
-		LEXER_N(QsciLexerYAML, YAML);
+        LEXER(QsciLexerBash, Bash, "*.sh");
+        LEXER(QsciLexerBatch, Batch, "*.bat");
+        LEXER(QsciLexerCMake, CMake, "*.cmake" | "CMakeLists.txt");
+        LEXER(QsciLexerCPP, CPP, "*.cpp" | "*.cxx" | "*.c" | "*.h" | "*.hpp");
+        LEXER(QsciLexerCSharp, CSharp, "*.cs");
+        LEXER(QsciLexerCSS, CSS, "*.css");
+        LEXER(QsciLexerD, D, "*.d");
+        LEXER(QsciLexerDiff, Diff, "*.diff" | "*.patch");
+        LEXER_N(QsciLexerFortran, Fortran);
+        LEXER_N(QsciLexerFortran77, Fortran77);
+        LEXER(QsciLexerHTML, HTML, "*.html" | "*.htm" | "*.xhtml");
+        LEXER_N(QsciLexerIDL, IDL);
+        LEXER(QsciLexerJava, Java, "*.java");
+        LEXER(QsciLexerJavaScript, JavaScript, "*.js");
+        LEXER(QsciLexerLua, Lua, "*.lua");
+        LEXER(QsciLexerMakefile, Makefile, "*.m4" | "Makefile");
+        LEXER_N(QsciLexerMatlab, Matlab);
+        LEXER_N(QsciLexerOctave, Octave);
+        LEXER(QsciLexerPascal, Pascal, "*.pas");
+        LEXER(QsciLexerPerl, Perl, "*.pl");
+        LEXER(QsciLexerPostScript, PostScript, "*.ps");
+        LEXER_N(QsciLexerPOV, POV);
+        LEXER(QsciLexerPython, Python, "*.py");
+        LEXER_N(QsciLexerRuby, Ruby);
+        LEXER_N(QsciLexerSpice, Spice);
+        LEXER(QsciLexerSQL, SQL, "*.sql");
+        LEXER_N(QsciLexerTCL, TCL);
+        LEXER(QsciLexerTeX, TeX, "*.tex");
+        LEXER_N(QsciLexerVerilog, Verilog);
+        LEXER_N(QsciLexerVHDL, VHDL);
+        LEXER(QsciLexerXML, XML, "*.xml" | "*.xsl");
+        LEXER_N(QsciLexerYAML, YAML);
 
-		#undef LEXER
-		#undef LEXER_N
-		#undef LEXER_R
-	}
+#undef LEXER
+#undef LEXER_N
+#undef LEXER_R
+    }
 
-	return lexers;
+    return lexers;
 }

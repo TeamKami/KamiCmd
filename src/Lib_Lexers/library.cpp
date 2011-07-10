@@ -2,29 +2,29 @@
 #include "Unit_TextEditor/ILexerPlugin.h"
 #include "Lib_Lexers/getLexers.h"
 
-QVector<Module *> Lexers_Library::ListModulesAndGetCore( ICoreFunctions *core )
+QVector<Module *> Lexers_Library::ListModulesAndGetCore(ICoreFunctions *core)
 {
-	g_Core = core;
+    g_Core = core;
 
-	QVector<Module *> arr;
+    QVector<Module *> arr;
 
-	size_t id = 0;
+    size_t id = 0;
 
-	foreach(ILexer * lexer, getLexers(this))
-	{
-		arr << new Module("LexerModule", 1, lexer->getName(), 1, id++);
-	}
+    foreach(ILexer * lexer, getLexers(this))
+    {
+        arr << new Module("LexerModule", 1, lexer->getName(), 1, id++);
+    }
 
-	return arr;
+    return arr;
 }
 
 QObject* Lexers_Library::CreateModuleInstance(int id, QObject *)
 {
-	if (id < getLexers().size())
-	{
-		return dynamic_cast<QObject*>(getLexers(this)[id]);
-	}
-	return NULL;
+    if (id < getLexers().size())
+    {
+        return dynamic_cast<QObject*> (getLexers(this)[id]);
+    }
+    return NULL;
 }
 
 QT_BEGIN_NAMESPACE

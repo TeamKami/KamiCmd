@@ -1,0 +1,7 @@
+ - Add interface to provide custom autocompletion
+ - Add global settings for all lexers
+ - Add settings for lexer presence (wildcards)
+ - Add interface to create plugins settings page
+ - Search/replace
+ - Line numbers
+ - UTF-16 support
