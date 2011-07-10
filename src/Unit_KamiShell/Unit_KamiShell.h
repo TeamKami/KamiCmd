@@ -34,7 +34,9 @@ private:
     QProcess *cmd;
     QDir directory;
     void CreateConsole();
+    bool innerCommand(QString const & cmd, QStringList const & args);
 
+    void cd(QStringList const & args);
 signals:
     void TextChanged();
 

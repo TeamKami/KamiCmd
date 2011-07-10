@@ -20,7 +20,7 @@ Unit_KamiShell::Unit_KamiShell(QWidget *parent) :
                     SLOT(keyPress(QString)));
 
     directory = QDir::current();
-    console->setWelcome(directory.path() + ": ");
+    console->setWelcome(directory.path() + " $ ");
     console->append("Welcome to KamiShell");
 }
 
@@ -54,8 +54,6 @@ void Unit_KamiShell::finished(int status, QProcess::ExitStatus exitStatus)
 {
     if (cmd)
     {
-        console->setWelcome(directory.path() + ": ");
-
         if (exitStatus == QProcess::NormalExit)
         {
             //console->append(QString("Exited with code ") + status);
@@ -63,7 +61,7 @@ void Unit_KamiShell::finished(int status, QProcess::ExitStatus exitStatus)
         }
         else
         {
-            console->append("Command failed (" + cmd->errorString() + ")");
+            console->append("Command failed (" + cmd->errorString() + ")\n");
         }
 
         console->changeMode(NORMAL);
@@ -83,8 +81,8 @@ void Unit_KamiShell::terminate()
 
 void Unit_KamiShell::error(QProcess::ProcessError error)
 {
-    console->setWelcome(directory.path() + ": ");
-    console->append("Command failed (" + cmd->errorString() + ")");
+    console->append("Command failed (" + cmd->errorString() + ")\n");
+    console->changeMode(NORMAL);
     cmd = 0;
 }
 
@@ -108,10 +106,14 @@ void Unit_KamiShell::keyPress(QString s)
 
 void Unit_KamiShell::ExecuteCommand(QString command)
 {
-    QStringList sl = command.split(" ");
+    QStringList sl = command.split(" ", QString::SkipEmptyParts);
     QString program = sl[0];
     sl.removeFirst();
-    QStringList arguments;
+
+    if (innerCommand(program, sl))
+    {
+        return;
+    }
 
     if (!cmd)
     {
@@ -159,4 +161,46 @@ QByteArray Unit_KamiShell::ConvertToConsoleCP(QString string)
 QIcon Unit_KamiShell::GetIcon()
 {
     return QIcon();
+}
+
+bool Unit_KamiShell::innerCommand(QString const & cmd, QStringList const & args)
+{
+    #define CMD(name) if (cmd == #name) {name(args); return true;}
+    CMD(cd)
+
+
+    #undef CMD
+    return false;
+}
+
+void Unit_KamiShell::cd(QStringList const & args)
+{
+    if (args.size() > 1)
+    {
+        console->append("Usage: \n"
+                        "  cd <directory>\n"
+                        "  cd");
+        return;
+    }
+
+    if (args.size() == 0)
+    {
+        directory = QDir::current();
+        console->setWelcome(directory.path() + ": ");
+        console->append("");
+        return;
+    }
+
+    QDir d = directory;
+    d.cd(args[0]);
+
+    if (!d.exists())
+    {
+        console->append("Invalid directory");
+        return;
+    }
+
+    directory = d;
+    console->setWelcome(directory.path() + " $ ");
+    console->append("");
 }

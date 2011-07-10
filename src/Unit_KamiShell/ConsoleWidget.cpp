@@ -149,7 +149,7 @@ void ConsoleWidget::keyPressEvent(QKeyEvent *event)
             }
             else
             {
-                append("");
+                append("\n");
             }
 
             return;
