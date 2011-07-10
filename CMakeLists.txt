@@ -32,9 +32,11 @@ set(QT_USE_QTCORE TRUE)
 include (${QT_USE_FILE})
 
 if (WIN32)
+set(CMAKE_EXTRA_CXX_FLAGS "/Zc:wchar_t-" CACHE STRING "Extra CXX options")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_EXTRA_CXX_FLAGS}")
+
 add_definitions(
 	-DUNICODE
-	 /Zc:wchar_t-
 )
 endif()
 

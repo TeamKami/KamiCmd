@@ -279,12 +279,14 @@ set(TRANSLATIONS
 )
 
 qt4_wrap_ts(QM_FILES ${TRANSLATIONS})
+
 qt4_wrap_cpp(MOC_SOURCES ${HEADERS})
 
 add_definitions(
     -DQSCINTILLA_MAKE_DLL 
     -DQT 
     -DSCI_LEXER
+	-D_CRT_SECURE_NO_WARNINGS
 )
 add_library(qscintilla2 SHARED 
     ${CXX_SOURCES}

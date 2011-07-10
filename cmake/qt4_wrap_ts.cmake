@@ -52,16 +52,14 @@ COMMENT "Creating qt translations files"
 if(QT_LRELEASE_EXECUTABLE)
 foreach (it ${TS_FILES})
 get_filename_component(outfile ${it} NAME_WE)
-get_filename_component(outpath ${it} PATH)
 
 set(outfile ${CMAKE_CURRENT_BINARY_DIR}/${outfile}.qm)
 
-
 add_custom_command(OUTPUT ${outfile}
 COMMAND ${QT_LRELEASE_EXECUTABLE}
-ARGS ${it} -qm ${outfile}
+ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${it} -qm ${outfile}
 DEPENDS ${it}
-COMMENT "Compilation qt translations files"
+COMMENT "Compilation qt translation file for ${it}"
 )
 #list(APPEND ${qmfiles} ${outfile})
 set(${outfiles} ${${outfiles}} ${outfile})
