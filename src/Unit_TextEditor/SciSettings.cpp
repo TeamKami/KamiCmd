@@ -199,10 +199,9 @@ SciSettings::SciSettings(QObject * parent, ICoreFunctions *core) :
     SETTING(wrapMode, WrapMode, QsciScintilla::WrapMode);
     SETTING(wrapIndentMode, WrapIndentMode, QsciScintilla::WrapIndentMode);
 
-    loadSettings();
-
-    sd = new SettingsDialog(0, this);
-    connect(sd, SIGNAL(settingsChanged()), this, SLOT(settingsUpdated()));
+	sd = new SettingsDialog(0, this);
+	connect(sd, SIGNAL(settingsChanged()), this, SLOT(settingsUpdated()));
+    loadSettings()
 }
 
 SciSettings::~SciSettings()
