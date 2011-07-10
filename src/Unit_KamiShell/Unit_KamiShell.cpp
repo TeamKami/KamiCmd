@@ -235,7 +235,7 @@ void Unit_KamiShell::cd(QStringList const & args)
 #ifdef Q_OS_WIN32
 #define PCOMP s1[len].toUpper() == s2[len].toUpper()
 #else
-#define s1[len] == s2[len]
+#define PCOMP s1[len] == s2[len]
 #endif
 
 void common(QString & s1, QString const & s2)
