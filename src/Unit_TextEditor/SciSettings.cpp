@@ -201,7 +201,7 @@ SciSettings::SciSettings(QObject * parent, ICoreFunctions *core) :
 
 	sd = new SettingsDialog(0, this);
 	connect(sd, SIGNAL(settingsChanged()), this, SLOT(settingsUpdated()));
-    loadSettings()
+    loadSettings();
 }
 
 SciSettings::~SciSettings()
