@@ -37,6 +37,7 @@ private:
     bool innerCommand(QString const & cmd, QStringList const & args);
 
     void cd(QStringList const & args);
+    void about(QStringList const & args);
 signals:
     void TextChanged();
 

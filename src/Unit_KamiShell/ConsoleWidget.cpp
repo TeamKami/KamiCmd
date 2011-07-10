@@ -11,6 +11,12 @@ ConsoleWidget::ConsoleWidget(QWidget *parent) :
     pal.setColor(QPalette::Base, Qt::black);
     setPalette(pal);
     tabPressed.start();
+
+    QFont font("Monospace", 11);
+    font.setStyleHint(QFont::TypeWriter);
+    font.setStyleStrategy(QFont::PreferAntialias);
+    setFont(font);
+
 }
 
 ConsoleWidget::~ConsoleWidget()
@@ -173,6 +179,13 @@ void ConsoleWidget::setShortWelcome(QString text)
 void ConsoleWidget::append(const QString &text)
 {
     QString newText = text;
+
+    newText.replace("═", QChar(9552));
+    newText.replace("║", QChar(9553));
+    newText.replace("╔", QChar(9556));
+    newText.replace("╗", QChar(9559));
+    newText.replace("╚", QChar(9562));
+    newText.replace("╝", QChar(9565));
 
     if (mode == NORMAL)
     {

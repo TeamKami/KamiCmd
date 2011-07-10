@@ -167,10 +167,24 @@ bool Unit_KamiShell::innerCommand(QString const & cmd, QStringList const & args)
 {
     #define CMD(name) if (cmd == #name) {name(args); return true;}
     CMD(cd)
-
+    CMD(about)
 
     #undef CMD
     return false;
+}
+
+void Unit_KamiShell::about(QStringList const & args)
+{
+
+    QString msg(
+            "╔═══════════════════════════════════════════════════╗\n"
+            "║  KamiShell v 0.1                                  ║\n"
+            "║  Cross-platform shell for KamiCmd                 ║\n"
+            "║  Author: Nikolay Filchenko <finomen812@gmail.com> ║\n"
+            "╚═══════════════════════════════════════════════════╝"
+    );
+
+    console->append(msg);
 }
 
 void Unit_KamiShell::cd(QStringList const & args)
