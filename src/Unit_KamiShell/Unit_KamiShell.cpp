@@ -111,7 +111,15 @@ void Unit_KamiShell::keyPress(QString s)
 
 void Unit_KamiShell::ExecuteCommand(QString command)
 {
-    QStringList sl = command.split(" ", QString::SkipEmptyParts);
+    QString tc = command;
+    tc.replace("\\ ", QChar(1));
+    QStringList sl = tc.split(" ", QString::SkipEmptyParts);
+
+    for (int i = 0; i < sl.size(); ++i)
+    {
+        sl[i].replace(QChar(1), " ");
+    }
+
     QString program = sl[0];
     sl.removeFirst();
 
@@ -224,15 +232,22 @@ void Unit_KamiShell::cd(QStringList const & args)
     console->append("");
 }
 
+#ifdef Q_OS_WIN32
+#define PCOMP s1[len].toUpper() == s2[len].toUpper()
+#else
+#define s1[len] == s2[len]
+#endif
+
 void common(QString & s1, QString const & s2)
 {
     int len = 0;
 
-    for (; len < s1.size() && len < s2.size() && s1[len] == s2[len]; ++len);
+    for (; len < s1.size() && len < s2.size() && PCOMP; ++len);
 
     s1 = s1.left(len);
 
 }
+#undef PCOMP
 
 void Unit_KamiShell::tab(QString const & command)
 {
@@ -250,9 +265,18 @@ void Unit_KamiShell::tab(QString const & command)
         common(name, s);
     }
 
+    name.replace(" ", "\\ ");
+
     if (name.size())
     {
-        QStringList sl = command.split(" ", QString::KeepEmptyParts);
+        QString tc = command;
+        tc.replace("\\ ", QChar(1));
+        QStringList sl = tc.split(" ", QString::KeepEmptyParts);
+
+        for (int i = 0; i < sl.size(); ++i)
+        {
+            sl[i].replace(QChar(1), "\\ ");
+        }
 
         if (sl.size())
         {
@@ -300,22 +324,26 @@ void Unit_KamiShell::tabTab(QString const & command)
 
 QStringList Unit_KamiShell::complete(QString const & command, bool full)
 {
-    QStringList sl = command.split(" ", QString::KeepEmptyParts);
+    QString tc = command;
+    tc.replace("\\ ", QChar(1));
+
+    QStringList sl = tc.split(" ", QString::KeepEmptyParts);
+
     QString ac = sl.size() ? sl[sl.size() - 1] : "";
+    ac.replace(QChar(1), " ");
 
     int end = ac.lastIndexOf("/");
 
     QString prefix = ac;
     QDir d = directory;
+    QString cpath = "";
 
     if (end != -1)
     {
         prefix = ac.right(ac.size() - end - 1);
 
-        d = QDir(ac.left(end + 1));
+        d = QDir(cpath = ac.left(end + 1));
     }
-
-    QString cpath = d.path();
 
     if (cpath.size() && cpath[cpath.size() - 1] != '/')
     {
