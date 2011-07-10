@@ -4,7 +4,7 @@ SUBDIRS = KamiCmd \
           FS_Qt \
           Operations_Queue \
           Panel_Classic \
-          Unit_Console \
+          Unit_KamiShell \
           Unit_PictureView \
           Unit_WebKit \
           UnitManager_Tabs \
