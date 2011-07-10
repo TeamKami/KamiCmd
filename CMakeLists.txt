@@ -98,10 +98,16 @@ set(CPACK_NSIS_INSTALLED_ICON_NAME "${INSTALL_BIN_DIR}/KamiCmd.exe")
 set(CPACK_NSIS_DISPLAY_NAME "KamiCmd")
 set(CPACK_NSIS_PACKAGE_NAME "KamiCmd")
 #CPACK_PACKAGE_INSTALL_REGISTRY_KEY
+
+DD_CUSTOM_COMMAND(TARGET package
+    POST_BUILD COMMAND mt
+    "${_CMAKE_INPUT_RESOURCE}"
+    -manifest "${CMAKE_CURRENT_SOURCE_DIR}/SetupManifest.xml"
+    "-outputresource:${CPACK_PACKAGE_FILE_NAME}.exe;#1"
+    ${verbatim_flag}
+  )
 endif()
-
-include(CPack)
-
  
 
+INCLUDE(CPack)
 
