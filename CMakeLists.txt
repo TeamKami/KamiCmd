@@ -38,7 +38,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_EXTRA_CXX_FLAGS}")
 add_definitions(
 	-DUNICODE
 )
-endif()
 
 add_subdirectory(3rdparty)
 
