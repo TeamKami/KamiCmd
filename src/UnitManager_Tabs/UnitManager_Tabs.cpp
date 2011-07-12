@@ -86,7 +86,8 @@ void UnitManager_Tabs::CloseUnit( int index )
 	if (tabs->count() != 1)
 	{
 		QWidget *widget = tabs->widget(index);
-		tabs->tabBar_->ActivateLastActive();
+		if (index == tabs->tabBar_->currentIndex())
+			tabs->tabBar_->ActivateLastActive();
 		tabs->removeTab(index);
 		delete widget;
 	}
