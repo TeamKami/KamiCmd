@@ -90,6 +90,7 @@ Unit_TextEditor::Unit_TextEditor(QWidget *parent, SciSettings * settings,
 
     connect(settings_, SIGNAL(settingsChanged()), this, SLOT(updateSettings()));
     settings_->applySettings(editor);
+	settings_->setParent(parent);
 }
 
 QString Unit_TextEditor::GetText()

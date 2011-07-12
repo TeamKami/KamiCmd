@@ -199,7 +199,7 @@ SciSettings::SciSettings(QObject * parent, ICoreFunctions *core) :
     SETTING(wrapMode, WrapMode, QsciScintilla::WrapMode);
     SETTING(wrapIndentMode, WrapIndentMode, QsciScintilla::WrapIndentMode);
 
-	sd = new SettingsDialog(0, this);
+	sd = NULL;
 	connect(sd, SIGNAL(settingsChanged()), this, SLOT(settingsUpdated()));
     loadSettings();
 }
@@ -266,7 +266,13 @@ void SciSettings::getUi(Ui::EditorSettings & ui)
 
 void SciSettings::showSettings()
 {
-    sd->show();
+	if (!sd)
+	{
+		sd = new SettingsDialog(parent()->isWidgetType() ? qobject_cast<QWidget*>(parent()) : NULL, this);
+		connect(sd, SIGNAL(settingsChanged()), this, SLOT(settingsChanged()));
+	}
+
+	sd->show();
 }
 
 void SciSettings::settingsUpdated()

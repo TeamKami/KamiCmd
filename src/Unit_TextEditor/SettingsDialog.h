@@ -38,7 +38,9 @@ private:
 
 public slots:
     void onDialogButton(QAbstractButton * button);
-    void onPageSelected(QTreeWidgetItem * item, int column);signals:
+    void onPageSelected(QTreeWidgetItem * item, QTreeWidgetItem * prev);
+
+signals:
     void saveSettings();
     void settingsChanged();
 };

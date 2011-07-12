@@ -96,7 +96,7 @@ void FButtonsBar::F2_Pressed()
 
 void FButtonsBar::F3_Pressed()
 {
-	if (IUnit *viewer = dynamic_cast<IUnit *>(g_Core->QueryModule("PictureViewUnit", 1)))
+	if (IUnit *viewer = dynamic_cast<IUnit *>(g_Core->QueryModule("PictureViewUnit", 1, "", -1, UnitManager->GetMainWindow())))
 	{
 		LinkedUnit *link = dynamic_cast<LinkedUnit *>(UnitManager->GetActiveUnit());
 		if (link)
@@ -109,7 +109,7 @@ void FButtonsBar::F3_Pressed()
 
 void FButtonsBar::F4_Pressed()
 {
-	if (IUnit *editor = dynamic_cast<IUnit *>(g_Core->QueryModule("TextEditorUnit", 1)))
+	if (IUnit *editor = dynamic_cast<IUnit *>(g_Core->QueryModule("TextEditorUnit", 1, "", -1, UnitManager->GetMainWindow())))
 	{
 		LinkedUnit *link = dynamic_cast<LinkedUnit *>(UnitManager->GetActiveUnit());
 		if (link)

@@ -21,7 +21,7 @@ void SettingsDialog::show()
     if (!created)
     {
         connect(ui.buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onDialogButton(QAbstractButton*)));
-        connect(ui.navigation, SIGNAL(itemActivated(QTreeWidgetItem *, int)), this, SLOT(onPageSelected(QTreeWidgetItem*, int)));
+        connect(ui.navigation, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(onPageSelected(QTreeWidgetItem*, QTreeWidgetItem*)));
 
         QTreeWidgetItem * appearance = new QTreeWidgetItem();
         appearance->setText(0, "Appearance");
@@ -45,6 +45,7 @@ void SettingsDialog::show()
         es->hide();
 
         ui.navigation->addTopLevelItem(appearance);
+		appearance->setExpanded(true);
 
         created = true;
     }
@@ -61,7 +62,7 @@ void SettingsDialog::onDialogButton(QAbstractButton * button)
     }
 }
 
-void SettingsDialog::onPageSelected(QTreeWidgetItem * item, int)
+void SettingsDialog::onPageSelected(QTreeWidgetItem * item, QTreeWidgetItem *)
 {
     QWidget * page = static_cast<QWidget*> (item->data(0, Qt::UserRole).value<
             void*> ());
