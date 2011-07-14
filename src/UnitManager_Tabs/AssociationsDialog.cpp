@@ -99,7 +99,7 @@ void AssociationsDialog::on_actionDelete_triggered()
 	}
 }
 
-void AssociationsDialog::closeEvent( QCloseEvent */*event*/ )
+void AssociationsDialog::closeEvent( QCloseEvent * /*event*/ )
 {
 	emit Closing();
 }

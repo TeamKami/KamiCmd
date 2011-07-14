@@ -1,0 +1,13 @@
+KamiCmd compiling instructions
+(for use with nmake bundled with Visual Studio's C++ compiler):
+
+1. Download and install latest Qt Framework
+   (http://qt.nokia.com/downloads)
+2. Launch Visual Studio Command Prompt
+   (Start -> All Programs -> Microsoft Visual Studio -> Visual Studio Tools -> Visual Studio Command Prompt)
+3. Navigate to KamiCmd folder
+   (f.e: cd c:\Lang\KamiCmd)
+4. Create Makefile for 3rd party tools via command:
+   qmake -recursive 3rdparty.pro
+5. Compile 3rd party tools via command:
+   nmake

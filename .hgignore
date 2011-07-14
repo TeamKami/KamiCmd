@@ -40,3 +40,6 @@ UpgradeLog.XML
 *.old
 *.ampl.cfg
 *.o
+*.exe
+*.dll
+*.lib

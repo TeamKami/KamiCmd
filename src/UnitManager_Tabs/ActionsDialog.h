@@ -21,6 +21,7 @@ private:
 public slots:
 	void on_actionEditShortcut_triggered();
 	void on_actionExecute_triggered();
+	void on_treeWidget_itemExpanded(QTreeWidgetItem *item);
 };
 
 #endif // ACTIONSDIALOG_H

@@ -56,3 +56,9 @@ void ActionsDialog::on_actionExecute_triggered()
 	if (ui.treeWidget->currentItem()->parent())
 		PassedActions.at(ui.treeWidget->currentItem()->data(0, Qt::UserRole).toInt())->trigger();
 }
+
+void ActionsDialog::on_treeWidget_itemExpanded( QTreeWidgetItem * /*item*/ )
+{
+	ui.treeWidget->resizeColumnToContents(0);
+	ui.treeWidget->resizeColumnToContents(1);
+}
