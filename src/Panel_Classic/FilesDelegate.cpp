@@ -7,6 +7,7 @@
 #include <QWindowsVistaStyle>
 
 #include "../IFileSystem.h"
+#include "FileListModel.h"
 // This whole file is a pack of hacks and crutches
 
 void FilesDelegate::QCommonStylePrivate_viewItemDrawText(QStyle *s, QPainter *p, const QStyleOptionViewItemV4 *option, const QRect &rect, quint32 attributes) const
@@ -302,7 +303,7 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 				p->drawRect(textRect.adjusted(0, 0, -1, -1));
 			}
 
-			QCommonStylePrivate_viewItemDrawText(style, p, vopt, textRect, index.data(Qt::UserRole).toUInt());
+			QCommonStylePrivate_viewItemDrawText(style, p, vopt, textRect, index.data(FileListModel::AttributesRole).toUInt());
 		}
 
 // 		// draw the focus rect

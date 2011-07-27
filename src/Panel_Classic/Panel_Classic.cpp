@@ -7,8 +7,10 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 	QWidget *central = new QWidget(this);
 
 	view = new FileListView();
-	view->SetModel(new FileListModel());
-	view->SetSortModel(new SortModel());
+	FileListModel *flModel = new FileListModel();
+	view->SetModel(flModel);
+	SortModel *sortModel = new SortModel();
+	view->SetSortModel(sortModel);
 
 	FilesDelegate *filesDelegate = new FilesDelegate(this);
 	if (1)
@@ -53,7 +55,7 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 
 	connect(view, SIGNAL(EnterSelected()), SLOT(EnterSelected()));
 	connect(pathEdit, SIGNAL(returnPressed()), SLOT(pathEditReturnPressed()));
-	connect(view->Model(), SIGNAL(modelReset()), view, SLOT(keyboardSearchNullify()));
+	connect(view->Model(), SIGNAL(modelReset()), view, SLOT(KeyboardSearchNullify()));
 	connect(view->Model(), SIGNAL(PathChanged()), this, SIGNAL(TextChanged()));
 	connect(view, SIGNAL(FocusIn()), this, SIGNAL(FocusIn()));
 	connect(view, SIGNAL(PaletteChanged()), filesDelegate, SLOT(PaletteChanged()));
@@ -139,7 +141,7 @@ const FileInfo * Panel_Classic::SetCurrentFileToNext()
 QVector<const FileInfo*> Panel_Classic::GetSelectedFiles()
 {
 	QVector<const FileInfo*> arr;
-	int i = 0, n = view->Model()->selectedNum;
+	int i = 0, n = view->Model()->GetSelectedNum();
 
 	if (view->Model()->rowCount())
 	{

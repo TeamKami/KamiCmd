@@ -56,7 +56,7 @@ signals:
 	void QuickSearch(QString search);
 	
 public slots:
-	void keyboardSearchNullify();
+	void KeyboardSearchNullify();
 	void SelectAll(int selectAction, bool excludeCurrent = false);
 };
 

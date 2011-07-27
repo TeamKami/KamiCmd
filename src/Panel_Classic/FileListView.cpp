@@ -2,6 +2,25 @@
 
 //#define DARK
 
+FileListView::FileListView()
+	:currentSelectionAction(FileListModel::SA_None), isSearchMode(false)
+{
+	searchEdit = new SearchLineEdit(this);
+	searchEdit->setVisible(isSearchMode);
+	searchEdit->setFocusPolicy(Qt::ClickFocus);
+	setDragDropMode(QAbstractItemView::DragDrop);
+
+	// 	QPalette pal = palette();
+	// 	pal.setColor(QPalette::AlternateBase, QColor(248, 248, 248));
+	// 	setPalette(pal);
+
+#ifdef DARK
+	QPalette pal = palette();
+	pal.setColor(QPalette::Base, QColor(33, 38, 38));
+	setPalette(pal);
+#endif
+}
+
 void FileListView::keyPressEvent( QKeyEvent *event )
 {
 	int overridden_key = 0, overridden_modifiers = 0;
@@ -13,7 +32,7 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 	case Qt::Key_Shift:
 		//if (currentKeyboardSelectAction == FileListModel::SA_None)
 		{
-			if (model_->isSelected(sort_->mapToSource(currentIndex())))
+			if (model_->IsSelected(sort_->mapToSource(currentIndex())))
 				currentSelectionAction = FileListModel::SA_Deselect;
 			else
 				currentSelectionAction = FileListModel::SA_Select;
@@ -201,7 +220,7 @@ void FileListView::keyReleaseEvent( QKeyEvent *event )
 	QTreeView::keyReleaseEvent(event);
 }
 
-void FileListView::keyboardSearchNullify()
+void FileListView::KeyboardSearchNullify()
 {
 	QAbstractItemView::keyboardSearch(QString());
 }
@@ -213,7 +232,6 @@ void FileListView::keyboardSearchNullify()
 
 void FileListView::focusInEvent( QFocusEvent * /*event*/ )
 {
-	model_->isFocused = true;
 	for (int i = 0; i < model_->columnCount(); i++)
 		update( sort_->index(currentIndex().row(), i) );
 	emit FocusIn();
@@ -221,14 +239,13 @@ void FileListView::focusInEvent( QFocusEvent * /*event*/ )
 
 void FileListView::focusOutEvent( QFocusEvent * /*event*/ )
 {
-	model_->isFocused = false;
 	for (int i = 0; i < model_->columnCount(); i++)
 		update( sort_->index(currentIndex().row(), i) );
 }
 
 void FileListView::currentChanged(const QModelIndex &current, const QModelIndex &previous) // overload
 {
-	model_->selection = sort_->mapToSource(current);
+	//model_->selection = sort_->mapToSource(current);
 	// QT 4.6 CRUTCH. REMOVE WHEN NOT NEEDED
 // 	{
 // 		QRect rect;
@@ -257,7 +274,7 @@ void FileListView::mousePressEvent( QMouseEvent *event )
 			setCurrentIndex(index);
 		}
 
-		if ( model_->isSelected(sort_->mapToSource(index)) )
+		if ( model_->IsSelected(sort_->mapToSource(index)) )
 			currentSelectionAction = FileListModel::SA_Deselect;
 		else
 			currentSelectionAction = FileListModel::SA_Select;
@@ -369,9 +386,6 @@ void FileListView::SelectAll( int selectAction /*= FileListModel::SA_Select*/, b
 
 void FileListView::wheelEvent( QWheelEvent *event )
 {
-	if (!model_->isFocused)
-		return;
-
 	int numDegrees = event->delta() / 8;
 	int numSteps = numDegrees / 15;
 
@@ -399,24 +413,6 @@ void FileListView::resizeEvent( QResizeEvent *event )
 	setColumnWidth(0, event->size().width() - 66);
 	setColumnWidth(1, 66);
 	QTreeView::resizeEvent(event);
-}
-
-FileListView::FileListView()
-	:currentSelectionAction(FileListModel::SA_None), isSearchMode(false)
-{
-	searchEdit = new SearchLineEdit(this);
-	searchEdit->setVisible(isSearchMode);
-	searchEdit->setFocusPolicy(Qt::ClickFocus);
-
-// 	QPalette pal = palette();
-// 	pal.setColor(QPalette::AlternateBase, QColor(248, 248, 248));
-// 	setPalette(pal);
-
-#ifdef DARK
-	QPalette pal = palette();
-	pal.setColor(QPalette::Base, QColor(33, 38, 38));
-	setPalette(pal);
-#endif
 }
 
 FileListModel * FileListView::Model()

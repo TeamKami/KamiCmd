@@ -1,8 +1,84 @@
 #include "FileListModel.h"
 #include <QLocale>
 #include <QColor>
+#include "library.h"
 
 //#define DARK
+
+
+bool archiverLessThan( const Module *first, const Module *second )
+{
+	if (first->typeDependentInfo == second->typeDependentInfo)
+		return first->moduleVersion < second->moduleVersion;
+	return first->typeDependentInfo < second->typeDependentInfo;
+}
+
+FileListModel::FileListModel(QObject *parent /*= NULL*/)
+	: QAbstractItemModel(parent)
+{
+	columns = 2;
+
+	QLinearGradient act(0, 0, 0, 1);
+#ifdef DARK
+	act.setColorAt(0, QColor(77, 123, 179));
+	act.setColorAt(1, QColor(39, 62, 97));
+#else
+	act.setColorAt(0, QColor(154, 192, 236));
+	act.setColorAt(1, QColor(94, 132, 172));
+#endif
+	act.setCoordinateMode(QGradient::ObjectBoundingMode);
+	act.setSpread(QGradient::RepeatSpread);
+	selectionActive = QBrush(act);
+
+	QLinearGradient inact(0, 0, 0, 1);
+#ifdef DARK
+	inact.setColorAt(0, QColor(77, 77, 77));
+	inact.setColorAt(1, QColor(39, 39, 39));
+#else
+	inact.setColorAt(0, QColor(246, 246, 246));
+	inact.setColorAt(1, QColor(234, 234, 234));
+#endif
+	inact.setCoordinateMode(QGradient::ObjectBoundingMode);
+	inact.setSpread(QGradient::RepeatSpread);
+	selectionInactive = QBrush(inact);
+
+	QLinearGradient sel(0, 0, 0, 1);
+#ifdef DARK
+	sel.setColorAt(0, QColor(87, 133, 189));
+	sel.setColorAt(1, QColor(49, 72, 107));
+#else
+	sel.setColorAt(0, QColor(233, 184, 152));
+	sel.setColorAt(1, QColor(173, 127, 96));
+#endif
+	sel.setCoordinateMode(QGradient::ObjectBoundingMode);
+	sel.setSpread(QGradient::RepeatSpread);
+	selectionMarked = QBrush(sel);
+
+	QLinearGradient selInact(0, 0, 0, 1);
+#ifdef DARK
+	selInact.setColorAt(0, QColor(87, 87, 87));
+	selInact.setColorAt(1, QColor(49, 49, 49));
+#else
+	selInact.setColorAt(0, QColor(245, 207, 181));
+	selInact.setColorAt(1, QColor(234, 198, 173));
+#endif
+	selInact.setCoordinateMode(QGradient::ObjectBoundingMode);
+	selInact.setSpread(QGradient::RepeatSpread);
+	selectionMarkedInactive = QBrush(selInact);
+
+	if (IFileSystem *fileSystem = dynamic_cast<IFileSystem *>(g_Core->QueryModule("FS", 1)))
+		fs.push(fileSystem);
+	else
+		g_Core->DebugWrite("Panel_Classic", "FileSystem module not found", ICoreFunctions::Error);
+
+	Archivers = g_Core->GetModulesInfo("Archiver", 1);
+	if (Archivers.size())
+		qSort(Archivers.begin(), Archivers.end(), archiverLessThan);
+
+	if ((Assc = dynamic_cast<IAssociations *>(g_Core->QueryModule("Associations", 1))) == 0)
+		g_Core->DebugWrite("UnitManager_Tabs", "Associations module not found", ICoreFunctions::Error);
+}
+
 
 QString FormatSize(qint64 size)
 {
@@ -62,9 +138,13 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 		}
 		break;
 
-	case Qt::UserRole:
+	case AttributesRole:
 		return current.attributes;
 		break;
+
+// 	case FileInfoRole:
+// 		return current;
+// 		break;
 
 	case Qt::DecorationRole:
 		if (!index.column())
@@ -187,8 +267,6 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 */
 	return QVariant();
 }
-
-#include "library.h"
 
 QModelIndex FileListModel::SetPath( QString path )
 {
@@ -360,84 +438,11 @@ bool FileListModel::SelectRange( QVector<QModelIndex> &range, int selectAction /
 	return false;
 }
 
-bool FileListModel::isSelected( QModelIndex index )
+bool FileListModel::IsSelected( QModelIndex index )
 {
 	if (index.isValid() && index.row() < rowCount())
 		return list[index.row()].selected;
 	return false;
-}
-
-bool archiverLessThan( const Module *first, const Module *second )
-{
-	if (first->typeDependentInfo == second->typeDependentInfo)
-		return first->moduleVersion < second->moduleVersion;
-	return first->typeDependentInfo < second->typeDependentInfo;
-}
-
-FileListModel::FileListModel()
-{
-	columns = 2;
-	isFocused = false;
-
-	QLinearGradient act(0, 0, 0, 1);
-#ifdef DARK
-	act.setColorAt(0, QColor(77, 123, 179));
-	act.setColorAt(1, QColor(39, 62, 97));
-#else
-	act.setColorAt(0, QColor(154, 192, 236));
-	act.setColorAt(1, QColor(94, 132, 172));
-#endif
-	act.setCoordinateMode(QGradient::ObjectBoundingMode);
-	act.setSpread(QGradient::RepeatSpread);
-	selectionActive = QBrush(act);
-
-	QLinearGradient inact(0, 0, 0, 1);
-#ifdef DARK
-	inact.setColorAt(0, QColor(77, 77, 77));
-	inact.setColorAt(1, QColor(39, 39, 39));
-#else
-	inact.setColorAt(0, QColor(246, 246, 246));
-	inact.setColorAt(1, QColor(234, 234, 234));
-#endif
-	inact.setCoordinateMode(QGradient::ObjectBoundingMode);
-	inact.setSpread(QGradient::RepeatSpread);
-	selectionInactive = QBrush(inact);
-
-	QLinearGradient sel(0, 0, 0, 1);
-#ifdef DARK
-	sel.setColorAt(0, QColor(87, 133, 189));
-	sel.setColorAt(1, QColor(49, 72, 107));
-#else
-	sel.setColorAt(0, QColor(233, 184, 152));
-	sel.setColorAt(1, QColor(173, 127, 96));
-#endif
-	sel.setCoordinateMode(QGradient::ObjectBoundingMode);
-	sel.setSpread(QGradient::RepeatSpread);
-	selectionMarked = QBrush(sel);
-
-	QLinearGradient selInact(0, 0, 0, 1);
-#ifdef DARK
-	selInact.setColorAt(0, QColor(87, 87, 87));
-	selInact.setColorAt(1, QColor(49, 49, 49));
-#else
-	selInact.setColorAt(0, QColor(245, 207, 181));
-	selInact.setColorAt(1, QColor(234, 198, 173));
-#endif
-	selInact.setCoordinateMode(QGradient::ObjectBoundingMode);
-	selInact.setSpread(QGradient::RepeatSpread);
-	selectionMarkedInactive = QBrush(selInact);
-
-	if (IFileSystem *fileSystem = dynamic_cast<IFileSystem *>(g_Core->QueryModule("FS", 1)))
-		fs.push(fileSystem);
-	else
-		g_Core->DebugWrite("Panel_Classic", "FileSystem module not found", ICoreFunctions::Error);
-
-	Archivers = g_Core->GetModulesInfo("Archiver", 1);
-	if (Archivers.size())
-		qSort(Archivers.begin(), Archivers.end(), archiverLessThan);
-
-        if ((Assc = dynamic_cast<IAssociations *>(g_Core->QueryModule("Associations", 1))) == 0)
-            g_Core->DebugWrite("UnitManager_Tabs", "Associations module not found", ICoreFunctions::Error);
 }
 
 IFileSystem* FileListModel::GetFs()
@@ -448,4 +453,9 @@ IFileSystem* FileListModel::GetFs()
 void FileListModel::QuickSearchChanged( QString search )
 {
 	quickSearch = search;
+}
+
+int FileListModel::GetSelectedNum()
+{
+	return selectedNum;
 }
