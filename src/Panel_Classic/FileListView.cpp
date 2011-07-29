@@ -79,7 +79,6 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 			searchEdit->setText("");
 			searchEdit->setVisible(false);
 			emit QuickSearch(searchEdit->text());
-			setDirtyRegion(QRegion(0, 0, width(), height()));
 			break;
 		}
 
@@ -179,10 +178,6 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 		case Qt::Key_Up:
 		case Qt::Key_Down:
 			selectionModel()->select(wasCurrent, currentSelectionAction);
-
-			if (wasCurrent.row() == model_->rowCount() - 1 || !wasCurrent.row())
-				for (int i = 0; i < model_->columnCount(); i++)
-					update( sort_->index(wasCurrent.row(), i) );
 			break;
 
 		case Qt::Key_Left:
@@ -197,8 +192,6 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 			QItemSelection toSelect;
 			toSelect << QItemSelectionRange(model()->index(wasCurrent.row(), 0), model()->index(current.row(), 1));
 			selectionModel()->select(toSelect, currentSelectionAction);
-
-			setDirtyRegion(QRegion(0, 0, width(), height())); // Kinda not the best solution. Should fix someday
 			break;
 		}
 	}
@@ -225,15 +218,11 @@ void FileListView::KeyboardSearchNullify()
 
 void FileListView::focusInEvent( QFocusEvent * /*event*/ )
 {
-	for (int i = 0; i < model_->columnCount(); i++)
-		update( sort_->index(currentIndex().row(), i) );
 	emit FocusIn();
 }
 
 void FileListView::focusOutEvent( QFocusEvent * /*event*/ )
 {
-	for (int i = 0; i < model_->columnCount(); i++)
-		update( sort_->index(currentIndex().row(), i) );
 }
 
 void FileListView::currentChanged(const QModelIndex &current, const QModelIndex &previous) // overload
@@ -275,8 +264,6 @@ void FileListView::mousePressEvent( QMouseEvent *event )
 		mouseMovePrevIndex = index;
 
 		selectionModel()->select(index, currentSelectionAction);
-		for (int i = 0; i < model_->columnCount(); i++)
-			update( sort_->index(index.row(), i) );
 	}
 	else if (event->button() == Qt::LeftButton && event->modifiers() & Qt::ShiftModifier)
 	{
@@ -324,10 +311,6 @@ void FileListView::mouseMoveEvent( QMouseEvent *event )
 				QItemSelection toSelect;
 				toSelect << QItemSelectionRange(model()->index(start, 0), model()->index(end, 1));
 				selectionModel()->select(toSelect, currentSelectionAction);
-
-				for (int i = start; i < end; i++)
-					for (int j = 0; j < model_->columnCount(); j++)
-						update( sort_->index(i, j) );
 			}
 			else
 				selectionModel()->select(index, currentSelectionAction);
@@ -380,8 +363,6 @@ void FileListView::SelectAll( QItemSelectionModel::SelectionFlag selectAction, b
 		toSelect << QItemSelectionRange(model()->index(0, 0), model()->index(model()->rowCount(), 1));
 
 	selectionModel()->select(toSelect, selectAction);
-
-	setDirtyRegion(QRegion(0, 0, width(), height())); // Kinda not the best solution. Should fix someday
 }
 
 void FileListView::wheelEvent( QWheelEvent *event )
