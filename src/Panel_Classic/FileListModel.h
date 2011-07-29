@@ -37,9 +37,9 @@ public:
 	virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 	virtual bool setData(const QModelIndex &index, const QVariant &value, int role);
 
-	QModelIndex SetPath(QString path); // Return value is row count
+	bool SetPath(QString path);
 	QString GetPath();
-	QModelIndex Enter(QModelIndex selected); // Return value is row count
+	QModelIndex Enter(QModelIndex selected); // Return value is index of element for selection
 	QModelIndex UpOneLevel(); // Return value is index of element for selection
 	const FileInfo * GetFileInfo(int index);
 	

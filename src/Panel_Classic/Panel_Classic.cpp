@@ -7,68 +7,65 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 {
 	QWidget *central = new QWidget(this);
 
-	view = new FileListView();
-	FileListModel *flModel = new FileListModel();
-	view->SetModel(flModel);
-	SortModel *sortModel = new SortModel();
-	view->SetSortModel(sortModel);
+	flView = new FileListView();
+	flModel = new FileListModel();
+	sortModel = new SortModel();
+	sortModel->setSourceModel(flModel);
+	flView->setModel(sortModel);
+	flView->setSelectionModel(new SelectionModel(flView->model(), this));
 
 	FilesDelegate *filesDelegate = new FilesDelegate(this);
 	if (0)
-		view->setItemDelegateForColumn(0, filesDelegate);
+	{
+		for (int i = 0; i < flModel->columnCount(); i++)
+			flView->setItemDelegateForColumn(i, filesDelegate);
+	}
 	else
 	{
 		static bool isFirst = true;
 		if (isFirst)
 		{
-			view->setItemDelegateForColumn(0, filesDelegate);
-			view->setItemDelegateForColumn(1, filesDelegate);
+			for (int i = 0; i < flModel->columnCount(); i++)
+				flView->setItemDelegateForColumn(i, filesDelegate);
 			isFirst = false;
 		}
 	}
 
+	//	view->setAlternatingRowColors(true);
+	//	view->setAllColumnsShowFocus(true);
+	flView->setItemsExpandable(false);
+	flView->setRootIsDecorated(false);
+	flView->setUniformRowHeights(true);
+	flView->setSortingEnabled(true);
+	flView->sortByColumn(0, Qt::AscendingOrder);
+	flView->setSelectionMode(QAbstractItemView::NoSelection);
+	setFocusProxy(flView);
+
 	QToolBar *toolbar = addToolBar("lol");
 	toolbar->addAction(new QAction(QIcon(":/Images/F5.png"), "omg some test", this));
-	
+
 	pathEdit = new QLineEdit(this);
 	pathEdit->setFocusPolicy(Qt::ClickFocus);
 
-	view->setItemsExpandable(false);
-	view->setRootIsDecorated(false);
-//	view->setAlternatingRowColors(true);
-//	view->setSelectionMode(QAbstractItemView::NoSelection);
-
-	view->Sort()->setSourceModel(view->Model());
-	view->setModel(view->Sort());
-	view->setSelectionModel(new SelectionModel(view->Sort(), this));
-
-//	view->setAllColumnsShowFocus(true);
-	view->setUniformRowHeights(true);
-	view->setSortingEnabled(true);
-	view->sortByColumn(0, Qt::AscendingOrder);
-	view->setSelectionMode(QAbstractItemView::NoSelection);
-	setFocusProxy(view);
-
 	layout = new QVBoxLayout(central);
 	layout->addWidget(pathEdit);
-	layout->addWidget(view);
-	layout->addWidget(view->QuickSearchBar());
+	layout->addWidget(flView);
+	layout->addWidget(flView->QuickSearchBar());
 	layout->setMargin(0);
 
 	setCentralWidget(central);
 
-	connect(view, SIGNAL(EnterSelected()), SLOT(EnterSelected()));
+	connect(flView, SIGNAL(EnterSelected()), SLOT(EnterSelected()));
 	connect(pathEdit, SIGNAL(returnPressed()), SLOT(pathEditReturnPressed()));
-	connect(view->Model(), SIGNAL(modelReset()), view, SLOT(KeyboardSearchNullify()));
-	connect(view->Model(), SIGNAL(PathChanged()), this, SIGNAL(TextChanged()));
-	connect(view, SIGNAL(FocusIn()), this, SIGNAL(FocusIn()));
-	connect(view, SIGNAL(PaletteChanged()), filesDelegate, SLOT(PaletteChanged()));
-	connect(view, SIGNAL(QuickSearch(QString)), filesDelegate, SLOT(QuickSearchChanged(QString)));
-	connect(view, SIGNAL(QuickSearch(QString)), view->Model(), SLOT(QuickSearchChanged(QString)));
-	//connect(list, SIGNAL(list->header()->mouseDoubleClickEvent()), list, SLOT(list->header()->))
+	connect(flView->model(), SIGNAL(modelReset()), flView, SLOT(KeyboardSearchNullify()));
+	connect(flModel, SIGNAL(PathChanged()), this, SIGNAL(TextChanged()));
+	connect(flView, SIGNAL(FocusIn()), this, SIGNAL(FocusIn()));
+	connect(flView, SIGNAL(PaletteChanged()), filesDelegate, SLOT(PaletteChanged()));
+	connect(flView, SIGNAL(QuickSearch(QString)), filesDelegate, SLOT(QuickSearchChanged(QString)));
+	connect(flView, SIGNAL(QuickSearch(QString)), flModel, SLOT(QuickSearchChanged(QString)));
+	connect(flView, SIGNAL(CurrentRowChanged(int)), filesDelegate, SLOT(CurrentRowChanged(int)));
 
-	view->Model()->SetPath(QApplication::applicationDirPath()); // Kinda crutch. Should fix someday
-
+	flModel->SetPath(QApplication::applicationDirPath()); // Kinda crutch. Should fix someday
 }
 
 void Panel_Classic::Create(IUnit *createdFrom)
@@ -84,22 +81,19 @@ void Panel_Classic::Link( IUnit *withUnit )
 
 void Panel_Classic::SetPath( QString path )
 {
-	QModelIndex current = view->Model()->SetPath(path);
-	if (current.isValid())
-		view->setCurrentIndex(view->Sort()->mapFromSource(current));
-	else
-		view->setCurrentIndex(view->Sort()->index(0, 0));
-	pathEdit->setText(view->Model()->GetPath());
+	flModel->SetPath(path);
+	SetCurrentIndex(0);
+	pathEdit->setText(flModel->GetPath());
 }
 
 void Panel_Classic::EnterSelected()
 {
-	QModelIndex current = view->Model()->Enter( view->Model()->index(view->Sort()->mapToSource(view->currentIndex()).row()) );
+	QModelIndex current = flModel->Enter(flView->currentIndex());
 	if (current.isValid())
-		view->setCurrentIndex( view->Sort()->mapFromSource(current) );
+		flView->setCurrentIndex(sortModel->mapFromSource(current));
 	else
-		view->setCurrentIndex(view->Sort()->index(0, 0));
-	pathEdit->setText(view->Model()->GetPath());
+		SetCurrentIndex(0);
+	pathEdit->setText(flModel->GetPath());
 }
 
 void Panel_Classic::pathEditReturnPressed()
@@ -109,13 +103,13 @@ void Panel_Classic::pathEditReturnPressed()
 
 QString Panel_Classic::GetPath()
 {
-	return view->Model()->GetPath();
+	return flModel->GetPath();
 }
 
 QString Panel_Classic::GetText()
 {
-	QString str = view->Model()->GetPath();
-	if (!view->Model()->GetFs()->isRoot())
+	QString str = flModel->GetPath();
+	if (!flModel->GetFs()->isRoot())
 	{
 		int pos = str.lastIndexOf("/", -2) + 1;
 		str = str.mid(str.lastIndexOf("/", -2) + 1, str.length() - pos - 1);
@@ -125,19 +119,19 @@ QString Panel_Classic::GetText()
 
 const FileInfo * Panel_Classic::GetCurrentFile()
 {
-	return view->Model()->GetFileInfo(view->Sort()->mapToSource(view->currentIndex()).row());
+	return flModel->GetFileInfo(sortModel->mapToSource(flView->currentIndex()).row());
 }
 
 const FileInfo * Panel_Classic::SetCurrentFileToPrev()
 {
-	if (SetCurrentIndex(view->currentIndex().row() - 1))
+	if (SetCurrentIndex(flView->currentIndex().row() - 1))
 		return GetCurrentFile();
 	return NULL;
 }
 
 const FileInfo * Panel_Classic::SetCurrentFileToNext()
 {
-	if (SetCurrentIndex(view->currentIndex().row() + 1))
+	if (SetCurrentIndex(flView->currentIndex().row() + 1))
 		return GetCurrentFile();
 	return NULL;
 }
@@ -145,20 +139,20 @@ const FileInfo * Panel_Classic::SetCurrentFileToNext()
 QVector<const FileInfo*> Panel_Classic::GetSelectedFiles()
 {
 	QVector<const FileInfo*> arr;
-	int i = 0, n = view->selectionModel()->selectedRows().count();
+	int i = 0, n = flView->selectionModel()->selectedRows().count();
 
-	if (view->Model()->rowCount())
+	if (flModel->rowCount())
 	{
 		if (n)
 		{
-			const FileInfo* info = view->Model()->GetFileInfo( view->Sort()->mapToSource(view->Sort()->index(0, 0)).row() );
+			const FileInfo* info = flModel->GetFileInfo( sortModel->mapToSource(flView->model()->index(0, 0)).row() );
 			if (info->name == "..")
 				i++;
 
 			arr.reserve(n - i);
-			for (; i < view->Model()->rowCount(); i++ )
+			for (; i < flModel->rowCount(); i++ )
 			{
-				const FileInfo* info = view->Model()->GetFileInfo( view->Sort()->mapToSource(view->Sort()->index(i, 0)).row() );
+				const FileInfo* info = flModel->GetFileInfo( sortModel->mapToSource(flView->model()->index(i, 0)).row() );
 				if (info->selected)
 					arr.append(info);
 			}
@@ -171,9 +165,9 @@ QVector<const FileInfo*> Panel_Classic::GetSelectedFiles()
 
 bool Panel_Classic::SetCurrentIndex( int index )
 {
-	if (index > 0 && index < view->Model()->rowCount())
+	if (index > 0 && index < flModel->rowCount())
 	{
-		view->setCurrentIndex(view->Sort()->index(index, 0));
+		flView->setCurrentIndex(flView->model()->index(index, 0));
 		return true;
 	}
 	return false;
@@ -181,7 +175,7 @@ bool Panel_Classic::SetCurrentIndex( int index )
 
 int Panel_Classic::GetCurrentIndex()
 {
-	return view->currentIndex().row();
+	return flView->currentIndex().row();
 }
 
 void Panel_Classic::SaveState( QSettings &set )

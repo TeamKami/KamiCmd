@@ -14,10 +14,12 @@ public:
 
 private:
 	QString quickSearch;
+	int currentRow;
 
 public slots:
 	void PaletteChanged();
 	void QuickSearchChanged(QString search);
+	void CurrentRowChanged(int newCurrentRow);
 };
 
 #endif // FILESDELEGATE_H

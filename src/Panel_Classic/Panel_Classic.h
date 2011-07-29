@@ -29,8 +29,11 @@ public:
 	virtual int  GetCurrentIndex();
 
 private:
+	FileListModel *flModel;
+	SortModel *sortModel;
+	FileListView *flView;
+
 	QLineEdit *pathEdit;
-	FileListView *view;
 	QVBoxLayout *layout;
 	IUnit *inactivePanel;
 

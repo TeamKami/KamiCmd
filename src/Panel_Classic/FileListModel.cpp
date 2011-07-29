@@ -213,9 +213,12 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 	return QVariant();
 }
 
-QModelIndex FileListModel::SetPath( QString path )
+bool FileListModel::SetPath( QString path )
 {
-	if (!GetFs()->SetPath(path))
+	bool isSuccess = false;
+	if (GetFs()->SetPath(path))
+		isSuccess = true;
+	else
 	{
 		for (int i = 0; i < Archivers.size(); i++)
 			if (IArchiver *arc = dynamic_cast<IArchiver *>(g_Core->QueryModule(Archivers[i]->type, Archivers[i]->interfaceVersion, Archivers[i]->name, Archivers[i]->moduleVersion)))
@@ -223,6 +226,7 @@ QModelIndex FileListModel::SetPath( QString path )
 				if (arc->OpenFile(GetFs()->GetFile(path)))
 				{
 					fs.push(arc);
+					isSuccess = true;
 					break;
 				}
 				else
@@ -263,7 +267,7 @@ QModelIndex FileListModel::SetPath( QString path )
 	this->reset();
 	
 	emit PathChanged();
-	return QModelIndex();
+	return isSuccess;
 }
 
 QModelIndex FileListModel::Enter( QModelIndex selected )
@@ -271,15 +275,15 @@ QModelIndex FileListModel::Enter( QModelIndex selected )
 	QModelIndex result;
 	if (selected.row() != -1)
 	{
-		if (selected.data().toString() == "..")
+		if (selected.data(Qt::DisplayRole).toString() == "..")
 			result = UpOneLevel();
 		else // if (list[selected.row()].attributes)// & FileInfo::Directory)
 		{
 			if (path[path.size() - 1] != '/')
-				path += "/" + selected.data().toString();
+				path += "/" + selected.data(Qt::DisplayRole).toString();
 			else
-				path += selected.data().toString();
-			result = SetPath(path);
+				path += selected.data(Qt::DisplayRole).toString();
+			SetPath(path);
 		}
 	}
 	return result;

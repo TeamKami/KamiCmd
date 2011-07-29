@@ -33,16 +33,9 @@ public:
 	virtual void mouseDoubleClickEvent(QMouseEvent *event);
 	virtual void changeEvent(QEvent *event);
 	
-	FileListModel *Model();
-	void SetModel(FileListModel *model);
-	SortModel *Sort();
-	void SetSortModel(SortModel *sort);
-
 	QWidget *QuickSearchBar() { return searchEdit; };
 
 private:
-	SortModel *sort_;
-	FileListModel *model_;
 	QItemSelectionModel::SelectionFlag currentSelectionAction;
 	QModelIndex mouseMovePrevIndex, mouseMoveActionPrevIndex;
 	
@@ -54,6 +47,7 @@ signals:
 	void FocusIn();
 	void PaletteChanged();
 	void QuickSearch(QString search);
+	void CurrentRowChanged(int newCurrentRow);
 	
 public slots:
 	void KeyboardSearchNullify();

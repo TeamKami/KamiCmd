@@ -262,7 +262,7 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 // 			opt.palette = palette;
 // 			vopt = &opt;
 		}
-		if (vopt->state & QStyle::State_HasFocus)
+		if (vopt->state & QStyle::State_HasFocus || currentRow == index.row())
 			opt.state |= QStyle::State_Selected;
 
 		// draw the background
@@ -353,4 +353,9 @@ FilesDelegate::FilesDelegate( QObject *parent /*= 0*/ )
 void FilesDelegate::QuickSearchChanged( QString search )
 {
 	quickSearch = search;
+}
+
+void FilesDelegate::CurrentRowChanged( int newCurrentRow )
+{
+	currentRow = newCurrentRow;
 }
