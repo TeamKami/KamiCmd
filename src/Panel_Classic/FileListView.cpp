@@ -3,7 +3,7 @@
 //#define DARK
 
 FileListView::FileListView()
-	:currentSelectionAction(FileListModel::SA_None), isSearchMode(false)
+	: isSearchMode(false), currentSelectionAction(QItemSelectionModel::NoUpdate)
 {
 	searchEdit = new SearchLineEdit(this);
 	searchEdit->setVisible(isSearchMode);
@@ -23,28 +23,22 @@ FileListView::FileListView()
 
 void FileListView::keyPressEvent( QKeyEvent *event )
 {
-	int overridden_key = 0, overridden_modifiers = 0;
+	int overridden_key = 0;
 	QModelIndex wasCurrent = currentIndex();
 
 	bool isControlEnter = (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) && (event->modifiers() & Qt::ControlModifier);
 	switch (event->key())
 	{ 
 	case Qt::Key_Shift:
-		//if (currentKeyboardSelectAction == FileListModel::SA_None)
-		{
-			if (model_->IsSelected(sort_->mapToSource(currentIndex())))
-				currentSelectionAction = FileListModel::SA_Deselect;
-			else
-				currentSelectionAction = FileListModel::SA_Select;
-		}
+		currentSelectionAction = selectionModel()->isSelected(currentIndex()) ? QItemSelectionModel::Deselect : QItemSelectionModel::Select;
 		break;
 
 	case Qt::Key_Plus:
 	case Qt::Key_Minus:
 	case Qt::Key_Asterisk:
-		SelectAll(event->key() == Qt::Key_Plus ? FileListModel::SA_Select :
-			event->key() == Qt::Key_Minus ? FileListModel::SA_Deselect :
-			FileListModel::SA_Toggle);
+		SelectAll(event->key() == Qt::Key_Plus ? QItemSelectionModel::Select :
+			event->key() == Qt::Key_Minus ? QItemSelectionModel::Deselect :
+			QItemSelectionModel::Toggle);
 		break;
 
 	case Qt::Key_Left:
@@ -56,7 +50,7 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 
 	case Qt::Key_Insert:
 		overridden_key = Qt::Key_Down;
-		overridden_modifiers = Qt::ShiftModifier;
+		selectionModel()->select(currentIndex(), QItemSelectionModel::Toggle);
 		break;
 
 	case Qt::Key_Enter:
@@ -169,21 +163,23 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 		event->ignore();
 
 		if (overridden_key)
-                        QTreeView::keyPressEvent(&QKeyEvent(event->type(), overridden_key, //FIXME: Warning:Taking address of temporary.
-			event->modifiers() & overridden_modifiers, event->text(), event->isAutoRepeat(), event->count()));
+		{
+			QKeyEvent newEvent(event->type(), overridden_key, event->modifiers(), event->text(), event->isAutoRepeat(), event->count());
+			QTreeView::keyPressEvent(&newEvent);
+		}
 		else
 			QTreeView::keyPressEvent(event);
 	}
 
-	if (event->modifiers() & Qt::ShiftModifier || overridden_modifiers & Qt::ShiftModifier)
+	if (event->modifiers() & Qt::ShiftModifier)
 	{
 		QModelIndex current = currentIndex();
 		switch (event->key())
 		{ 
 		case Qt::Key_Up:
 		case Qt::Key_Down:
-		case Qt::Key_Insert:
-			model_->Select(sort_->mapToSource(wasCurrent), currentSelectionAction);
+			selectionModel()->select(wasCurrent, currentSelectionAction);
+
 			if (wasCurrent.row() == model_->rowCount() - 1 || !wasCurrent.row())
 				for (int i = 0; i < model_->columnCount(); i++)
 					update( sort_->index(wasCurrent.row(), i) );
@@ -198,12 +194,9 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 			if (current.row() < wasCurrent.row())
 				qSwap(wasCurrent, current);
 
-			QVector<QModelIndex> list;
-			list.resize(current.row() - wasCurrent.row() + 1);
-
-			for (int i = wasCurrent.row(); i <= current.row(); i++)
-				list[i - wasCurrent.row()] = sort_->mapToSource(sort_->index(i, 0));
-			model_->SelectRange(list, currentSelectionAction);
+			QItemSelection toSelect;
+			toSelect << QItemSelectionRange(model()->index(wasCurrent.row(), 0), model()->index(current.row(), 1));
+			selectionModel()->select(toSelect, currentSelectionAction);
 
 			setDirtyRegion(QRegion(0, 0, width(), height())); // Kinda not the best solution. Should fix someday
 			break;
@@ -215,7 +208,7 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 void FileListView::keyReleaseEvent( QKeyEvent *event )
 {
 	if (event->key() == Qt::Key_Shift)
-		currentSelectionAction = FileListModel::SA_None;
+		currentSelectionAction = QItemSelectionModel::NoUpdate;
 
 	QTreeView::keyReleaseEvent(event);
 }
@@ -265,7 +258,7 @@ void FileListView::currentChanged(const QModelIndex &current, const QModelIndex 
 
 void FileListView::mousePressEvent( QMouseEvent *event )
 {
-	if (event->button() == Qt::RightButton)
+	if (event->button() == Qt::RightButton || event->button() == Qt::LeftButton && event->modifiers() & Qt::ControlModifier)
 	{
 		QModelIndex index = indexAt(event->pos());
 		if (!index.isValid())
@@ -274,16 +267,32 @@ void FileListView::mousePressEvent( QMouseEvent *event )
 			setCurrentIndex(index);
 		}
 
-		if ( model_->IsSelected(sort_->mapToSource(index)) )
-			currentSelectionAction = FileListModel::SA_Deselect;
+		if (selectionModel()->isSelected(index))
+			currentSelectionAction = QItemSelectionModel::Deselect;
 		else
-			currentSelectionAction = FileListModel::SA_Select;
+			currentSelectionAction = QItemSelectionModel::Select;
 
 		mouseMovePrevIndex = index;
 
-		model_->Select(sort_->mapToSource(index), currentSelectionAction);
+		selectionModel()->select(index, currentSelectionAction);
 		for (int i = 0; i < model_->columnCount(); i++)
 			update( sort_->index(index.row(), i) );
+	}
+	else if (event->button() == Qt::LeftButton && event->modifiers() & Qt::ShiftModifier)
+	{
+		QModelIndex indexPrev = currentIndex(), index = indexAt(event->pos());
+		if (!index.isValid())
+		{
+			index = sort_->index(model_->rowCount() - 1, 0);
+			setCurrentIndex(index);
+		}
+
+		if (index.row() < indexPrev.row())
+			qSwap(index, indexPrev);
+
+		QItemSelection toSelect;
+		toSelect << QItemSelectionRange(model()->index(indexPrev.row(), 0), model()->index(index.row(), 1));
+		selectionModel()->select(toSelect, currentSelectionAction);
 	}
 	else if (event->button() == Qt::MidButton)
 	{
@@ -310,22 +319,18 @@ void FileListView::mouseMoveEvent( QMouseEvent *event )
 			if (index.row() != mouseMovePrevIndex.row())
 			{
 				int start = qMin(index.row(), mouseMovePrevIndex.row()),
-					end = qMax(index.row(), mouseMovePrevIndex.row()) + 1;
+					end = qMax(index.row(), mouseMovePrevIndex.row());
 
-				QVector<QModelIndex> list;
-				list.resize(end - start);
-
-				for (int i = 0; i < list.size(); i++)
-					list[i] = sort_->mapToSource(sort_->index(i + start, 0));
-
-				model_->SelectRange(list, currentSelectionAction);
+				QItemSelection toSelect;
+				toSelect << QItemSelectionRange(model()->index(start, 0), model()->index(end, 1));
+				selectionModel()->select(toSelect, currentSelectionAction);
 
 				for (int i = start; i < end; i++)
 					for (int j = 0; j < model_->columnCount(); j++)
 						update( sort_->index(i, j) );
 			}
 			else
-				model_->Select(sort_->mapToSource(index), currentSelectionAction);
+				selectionModel()->select(index, currentSelectionAction);
 		}
 	}
 	else
@@ -336,7 +341,7 @@ void FileListView::mouseReleaseEvent( QMouseEvent *event )
 {
 	if (event->button() == Qt::RightButton)
 	{
-		currentSelectionAction = FileListModel::SA_None;
+		currentSelectionAction = QItemSelectionModel::NoUpdate;
 		event->setAccepted(true);
 	}
 	else
@@ -352,9 +357,9 @@ void FileListView::mouseDoubleClickEvent(QMouseEvent *event)
 		QModelIndex index = indexAt(QPoint(0, event->pos().y()));
 		if (!index.isValid())
 			index = sort_->index(event->pos().y() < 0 ? 0 : model_->rowCount() - 1, 0);
-		currentSelectionAction = model_->GetFileInfo(sort_->mapToSource(index).row())->selected ? FileListModel::SA_Select : FileListModel::SA_Deselect;
+		currentSelectionAction = model_->GetFileInfo(sort_->mapToSource(index).row())->selected ? QItemSelectionModel::Select : QItemSelectionModel::Deselect; // wtf this? Is it needed?
 
-		SelectAll(FileListModel::SA_Toggle, true);
+		SelectAll(QItemSelectionModel::Toggle, true);
 	}
 	else if (event->button() == Qt::MidButton)
 		EnterSelected();
@@ -362,24 +367,19 @@ void FileListView::mouseDoubleClickEvent(QMouseEvent *event)
 		QTreeView::mouseDoubleClickEvent(event);
 }
 
-void FileListView::SelectAll( int selectAction /*= FileListModel::SA_Select*/, bool excludeCurrent /*= false*/ )
+void FileListView::SelectAll( QItemSelectionModel::SelectionFlag selectAction, bool excludeCurrent /*= false*/ )
 {
-	QVector<QModelIndex> list;
-	list.resize(model_->rowCount() - excludeCurrent);
-
-	int currentRow = sort_->mapToSource(currentIndex()).row();
-
-	for (int i = 0, shift = 0; i < model_->rowCount(); i++)
+	QItemSelection toSelect;
+	if (excludeCurrent)
 	{
-		if (shift)
-			list[i - shift] = model_->index(i);
-
-		if (excludeCurrent && currentRow == model_->index(i).row())
-			shift++;
-		if (!shift)
-			list[i] = model_->index(i);
+		toSelect << QItemSelectionRange(model()->index(0, 0), model()->index(currentIndex().row() - 1, 1));
+		if (currentIndex().row() < model()->rowCount() - 1)
+			toSelect << QItemSelectionRange(model()->index(currentIndex().row() + 1, 0), model()->index(model()->rowCount() - 1, 1));
 	}
-	model_->SelectRange(list, selectAction);
+	else
+		toSelect << QItemSelectionRange(model()->index(0, 0), model()->index(model()->rowCount(), 1));
+
+	selectionModel()->select(toSelect, selectAction);
 
 	setDirtyRegion(QRegion(0, 0, width(), height())); // Kinda not the best solution. Should fix someday
 }

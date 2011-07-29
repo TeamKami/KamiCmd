@@ -43,7 +43,7 @@ public:
 private:
 	SortModel *sort_;
 	FileListModel *model_;
-	int currentSelectionAction;
+	QItemSelectionModel::SelectionFlag currentSelectionAction;
 	QModelIndex mouseMovePrevIndex, mouseMoveActionPrevIndex;
 	
 	bool isSearchMode;
@@ -57,7 +57,7 @@ signals:
 	
 public slots:
 	void KeyboardSearchNullify();
-	void SelectAll(int selectAction, bool excludeCurrent = false);
+	void SelectAll(QItemSelectionModel::SelectionFlag selectAction, bool excludeCurrent = false);
 };
 
 #endif // FILELISTVIEW_H

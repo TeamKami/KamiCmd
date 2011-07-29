@@ -10,7 +10,7 @@
 #include "FileListModel.h"
 // This whole file is a pack of hacks and crutches
 
-void FilesDelegate::QCommonStylePrivate_viewItemDrawText(QStyle *s, QPainter *p, const QStyleOptionViewItemV4 *option, const QRect &rect, quint32 attributes) const
+void FilesDelegate::QCommonStylePrivate_viewItemDrawText(QStyle *s, QPainter *p, const QStyleOptionViewItemV4 *option, const QRect &rect, bool isSplitExtension /*= false*/) const
 {
 	const QWidget *widget = option->widget;
 	const int textMargin = s->pixelMetric(QStyle::PM_FocusFrameHMargin, 0, widget) + 1;
@@ -27,7 +27,7 @@ void FilesDelegate::QCommonStylePrivate_viewItemDrawText(QStyle *s, QPainter *p,
 	// Special look for files with '.' in names - name is left aligned, extension is right-aligned
 	int dotPos = option->text.lastIndexOf('.');
 	QString name = option->text, ext;
-	bool isSplitExtension = !(attributes & FileInfo::Directory) && dotPos > 0 && dotPos < option->text.size() - 1 && textExtent < textRect.width();
+	isSplitExtension = isSplitExtension && dotPos > 0 && dotPos < option->text.size() - 1 && textExtent < textRect.width();
 	if (isSplitExtension)
 	{
 		name = option->text.left(dotPos);
@@ -251,6 +251,20 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 		QRect iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, vopt, widget);
 		QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, vopt, widget);
 
+		if (vopt->state & QStyle::State_Selected)
+		{
+			opt.state &= ~(QStyle::State_Selected);
+
+			opt.backgroundBrush = QBrush(QColor(255, 215, 188));
+// 			QPalette palette = opt.palette;
+// 			palette.setColor(QPalette::Highlight, QColor(128, 0, 0));
+// 			palette.setColor(QPalette::Base, QColor(128, 0, 0));
+// 			opt.palette = palette;
+// 			vopt = &opt;
+		}
+		if (vopt->state & QStyle::State_HasFocus)
+			opt.state |= QStyle::State_Selected;
+
 		// draw the background
 		style->proxy()->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, p, widget);
 
@@ -303,10 +317,10 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 				p->drawRect(textRect.adjusted(0, 0, -1, -1));
 			}
 
-			QCommonStylePrivate_viewItemDrawText(style, p, vopt, textRect, index.data(FileListModel::AttributesRole).toUInt());
+			QCommonStylePrivate_viewItemDrawText(style, p, vopt, textRect, !(index.data(FileListModel::AttributesRole).toUInt() & FileInfo::Directory));
 		}
 
-// 		// draw the focus rect
+		// draw the focus rect
 // 		if (vopt->state & QStyle::State_HasFocus)
 // 		{
 // 			QStyleOptionFocusRect o;

@@ -3,8 +3,6 @@
 #include <QColor>
 #include "library.h"
 
-//#define DARK
-
 
 bool archiverLessThan( const Module *first, const Module *second )
 {
@@ -17,54 +15,6 @@ FileListModel::FileListModel(QObject *parent /*= NULL*/)
 	: QAbstractItemModel(parent)
 {
 	columns = 2;
-
-	QLinearGradient act(0, 0, 0, 1);
-#ifdef DARK
-	act.setColorAt(0, QColor(77, 123, 179));
-	act.setColorAt(1, QColor(39, 62, 97));
-#else
-	act.setColorAt(0, QColor(154, 192, 236));
-	act.setColorAt(1, QColor(94, 132, 172));
-#endif
-	act.setCoordinateMode(QGradient::ObjectBoundingMode);
-	act.setSpread(QGradient::RepeatSpread);
-	selectionActive = QBrush(act);
-
-	QLinearGradient inact(0, 0, 0, 1);
-#ifdef DARK
-	inact.setColorAt(0, QColor(77, 77, 77));
-	inact.setColorAt(1, QColor(39, 39, 39));
-#else
-	inact.setColorAt(0, QColor(246, 246, 246));
-	inact.setColorAt(1, QColor(234, 234, 234));
-#endif
-	inact.setCoordinateMode(QGradient::ObjectBoundingMode);
-	inact.setSpread(QGradient::RepeatSpread);
-	selectionInactive = QBrush(inact);
-
-	QLinearGradient sel(0, 0, 0, 1);
-#ifdef DARK
-	sel.setColorAt(0, QColor(87, 133, 189));
-	sel.setColorAt(1, QColor(49, 72, 107));
-#else
-	sel.setColorAt(0, QColor(233, 184, 152));
-	sel.setColorAt(1, QColor(173, 127, 96));
-#endif
-	sel.setCoordinateMode(QGradient::ObjectBoundingMode);
-	sel.setSpread(QGradient::RepeatSpread);
-	selectionMarked = QBrush(sel);
-
-	QLinearGradient selInact(0, 0, 0, 1);
-#ifdef DARK
-	selInact.setColorAt(0, QColor(87, 87, 87));
-	selInact.setColorAt(1, QColor(49, 49, 49));
-#else
-	selInact.setColorAt(0, QColor(245, 207, 181));
-	selInact.setColorAt(1, QColor(234, 198, 173));
-#endif
-	selInact.setCoordinateMode(QGradient::ObjectBoundingMode);
-	selInact.setSpread(QGradient::RepeatSpread);
-	selectionMarkedInactive = QBrush(selInact);
 
 	if (IFileSystem *fileSystem = dynamic_cast<IFileSystem *>(g_Core->QueryModule("FS", 1)))
 		fs.push(fileSystem);
@@ -188,16 +138,14 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 		break;
 
 	case Qt::BackgroundRole:
-// 		if (index.row() == selection.row())
-// 			return isFocused ? (current.selected ? selectionMarked : selectionActive) : (current.selected ? selectionMarkedInactive : selectionInactive);
 
-		if (current.selected)
-#ifdef DARK
-			return QColor(70, 90, 123);
-#else
-			return QColor(255, 215, 188);
-#endif // DARK
-		else
+// 		if (current.selected)
+// #ifdef DARK
+// 			return QColor(70, 90, 123);
+// #else
+// 			return QColor(255, 215, 188);
+// #endif // DARK
+// 		else
 		{
 			QColor color = Assc->GetBackColor(current.path + current.name);
 			return color.isValid() ? color : QVariant();
@@ -208,9 +156,6 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 		if (index.column() == 1)
 			return int(Qt::AlignRight | Qt::AlignVCenter);
 		break;
-
-// 	case Qt::SizeHintRole:
-// 		return QSize(10, 40);
 	}
 
 /*
@@ -316,7 +261,6 @@ QModelIndex FileListModel::SetPath( QString path )
 	quickSearch = "";
 	this->path = GetFs()->GetPath();
 	this->reset();
-	selectedNum = 0;
 	
 	emit PathChanged();
 	return QModelIndex();
@@ -407,43 +351,6 @@ const FileInfo * FileListModel::GetFileInfo( int index )
 	return (const FileInfo *const)(&list[index]);
 }
 
-bool FileListModel::Select( QModelIndex index, int selectAction /*= SA_Toggle*/ )
-{
-	if (index.isValid() && index.row() < rowCount())
-	{
-		list[index.row()].selected = selectAction == SA_Select ? true : selectAction == SA_Deselect ? false : !list[index.row()].selected;
-		if (list[index.row()].selected)
-			selectedNum++;
-		else
-			selectedNum--;
-		return true;
-	}
-	return false;
-}
-
-bool FileListModel::SelectRange( QVector<QModelIndex> &range, int selectAction /*= SA_Toggle*/ )
-{
-	if (!range.isEmpty())
-	{
-		for(int i = 0; i < range.size(); i++)
-		{
-			list[range[i].row()].selected = selectAction == SA_Select ? true : selectAction == SA_Deselect ? false : !list[range[i].row()].selected;
-			if (list[range[i].row()].selected)
-				selectedNum++;
-			else
-				selectedNum--;
-		}
-		return true;
-	}
-	return false;
-}
-
-bool FileListModel::IsSelected( QModelIndex index )
-{
-	if (index.isValid() && index.row() < rowCount())
-		return list[index.row()].selected;
-	return false;
-}
 
 IFileSystem* FileListModel::GetFs()
 {
@@ -453,9 +360,4 @@ IFileSystem* FileListModel::GetFs()
 void FileListModel::QuickSearchChanged( QString search )
 {
 	quickSearch = search;
-}
-
-int FileListModel::GetSelectedNum()
-{
-	return selectedNum;
 }

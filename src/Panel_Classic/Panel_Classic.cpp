@@ -1,5 +1,6 @@
 #include "Panel_Classic.h"
 #include "FilesDelegate.h"
+#include "SelectionModel.h"
 
 Panel_Classic::Panel_Classic(QWidget *parent)
 	: IPanel(parent)
@@ -13,7 +14,7 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 	view->SetSortModel(sortModel);
 
 	FilesDelegate *filesDelegate = new FilesDelegate(this);
-	if (1)
+	if (0)
 		view->setItemDelegateForColumn(0, filesDelegate);
 	else
 	{
@@ -21,6 +22,7 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 		if (isFirst)
 		{
 			view->setItemDelegateForColumn(0, filesDelegate);
+			view->setItemDelegateForColumn(1, filesDelegate);
 			isFirst = false;
 		}
 	}
@@ -38,11 +40,13 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 
 	view->Sort()->setSourceModel(view->Model());
 	view->setModel(view->Sort());
+	view->setSelectionModel(new SelectionModel(view->Sort(), this));
 
 //	view->setAllColumnsShowFocus(true);
 	view->setUniformRowHeights(true);
 	view->setSortingEnabled(true);
 	view->sortByColumn(0, Qt::AscendingOrder);
+	view->setSelectionMode(QAbstractItemView::NoSelection);
 	setFocusProxy(view);
 
 	layout = new QVBoxLayout(central);
@@ -141,7 +145,7 @@ const FileInfo * Panel_Classic::SetCurrentFileToNext()
 QVector<const FileInfo*> Panel_Classic::GetSelectedFiles()
 {
 	QVector<const FileInfo*> arr;
-	int i = 0, n = view->Model()->GetSelectedNum();
+	int i = 0, n = view->selectionModel()->selectedRows().count();
 
 	if (view->Model()->rowCount())
 	{

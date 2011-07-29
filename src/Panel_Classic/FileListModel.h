@@ -43,11 +43,6 @@ public:
 	QModelIndex UpOneLevel(); // Return value is index of element for selection
 	const FileInfo * GetFileInfo(int index);
 	
-	enum SelectAction {SA_None, SA_Select, SA_Deselect, SA_Toggle};
-	bool Select(QModelIndex index, int selectAction = SA_Toggle);
-	bool SelectRange(QVector<QModelIndex> &range, int selectAction = SA_Toggle);
-	bool IsSelected(QModelIndex index);
-	int GetSelectedNum();
 	IFileSystem* GetFs();
 
 signals:
@@ -63,11 +58,9 @@ private:
 	QString path;
 	int columns;
 
-	QBrush selectionActive, selectionInactive, selectionMarked, selectionMarkedInactive;
 	IAssociations *Assc;
 
 	QString quickSearch;
-	int selectedNum;
 };
 
 #endif // PANEL_LISTMODEL_H

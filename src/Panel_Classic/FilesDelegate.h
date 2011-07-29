@@ -10,7 +10,7 @@ class FilesDelegate : public QStyledItemDelegate
 public:
 	FilesDelegate(QObject *parent = 0);
 	virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-	void QCommonStylePrivate_viewItemDrawText(QStyle *s, QPainter *p, const QStyleOptionViewItemV4 *option, const QRect &rect, quint32 attributes) const;
+	void QCommonStylePrivate_viewItemDrawText(QStyle *s, QPainter *p, const QStyleOptionViewItemV4 *option, const QRect &rect, bool isSplitExtension = false) const;
 
 private:
 	QString quickSearch;
