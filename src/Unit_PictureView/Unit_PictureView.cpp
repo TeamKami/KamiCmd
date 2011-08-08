@@ -36,7 +36,7 @@ void Unit_PictureView::Create( IUnit *createdFrom )
 		text = info->name;
 		path = info->path;
 		emit TextChanged();
-		viewer->OpenFile(info->path + info->name);
+		viewer->OpenFile(info->FilePath());
 	}
 }
 

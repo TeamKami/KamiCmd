@@ -31,8 +31,8 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 		}
 	}
 
-	//	view->setAlternatingRowColors(true);
-	//	view->setAllColumnsShowFocus(true);
+	// flView->setAlternatingRowColors(true);
+	// flView->setAllColumnsShowFocus(true);
 	flView->setItemsExpandable(false);
 	flView->setRootIsDecorated(false);
 	flView->setUniformRowHeights(true);
@@ -56,6 +56,7 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 	setCentralWidget(central);
 
 	connect(flView, SIGNAL(EnterSelected()), SLOT(EnterSelected()));
+	connect(flView, SIGNAL(OpenSelected()), SLOT(OpenSelected()));
 	connect(pathEdit, SIGNAL(returnPressed()), SLOT(pathEditReturnPressed()));
 	connect(flView->model(), SIGNAL(modelReset()), flView, SLOT(KeyboardSearchNullify()));
 	connect(flModel, SIGNAL(PathChanged()), this, SIGNAL(TextChanged()));
@@ -193,4 +194,9 @@ void Panel_Classic::LoadState( QSettings &set )
 QIcon Panel_Classic::GetIcon()
 {
 	return QIcon();
+}
+
+void Panel_Classic::OpenSelected()
+{
+	QDesktopServices::openUrl(QUrl::fromLocalFile(flView->currentIndex().data(FileListModel::FileInfoRole).value<FileInfo>().FilePath()));
 }

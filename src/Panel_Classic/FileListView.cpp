@@ -9,6 +9,7 @@ FileListView::FileListView()
 	searchEdit->setVisible(isSearchMode);
 	searchEdit->setFocusPolicy(Qt::ClickFocus);
 	setDragDropMode(QAbstractItemView::DragDrop);
+	setDropIndicatorShown(true);
 
 	// 	QPalette pal = palette();
 	// 	pal.setColor(QPalette::AlternateBase, QColor(248, 248, 248));
@@ -55,10 +56,11 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 
 	case Qt::Key_Enter:
 	case Qt::Key_Return:
-	case Qt::Key_Escape:
-			if (!isControlEnter)
-				emit EnterSelected();
-			break;
+		if (event->modifiers() & Qt::ShiftModifier)
+			emit OpenSelected();
+		else if (!isControlEnter)
+			emit EnterSelected();
+		break;
 	}
 
 	if (isSearchMode && !isControlEnter)

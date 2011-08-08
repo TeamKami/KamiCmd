@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QFile>
 #include <QtGui/QIcon>
+#include <QMetaType>
 
 struct FileInfo
 {
@@ -46,7 +47,13 @@ public:
 		size = 0;
 		selected = false;
 	};
+
+	QString FilePath() const
+	{
+		return path + name;
+	}
 };
+Q_DECLARE_METATYPE(FileInfo)
 
 class IFileSystem
 {

@@ -41,6 +41,7 @@ public slots:
 	virtual void SetPath(QString path);
 
 	void EnterSelected();
+	void OpenSelected();
 	void pathEditReturnPressed();
 
 signals:

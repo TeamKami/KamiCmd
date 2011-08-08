@@ -2,6 +2,9 @@
 #include <QLocale>
 #include <QColor>
 #include "library.h"
+#include <QMimeData>
+#include <QUrl>
+#include <QMessageBox>
 
 
 bool archiverLessThan( const Module *first, const Module *second )
@@ -74,6 +77,21 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 
 	switch (role)
 	{
+	// User roles
+	case AttributesRole:
+		return current.attributes;
+		break;
+
+	case FileInfoRole:
+		{
+			QVariant var;
+			var.setValue(current);
+			return var;
+		}
+		break;
+
+	
+	// Qt roles
 	case Qt::DisplayRole:
 		switch (index.column())
 		{
@@ -88,14 +106,6 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 		}
 		break;
 
-	case AttributesRole:
-		return current.attributes;
-		break;
-
-// 	case FileInfoRole:
-// 		return current;
-// 		break;
-
 	case Qt::DecorationRole:
 		if (!index.column())
 			return current.icon;
@@ -104,28 +114,17 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 	case Qt::ForegroundRole:
 		{
 			QVariant res;
-#ifdef DARK
-			if (index.row() == selection.row() && isFocused)
-				res = QColor(255, 255, 255);
-#endif
 
 			if (current.attributes & FileInfo::Directory)
-#ifdef DARK
-				res = QColor(255, 255, 255);
-#else
 				res = QColor(2, 88, 112);
-#endif
 			else
 			{
 				QColor color = Assc->GetTextColor(current.path + current.name);
 				res = color.isValid() ? color :
-#ifdef DARK
-					QColor(175, 247, 255);
-#else
 					QVariant();
-#endif
 			}
-			
+
+			// If enabled graying out of non-matched with quicksearch items:
 			/*if (!quickSearch.isEmpty() && index.data(Qt::DisplayRole).toString().indexOf(quickSearch, 0, Qt::CaseInsensitive) == -1)
 			{
 				QColor resAdj = res.value<QColor>();
@@ -138,14 +137,6 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 		break;
 
 	case Qt::BackgroundRole:
-
-// 		if (current.selected)
-// #ifdef DARK
-// 			return QColor(70, 90, 123);
-// #else
-// 			return QColor(255, 215, 188);
-// #endif // DARK
-// 		else
 		{
 			QColor color = Assc->GetBackColor(current.path + current.name);
 			return color.isValid() ? color : QVariant();
@@ -158,58 +149,6 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 		break;
 	}
 
-/*
-	if (role==Qt::DecorationRole && index.column()==0)
-	{
-		if (list.at(index.row()).isStandardIcon)
-		{
-			return isDir(index) ? qiFolderIcon : qiFileIcon;
-		}
-		return *list.at(index.row()).icon;
-	}
-
-	if (role==Qt::UserRole )
-	{
-		switch (index.column())
-		{
-		case 2:
-			return list.at(index.row()).size;
-			break;
-		}
-	}
-
-	if (role==Qt::EditRole && index.column()==0)
-	{
-		return list.at(index.row()).name;
-	}
-
-	if (role==Qt::TextAlignmentRole && index.column()==2)
-	{
-		if (!isDir(index))
-			return Qt::AlignRight;
-		else
-			return Qt::AlignHCenter;
-	}
-
-	if (role==Qt::ToolTipRole)
-	{
-		switch(index.column())
-		{
-		case 0:return list.at(index.row()).name; break;
-		case 1:return list.at(index.row()).name; break;
-		case 2: return list.at(index.row()).size; break;
-		case 3: return list.at(index.row()).lastUpdateDate.toString("dd.MM.yyyy hh:mm:ss"); break;
-		default: return QVariant();
-		}
-		;
-	}
-
-	if (role==Qt::ForegroundRole)
-	{
-		if (list.at(index.row()).lastUpdateDate.date().daysTo(QDate::currentDate())<=3)
-			return Qt::blue;
-	}
-*/
 	return QVariant();
 }
 
@@ -330,9 +269,17 @@ Qt::ItemFlags FileListModel::flags( const QModelIndex &index ) const
 {
 	if (!index.isValid())
 		return 0;
-	//	if (index.column()==0)
-	//		return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	return /*(quickSearch.isEmpty() || index.data(Qt::DisplayRole).toString().indexOf(quickSearch, 0, Qt::CaseInsensitive) != -1 ?*/ Qt::ItemIsEnabled /*: (Qt::ItemFlags)0)*/ | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+
+	Qt::ItemFlags res;
+	res |= Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+
+	// If enabled graying out of non-matched with quicksearch items:
+	//if (quickSearch.isEmpty() || index.data(Qt::DisplayRole).toString().indexOf(quickSearch, 0, Qt::CaseInsensitive) != -1)
+	res |= Qt::ItemIsEnabled;
+
+	res |= Qt::ItemIsDropEnabled;
+	//res |= Qt::ItemIsUserCheckable;
+	return res;
 }
 
 int FileListModel::rowCount( const QModelIndex& /*= QModelIndex()*/ ) const
@@ -364,4 +311,67 @@ IFileSystem* FileListModel::GetFs()
 void FileListModel::QuickSearchChanged( QString search )
 {
 	quickSearch = search;
+}
+
+Qt::DropActions FileListModel::supportedDropActions() const
+{
+	return Qt::CopyAction | Qt::MoveAction | Qt::LinkAction | Qt::IgnoreAction | Qt::TargetMoveAction;
+}
+
+bool FileListModel::dropMimeData( const QMimeData *mimeData, Qt::DropAction action, int /*row*/, int column, const QModelIndex &/*parent*/ )
+{
+// 	if (action == Qt::IgnoreAction)
+// 		return true;
+
+	if (mimeData->hasUrls())
+	{
+		QList<QUrl> urlList = mimeData->urls();
+		QString str;
+		for (int i = 0; i < urlList.size(); i++)
+			str.append(urlList[i].toString() + "\n");
+
+		QString actionStr;
+		switch (action)
+		{
+		case Qt::CopyAction: actionStr = "copy"; break;
+		case Qt::MoveAction: actionStr = "move"; break;
+		case Qt::LinkAction: actionStr = "link"; break;
+		case Qt::TargetMoveAction: actionStr = "target-move"; break;
+		case Qt::IgnoreAction: actionStr = "ignore"; break;
+		}
+		QMessageBox::information(NULL, QString("Files to %1").arg(actionStr), str);
+		return true;
+	}
+	else
+	{
+		QString str;
+		foreach (QString format, mimeData->formats())
+			str.append(format + " ");
+		QMessageBox::information(NULL, "Unknown Drag&Drop MIMEs:", str);
+		return false;
+	}
+
+	if (column > 0)
+		return false;
+}
+
+QMimeData * FileListModel::mimeData( const QModelIndexList &indexes ) const
+{
+	QMimeData *mimeData = new QMimeData();
+	QList<QUrl> urls;
+
+	foreach (const QModelIndex &index, indexes)
+		if (index.isValid() && !index.column())
+			urls << QUrl::fromLocalFile(data(index, FileListModel::FileInfoRole).value<FileInfo>().FilePath()).toString();
+
+	mimeData->setUrls(urls);
+	return mimeData;
+}
+
+QStringList FileListModel::mimeTypes() const
+{
+	QStringList types;
+	types << "application/kamicmd.file.list"
+		<< "text/uri-list";
+	return types;
 }

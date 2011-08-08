@@ -44,6 +44,7 @@ private:
 
 signals:
 	void EnterSelected();
+	void OpenSelected();
 	void FocusIn();
 	void PaletteChanged();
 	void QuickSearch(QString search);
