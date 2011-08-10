@@ -58,7 +58,7 @@ QString FormatSize(qint64 size)
 
 QModelIndex FileListModel::index( int row, int column /*= 0*/, const QModelIndex & /*parent*/ /*= QModelIndex()*/ ) const
 {
-	if (column > columnCount() || row > list.count() || list.isEmpty())
+	if (column > columnCount() || row > FileInfoArr.count() || FileInfoArr.isEmpty())
 		return QModelIndex();
 	return createIndex(row, column);
 }
@@ -70,10 +70,10 @@ QModelIndex FileListModel::parent( const QModelIndex& ) const
 
 QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::DisplayRole */ ) const
 {
-	if (!index.isValid() || index.row() > list.count() || list.isEmpty())
+	if (!index.isValid() || index.row() > FileInfoArr.count() || FileInfoArr.isEmpty())
 		return QVariant();
 
-	const FileInfo &current = list[index.row()];
+	const FileInfo &current = FileInfoArr[index.row()];
 
 	switch (role)
 	{
@@ -174,30 +174,30 @@ bool FileListModel::SetPath( QString path )
 	}
 
 	bool isRoot = GetFs()->isRoot() == false || fs.size() > 1;
-	list.resize(GetFs()->GetNumberOfFiles() + isRoot);
+	FileInfoArr.resize(GetFs()->GetNumberOfFiles() + isRoot);
 
 	int i = 0;
 	if (isRoot)
 	{
-		list[i].init();
-		list[i].name = "..";
-		list[i].path = GetFs()->GetPath() + list[i].name;
-		list[i].attributes = FileInfo::Directory;
+		FileInfoArr[i].init();
+		FileInfoArr[i].name = "..";
+		FileInfoArr[i].path = GetFs()->GetPath() + FileInfoArr[i].name;
+		FileInfoArr[i].attributes = FileInfo::Directory;
 
-		list[i].icon = QIcon(":/Icons/Folder.png");
+		FileInfoArr[i].icon = QIcon(":/Icons/Folder.png");
 //		Assc->GetIcon(list[i].icon, list[i].path);
 
 		i++;
 	}
 
-	if (i < list.size())
-		for (bool result = GetFs()->GetFirstFileInfo(list[i]); result; result = GetFs()->GetNextFileInfo(list[++i]))
+	if (i < FileInfoArr.size())
+		for (bool result = GetFs()->GetFirstFileInfo(FileInfoArr[i]); result; result = GetFs()->GetNextFileInfo(FileInfoArr[++i]))
 		{
-			if (list[i].attributes & FileInfo::Directory)
-				list[i].icon = QIcon(":/Icons/Folder.png");
+			if (FileInfoArr[i].attributes & FileInfo::Directory)
+				FileInfoArr[i].icon = QIcon(":/Icons/Folder.png");
 			else
-				Assc->GetIcon(list[i].icon, list[i].path + list[i].name);
-			if (i == list.size() - 1)
+				Assc->GetIcon(FileInfoArr[i].icon, FileInfoArr[i].path + FileInfoArr[i].name);
+			if (i == FileInfoArr.size() - 1)
 				break;
 		}
 
@@ -242,8 +242,8 @@ QModelIndex FileListModel::UpOneLevel()
 		SetPath(GetFs()->GetPath());
 		toSelect.remove(path).remove("/");
 
-		for(int i = 0; i < list.size(); i++)
-			if (list[i].name == toSelect)
+		for(int i = 0; i < FileInfoArr.size(); i++)
+			if (FileInfoArr[i].name == toSelect)
 				return index(i);
 	}
 	return QModelIndex();
@@ -267,24 +267,24 @@ QVariant FileListModel::headerData( int section, Qt::Orientation orientation, in
 
 Qt::ItemFlags FileListModel::flags( const QModelIndex &index ) const
 {
-	if (!index.isValid())
-		return 0;
+	Qt::ItemFlags res = Qt::ItemIsDropEnabled;
 
-	Qt::ItemFlags res;
+	if (!index.isValid())
+		return res;
+
 	res |= Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
 
 	// If enabled graying out of non-matched with quicksearch items:
 	//if (quickSearch.isEmpty() || index.data(Qt::DisplayRole).toString().indexOf(quickSearch, 0, Qt::CaseInsensitive) != -1)
 	res |= Qt::ItemIsEnabled;
 
-	res |= Qt::ItemIsDropEnabled;
 	//res |= Qt::ItemIsUserCheckable;
 	return res;
 }
 
 int FileListModel::rowCount( const QModelIndex& /*= QModelIndex()*/ ) const
 {
-	return list.size();
+	return FileInfoArr.size();
 }
 
 int FileListModel::columnCount( const QModelIndex& /*= QModelIndex()*/ ) const
@@ -299,7 +299,7 @@ bool FileListModel::setData( const QModelIndex & /*index*/, const QVariant & /*v
 
 const FileInfo * FileListModel::GetFileInfo( int index )
 {
-	return (const FileInfo *const)(&list[index]);
+	return (const FileInfo *const)(&FileInfoArr[index]);
 }
 
 
@@ -374,4 +374,15 @@ QStringList FileListModel::mimeTypes() const
 	types << "application/kamicmd.file.list"
 		<< "text/uri-list";
 	return types;
+}
+
+bool FileListModel::removeRows(int row, int count, const QModelIndex &parent /*= QModelIndex()*/)
+{
+	int beginRow = qMax(0, row);
+	int endRow = qMin(row + count - 1, rowCount() - 1);
+	
+	beginRemoveRows(parent, beginRow, endRow);
+	FileInfoArr.remove(row, count);
+	endRemoveRows();
+	return true;
 }

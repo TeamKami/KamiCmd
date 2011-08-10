@@ -1,6 +1,5 @@
 #include "FileListView.h"
-
-//#define DARK
+#include "FileListHeader.h"
 
 FileListView::FileListView()
 	: isSearchMode(false), currentSelectionAction(QItemSelectionModel::NoUpdate)
@@ -10,10 +9,18 @@ FileListView::FileListView()
 	searchEdit->setFocusPolicy(Qt::ClickFocus);
 	setDragDropMode(QAbstractItemView::DragDrop);
 	setDropIndicatorShown(true);
+	//setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+	//viewport()->setStyleSheet("background-color: white;");
+
+	//setStyleSheet("QTreeView::item { padding: 6px 14px 0px 14px; }");
 
 	// 	QPalette pal = palette();
 	// 	pal.setColor(QPalette::AlternateBase, QColor(248, 248, 248));
 	// 	setPalette(pal);
+
+	setFrameStyle(QFrame::Plain);
+	setHeader(new FileListHeader(Qt::Horizontal, this));
+
 
 #ifdef DARK
 	QPalette pal = palette();
@@ -56,10 +63,13 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 
 	case Qt::Key_Enter:
 	case Qt::Key_Return:
-		if (event->modifiers() & Qt::ShiftModifier)
-			emit OpenSelected();
-		else if (!isControlEnter)
-			emit EnterSelected();
+		if (!isControlEnter)
+		{
+			if (event->modifiers() & Qt::ShiftModifier)
+				emit OpenSelected();
+			else 
+				emit EnterSelected();
+		}
 		break;
 	}
 

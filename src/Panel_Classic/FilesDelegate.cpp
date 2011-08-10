@@ -1,37 +1,40 @@
 #include "FilesDelegate.h"
 #include <QPainter>
 #include <QStyleOption>
-#include <QApplication>
-#include <QTextLayout>
 #include <QAbstractItemView>
-#include <QWindowsVistaStyle>
+#include "FilesDelegate_win.h"
 
 #include "../IFileSystem.h"
 #include "FileListModel.h"
-// This whole file is a pack of hacks and crutches
+#include <QTreeView>
+#include <QHeaderView>
 
-void FilesDelegate::QCommonStylePrivate_viewItemDrawText(QStyle *s, QPainter *p, const QStyleOptionViewItemV4 *option, const QRect &rect, bool isSplitExtension /*= false*/) const
+// This whole file is a pack of hacks and crutches
+#define VIEWPORT_MARGIN_LEFT 7/*13*/
+#define VIEWPORT_MARGIN_RIGHT 5/*13*/
+
+void FilesDelegate::QCommonStylePrivate_viewItemDrawText(QStyle *style, QPainter *p, const QStyleOptionViewItemV4 *opt, const QRect &rect, bool isSplitExtension /*= false*/) const
 {
-	const QWidget *widget = option->widget;
-	const int textMargin = s->pixelMetric(QStyle::PM_FocusFrameHMargin, 0, widget) + 1;
+	const QWidget *widget = opt->widget;
+	const int textMargin = style->pixelMetric(QStyle::PM_FocusFrameHMargin, 0, widget) + 1;
 
 	// 1 in yp2 is a crutch and it works as it should somehow
 	QRect textRect = rect.adjusted(textMargin, 0, -textMargin, 1); // remove width padding
 
-	int textExtent = p->fontMetrics().width(option->text);
+	int textExtent = p->fontMetrics().width(opt->text);
 
  	//p->drawRect(textRect);
 
 	// FIXME: colorize extension if found also
 
 	// Special look for files with '.' in names - name is left aligned, extension is right-aligned
-	int dotPos = option->text.lastIndexOf('.');
-	QString name = option->text, ext;
-	isSplitExtension = isSplitExtension && dotPos > 0 && dotPos < option->text.size() - 1 && textExtent < textRect.width();
+	int dotPos = opt->text.lastIndexOf('.');
+	QString name = opt->text, ext;
+	isSplitExtension = isSplitExtension && dotPos > 0 && dotPos < opt->text.size() - 1 && textExtent < textRect.width();
 	if (isSplitExtension)
 	{
-		name = option->text.left(dotPos);
-		ext = option->text.right(option->text.size() - dotPos - 1);
+		name = opt->text.left(dotPos);
+		ext = opt->text.right(opt->text.size() - dotPos - 1);
 	}
 
 	// Draw QuickSearched text in different color
@@ -44,26 +47,29 @@ void FilesDelegate::QCommonStylePrivate_viewItemDrawText(QStyle *s, QPainter *p,
 			QString foundText = name.mid(matchPos, quickSearch.size());
 			QString rightText = name.right(name.size() - matchPos - quickSearch.size());
 
+			// Drawing text before QuickSearched text
 			p->drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, leftText);
 			int foundTextExtent = p->fontMetrics().width(foundText),
 				leftPlusFoundTextExtent = p->fontMetrics().width(leftText + foundText);
 			textRect.adjust(leftPlusFoundTextExtent - foundTextExtent, 0, 0, 0);
 
+			// Drawing QuickSearched text
 			QBrush brush = p->background();
-			//QPen pen = p->pen();
-			//p->setPen(QPen(QColor(255, 128, 0)));
+			QPen pen = p->pen();
+			if (!FilesDelegate_win_useVista(style) && opt->state & QStyle::State_Selected)
+				p->setPen(QPen(Qt::black));
 			Qt::BGMode bgMode = p->backgroundMode();
 			p->setBackgroundMode(Qt::OpaqueMode);
-			
 			p->setBackground(QBrush(QColor(255, 255, 64)));
 			p->drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, foundText);
 			p->setBackground(brush);
 			p->setBackgroundMode(bgMode);
-			//p->setPen(pen);
+			p->setPen(pen);
 			int nameTextExtent = p->fontMetrics().width(name),
 				rightTextExtent = p->fontMetrics().width(rightText);
 			textRect.adjust(nameTextExtent - rightTextExtent - (leftPlusFoundTextExtent - foundTextExtent), 0, 0, 0);
 
+			// Drawing text after QuickSearched text
 			p->drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, rightText);
 			if (isSplitExtension)
 				p->drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, ext);
@@ -77,103 +83,9 @@ void FilesDelegate::QCommonStylePrivate_viewItemDrawText(QStyle *s, QPainter *p,
 		p->drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, ext);
 	}
 	else
-		p->drawText(textRect, option->displayAlignment, option->text);
+		p->drawText(textRect, opt->displayAlignment, opt->text);
 }
 
-static const QWidget * QStyledItemDelegatePrivate_widget(const QStyleOptionViewItem &option)
-{
-	if (const QStyleOptionViewItemV3 *v3 = qstyleoption_cast<const QStyleOptionViewItemV3 *>(&option))
-		return v3->widget;
-	return 0;
-}
-
-#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
-
-#include "windows.h"
-
-class QSystemLibrary
-{
-public:
-	explicit QSystemLibrary(const QString &libraryName)
-	{
-		m_libraryName = libraryName;
-		m_handle = 0;
-		m_didLoad = false;
-	}
-
-	explicit QSystemLibrary(const wchar_t *libraryName)
-	{
-		m_libraryName = QString::fromWCharArray(libraryName);
-		m_handle = 0;
-		m_didLoad = false;
-	}
-
-	bool load(bool onlySystemDirectory = true)
-	{
-		m_handle = load((const wchar_t *)m_libraryName.utf16(), onlySystemDirectory);
-		m_didLoad = true;
-		return (m_handle != 0);
-	}
-
-	bool isLoaded()
-	{
-		return (m_handle != 0);
-	}
-
-	void *resolve(const char *symbol)
-	{
-		if (!m_didLoad)
-			load();
-		if (!m_handle)
-			return 0;
-#ifdef Q_OS_WINCE
-		return (void*)GetProcAddress(m_handle, (const wchar_t*)QString::fromLatin1(symbol).utf16());
-#else
-		return (void*)GetProcAddress(m_handle, symbol);
-#endif
-	}
-
-	static void *resolve(const QString &libraryName, const char *symbol)
-	{
-		return QSystemLibrary(libraryName).resolve(symbol);
-	}
-
-	static Q_CORE_EXPORT HINSTANCE load(const wchar_t *lpFileName, bool onlySystemDirectory = true);
-private:
-	HINSTANCE m_handle;
-	QString m_libraryName;
-	bool m_didLoad;
-};
-
-typedef bool (WINAPI *PtrIsAppThemed)();
-typedef bool (WINAPI *PtrIsThemeActive)();
-static PtrIsAppThemed pIsAppThemed = 0;
-static PtrIsThemeActive pIsThemeActive = 0;
-
-
-bool QWindowsXPStylePrivate_resolveSymbols()
-{
-	static bool tried = false;
-	if (!tried) {
-		tried = true;
-		QSystemLibrary themeLib(QLatin1String("uxtheme"));
-		pIsAppThemed = (PtrIsAppThemed)themeLib.resolve("IsAppThemed");
-		if (pIsAppThemed)
-			pIsThemeActive = (PtrIsThemeActive)themeLib.resolve("IsThemeActive");
-	}
-	return pIsAppThemed != 0;
-}
-
-static bool use_xp;
-
-bool QWindowsVistaStylePrivate_useVista()
-{
-	return (use_xp &&
-		(QSysInfo::WindowsVersion >= QSysInfo::WV_VISTA &&
-		QSysInfo::WindowsVersion < QSysInfo::WV_NT_based));
-}
-
-#endif
 
 // Based on QCommonStyle::drawControl case CE_ItemViewItem
 void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -185,8 +97,8 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 
 	QStyleOptionViewItemV4 opt = option;
 	initStyleOption(&opt, index);
-
-	const QWidget *widget = QStyledItemDelegatePrivate_widget(option);
+	const QWidget *widget = opt.widget;
+	const QTreeView *view = qobject_cast<const QTreeView *>(widget);
 	QStyle *style = widget ? widget->style() : QApplication::style();
 // 	style->drawControl(QStyle::CE_ItemViewItem, &opt, p, widget);
 // 	return;
@@ -194,41 +106,12 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 
 	if (const QStyleOptionViewItemV4 *vopt = &opt)
 	{
-// 		QString txt = opt.text;
-// 		opt.text = "";
-// 		style->drawControl(QStyle::CE_ItemViewItem, &opt, p, widget);
-// 		opt.text = txt;
-// 		QRect textRect2 = style->subElementRect(QStyle::SE_ItemViewItemText, vopt, widget);
-// 
-// 		if (!vopt->text.isEmpty())
-// 		{
-// 			QPalette::ColorGroup cg = vopt->state & QStyle::State_Enabled ? QPalette::Normal : QPalette::Disabled;
-// 			if (cg == QPalette::Normal && !(vopt->state & QStyle::State_Active))
-// 				cg = QPalette::Inactive;
-// 
-// 			if (vopt->state & QStyle::State_Selected)
-// 				p->setPen(vopt->palette.color(cg, QPalette::HighlightedText));
-// 			else
-// 				p->setPen(vopt->palette.color(cg, QPalette::Text));
-// 
-// 			if (vopt->state & QStyle::State_Editing)
-// 			{
-// 				p->setPen(vopt->palette.color(cg, QPalette::Text));
-// 				p->drawRect(textRect2.adjusted(0, 0, -1, -1));
-// 			}
-// 
-// 			QCommonStylePrivate_viewItemDrawText(style, p, vopt, textRect2);
-// 		}
-// 
-// 		return;
-
 		// Based on QWindowsVistaStyle::drawControl case CE_ItemViewItem
+
 #if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
 		QStyleOptionViewItemV4 adjustedOption = *vopt;
-		if (qobject_cast<QWindowsVistaStyle *>(style) && QWindowsVistaStylePrivate_useVista())
+		if (FilesDelegate_win_useVista(style))
 		{
-			const QAbstractItemView *view = qobject_cast<const QAbstractItemView *>(widget);
-		
 			QPalette palette = vopt->palette;
 			palette.setColor(QPalette::All, QPalette::HighlightedText, palette.color(QPalette::Active, QPalette::Text));
 			// Note that setting a saturated color here results in ugly XOR colors in the focus rect
@@ -240,9 +123,22 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 				adjustedOption.state &= ~QStyle::State_HasFocus;
 
 			opt = adjustedOption;
-			vopt = &adjustedOption;
+			vopt = &opt;
 		}
 #endif
+
+		// Custom padding for first and last columns; Also fixing viewItemPosition for swapped columns
+		if (!view->header()->logicalIndex(index.column()))
+		{
+			opt.rect.setLeft(opt.rect.left() + VIEWPORT_MARGIN_LEFT);
+			opt.viewItemPosition = QStyleOptionViewItemV4::Beginning;
+		}
+		if (view->header()->logicalIndex(index.column()) == index.model()->columnCount() - 1)
+		{
+			opt.rect.setRight(opt.rect.right() - VIEWPORT_MARGIN_RIGHT);
+			opt.viewItemPosition = QStyleOptionViewItemV4::End;
+		}
+
 
 		p->save();
 		p->setClipRect(opt.rect);
@@ -254,13 +150,7 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 		if (vopt->state & QStyle::State_Selected)
 		{
 			opt.state &= ~(QStyle::State_Selected);
-
-			opt.backgroundBrush = QBrush(QColor(255, 215, 188));
-// 			QPalette palette = opt.palette;
-// 			palette.setColor(QPalette::Highlight, QColor(128, 0, 0));
-// 			palette.setColor(QPalette::Base, QColor(128, 0, 0));
-// 			opt.palette = palette;
-// 			vopt = &opt;
+			opt.backgroundBrush = QBrush(QColor(255, 215, 188)); // Soft orange-pink color for selection
 		}
 		if (vopt->state & QStyle::State_HasFocus || currentRow == index.row())
 			opt.state |= QStyle::State_Selected;
@@ -302,6 +192,7 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 		// draw the text
 		if (!vopt->text.isEmpty())
 		{
+
 			QPalette::ColorGroup cg = vopt->state & QStyle::State_Enabled ? QPalette::Normal : QPalette::Disabled;
 			if (cg == QPalette::Normal && !(vopt->state & QStyle::State_Active))
 				cg = QPalette::Inactive;
@@ -340,7 +231,7 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 void FilesDelegate::PaletteChanged()
 {
 #if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
-	use_xp = QWindowsXPStylePrivate_resolveSymbols() && pIsThemeActive() && (pIsAppThemed() || !QApplication::instance());
+	FilesDelegate_win_PaletteChanged();
 #endif
 }
 
@@ -358,4 +249,13 @@ void FilesDelegate::QuickSearchChanged( QString search )
 void FilesDelegate::CurrentRowChanged( int newCurrentRow )
 {
 	currentRow = newCurrentRow;
+}
+
+QSize FilesDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+	QSize size = QStyledItemDelegate::sizeHint(option, index);
+#if defined(Q_OS_WIN32)
+	size.setHeight(21);
+#endif
+	return size;
 }

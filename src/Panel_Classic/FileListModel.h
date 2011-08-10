@@ -40,6 +40,7 @@ public:
 	virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 	virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
 	virtual QStringList	mimeTypes() const;
+	virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
 	bool SetPath(QString path);
 	QString GetPath();
@@ -58,7 +59,7 @@ public slots:
 private:
 	QStack<IFileSystem *>fs;
 	QVector<const Module *> Archivers;
-	QVarLengthArray<FileInfo> list;
+	QVector<FileInfo> FileInfoArr;
 	QString path;
 	int columns;
 

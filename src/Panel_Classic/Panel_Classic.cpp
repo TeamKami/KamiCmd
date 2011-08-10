@@ -15,7 +15,7 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 	flView->setSelectionModel(new SelectionModel(flView->model(), this));
 
 	FilesDelegate *filesDelegate = new FilesDelegate(this);
-	if (0)
+	if (1)
 	{
 		for (int i = 0; i < flModel->columnCount(); i++)
 			flView->setItemDelegateForColumn(i, filesDelegate);
@@ -39,6 +39,7 @@ Panel_Classic::Panel_Classic(QWidget *parent)
 	flView->setSortingEnabled(true);
 	flView->sortByColumn(0, Qt::AscendingOrder);
 	flView->setSelectionMode(QAbstractItemView::NoSelection);
+	flView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	setFocusProxy(flView);
 
 	QToolBar *toolbar = addToolBar("lol");
