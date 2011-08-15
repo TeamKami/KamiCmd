@@ -238,7 +238,7 @@ void FileListView::focusOutEvent( QFocusEvent * /*event*/ )
 
 void FileListView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
 {
-	emit CurrentRowChanged(current.row());
+	emit CurrentRowChanged(current.data(FileListModel::IndexRowRole).toInt());
 
 	for (int i = 0; i < model()->columnCount(); i++)
 		update( model()->index(previous.row(), i) );

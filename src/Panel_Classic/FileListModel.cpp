@@ -90,6 +90,8 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 		}
 		break;
 
+	case IndexRowRole:
+		return index.row();
 	
 	// Qt roles
 	case Qt::DisplayRole:
@@ -287,7 +289,7 @@ int FileListModel::rowCount( const QModelIndex& /*= QModelIndex()*/ ) const
 	return FileInfoArr.size();
 }
 
-int FileListModel::columnCount( const QModelIndex &parent /*= QModelIndex()*/ ) const
+int FileListModel::columnCount( const QModelIndex &/*parent*/ /*= QModelIndex()*/ ) const
 {
 	return columns;
 }

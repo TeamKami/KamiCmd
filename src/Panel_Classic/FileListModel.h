@@ -23,7 +23,8 @@ public:
 	enum DataUserRoles
 	{
 		AttributesRole = Qt::UserRole,
-		FileInfoRole = Qt::UserRole + 1
+		FileInfoRole = Qt::UserRole + 1, 
+		IndexRowRole = Qt::UserRole + 2
 	};
 	FileListModel(QObject *parent = NULL);
 

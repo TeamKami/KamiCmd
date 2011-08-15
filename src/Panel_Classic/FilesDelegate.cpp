@@ -135,12 +135,15 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 	QRect iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &opt, widget);
 	QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &opt, widget);
 
+	// Initially selected elements have State_Selected state, but it's not what we want, so we remove it and set background color
 	if (opt.state & QStyle::State_Selected)
 	{
 		opt.state &= ~(QStyle::State_Selected);
 		opt.backgroundBrush = QBrush(QColor(255, 215, 188)); // Soft orange-pink color for selection
 	}
-	if (opt.state & QStyle::State_HasFocus || currentRow == index.row())
+
+	// State_Selected state is used for displaying cursor row only
+	if (currentRow == index.data(FileListModel::IndexRowRole).toInt())
 		opt.state |= QStyle::State_Selected;
 
 	// draw the background
