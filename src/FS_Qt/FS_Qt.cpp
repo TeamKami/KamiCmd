@@ -52,7 +52,6 @@ void FS_Qt::FillFileInfoFromQ(FileInfo &info, QFileInfo &qInfo)
 	info.path.truncate(info.path.lastIndexOf('/') + 1);
 	info.name = qInfo.fileName();
 	info.alternateName = "";
-	info.selected = false;
 }
 
 bool FS_Qt::GetFirstFileInfo( FileInfo &info )

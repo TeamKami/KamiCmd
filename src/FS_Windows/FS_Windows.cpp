@@ -131,7 +131,6 @@ void FS_Windows::FileInfoFromFindData(FileInfo &info, WIN32_FIND_DATA &findData)
 			info.path[i] = '/';
 	info.name = QString::fromUtf16(findData.cFileName);
 	info.alternateName = QString::fromUtf16(findData.cAlternateFileName);
-	info.selected = false;
 }
 
 bool FS_Windows::GetFirstFileInfo( FileInfo &info )

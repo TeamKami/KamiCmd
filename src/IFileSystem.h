@@ -23,7 +23,8 @@ public:
 		ReparsePoint= 0x100,
 		SparseFile	= 0x200,
 		System		= 0x400,
-		Temporary	= 0x800
+		Temporary	= 0x800,
+		UpOneLevel  = 0xA00
 	};
 
 	quint32 attributes;
@@ -33,19 +34,16 @@ public:
 	QDateTime lastAccessTime;
 	QDateTime lastWriteTime;
 	
-	QString path;
-	QString name;
+	QString path; // e.g. "C:/Temp/"
+	QString name; // e.g. "File.txt"
 	QString alternateName; // name in 8.3 format
 
 	QIcon icon;
-
-	bool selected;
 
 	void init()
 	{
 		attributes = 0;
 		size = 0;
-		selected = false;
 	};
 
 	QString FilePath() const

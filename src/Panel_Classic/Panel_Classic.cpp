@@ -148,15 +148,16 @@ QVector<const FileInfo*> Panel_Classic::GetSelectedFiles()
 		if (n)
 		{
 			const FileInfo* info = flModel->GetFileInfo( sortModel->mapToSource(flView->model()->index(0, 0)).row() );
-			if (info->name == "..")
+			if (info->attributes & FileInfo::UpOneLevel)
 				i++;
 
 			arr.reserve(n - i);
 			for (; i < flModel->rowCount(); i++ )
 			{
 				const FileInfo* info = flModel->GetFileInfo( sortModel->mapToSource(flView->model()->index(i, 0)).row() );
-				if (info->selected)
-					arr.append(info);
+				g_Core->DebugWrite("Panel_Classic", "Not yet implemented", ICoreFunctions::ReportMe);
+// 				if (info->selected)
+// 					arr.append(info);
 			}
 		}
 		else

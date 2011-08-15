@@ -41,7 +41,6 @@ public:
 	virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 	virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
 	virtual QStringList	mimeTypes() const;
-	virtual bool insertRows(int row, int count,	const QModelIndex &parent = QModelIndex());
 	virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
 	bool SetPath(QString path);

@@ -101,7 +101,7 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 			return current.name;
 			break;
 		case 1:
-			return current.name == ".." ? tr("<Up>") :
+			return current.attributes & FileInfo::UpOneLevel ? tr("<Up>") :
 				current.attributes & FileInfo::Directory ? tr("<Folder>") :
 				FormatSize(current.size);
 			break;
@@ -183,8 +183,8 @@ bool FileListModel::SetPath( QString path )
 	{
 		FileInfoArr[i].init();
 		FileInfoArr[i].name = "..";
-		FileInfoArr[i].path = GetFs()->GetPath() + FileInfoArr[i].name;
-		FileInfoArr[i].attributes = FileInfo::Directory;
+		FileInfoArr[i].path = GetFs()->GetPath();
+		FileInfoArr[i].attributes = FileInfo::Directory | FileInfo::UpOneLevel;
 
 		FileInfoArr[i].icon = QIcon(":/Icons/Folder.png");
 //		Assc->GetIcon(list[i].icon, list[i].path);
@@ -216,7 +216,7 @@ QModelIndex FileListModel::Enter( QModelIndex selected )
 	QModelIndex result;
 	if (selected.row() != -1)
 	{
-		if (selected.data(Qt::DisplayRole).toString() == "..")
+		if (selected.data(FileListModel::AttributesRole).toUInt() & FileInfo::UpOneLevel)
 			result = UpOneLevel();
 		else // if (list[selected.row()].attributes)// & FileInfo::Directory)
 		{
@@ -274,7 +274,9 @@ Qt::ItemFlags FileListModel::flags( const QModelIndex &index ) const
 	if (!index.isValid())
 		return res;
 
-	res |= Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
+	if (!(index.data(FileListModel::AttributesRole).toUInt() & FileInfo::UpOneLevel))
+		res |= Qt::ItemIsSelectable;
+	res |= Qt::ItemIsDragEnabled | Qt::ItemIsEditable;
 
 	// If enabled graying out of non-matched with quicksearch items:
 	//if (quickSearch.isEmpty() || index.data(Qt::DisplayRole).toString().indexOf(quickSearch, 0, Qt::CaseInsensitive) != -1)
@@ -322,8 +324,8 @@ Qt::DropActions FileListModel::supportedDropActions() const
 
 bool FileListModel::dropMimeData( const QMimeData *mimeData, Qt::DropAction action, int /*row*/, int column, const QModelIndex &/*parent*/ )
 {
-// 	if (action == Qt::IgnoreAction)
-// 		return true;
+	if (action == Qt::IgnoreAction)
+		return true;
 
 	if (mimeData->hasUrls())
 	{
@@ -341,7 +343,26 @@ bool FileListModel::dropMimeData( const QMimeData *mimeData, Qt::DropAction acti
 		case Qt::TargetMoveAction: actionStr = "target-move"; break;
 		case Qt::IgnoreAction: actionStr = "ignore"; break;
 		}
-		QMessageBox::information(NULL, QString("Files to %1").arg(actionStr), str);
+		//QMessageBox::information(NULL, QString("Files to %1").arg(actionStr), str);
+
+		beginInsertRows(QModelIndex(), rowCount(), rowCount() + urlList.size() - 1);
+		FileInfoArr.reserve(FileInfoArr.size() + urlList.size());
+		for (int i = 0; i < urlList.size(); i++)
+		{
+			QString receivedPath = urlList[i].toLocalFile();
+			FileInfo info;
+			if (int slashPos = receivedPath.lastIndexOf("/") + 1)
+			{
+				info.attributes = FileInfo::Normal;
+				info.path = receivedPath.left(slashPos);
+				info.name = receivedPath.right(receivedPath.size() - slashPos);
+				info.size = 0;
+				Assc->GetIcon(info.icon, receivedPath);
+				FileInfoArr.append(info);
+			}
+		}
+		endInsertRows();
+
 		return true;
 	}
 	else
@@ -386,18 +407,5 @@ bool FileListModel::removeRows(int row, int count, const QModelIndex &parent /*=
 	beginRemoveRows(parent, beginRow, endRow);
 	FileInfoArr.remove(row, count);
 	endRemoveRows();
-	return true;
-}
-
-bool FileListModel::insertRows( int row, int count, const QModelIndex &parent /*= QModelIndex()*/ )
-{
-	int beginRow = qMax(0, row);
-	int endRow = qMin(row + count - 1, rowCount() - 1);
-
-	beginInsertRows(parent, beginRow, endRow);
-	FileInfo info;
-	FileInfoArr.insert(row, count, info);
-	endInsertRows();
-
 	return true;
 }

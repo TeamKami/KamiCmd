@@ -406,8 +406,8 @@ void FileListView::wheelEvent( QWheelEvent *event )
 
 void FileListView::resizeEvent( QResizeEvent *event )
 {
-	setColumnWidth(0, event->size().width() - 66);
-	setColumnWidth(1, 66);
+ 	setColumnWidth(0, event->size().width() - 70);
+ 	setColumnWidth(1, 70);
 	QTreeView::resizeEvent(event);
 }
 

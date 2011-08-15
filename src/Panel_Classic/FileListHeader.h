@@ -12,8 +12,9 @@ public:
 	~FileListHeader();
 
 	virtual QSize sizeHint() const;
-private:
-	
+
+public slots:
+	void sectionDoubleClickedSlot(int logicalIndex);
 };
 
 #endif // FILELISTHEADER_H
