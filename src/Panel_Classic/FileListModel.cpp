@@ -287,7 +287,7 @@ int FileListModel::rowCount( const QModelIndex& /*= QModelIndex()*/ ) const
 	return FileInfoArr.size();
 }
 
-int FileListModel::columnCount( const QModelIndex& /*= QModelIndex()*/ ) const
+int FileListModel::columnCount( const QModelIndex &parent /*= QModelIndex()*/ ) const
 {
 	return columns;
 }
@@ -384,5 +384,18 @@ bool FileListModel::removeRows(int row, int count, const QModelIndex &parent /*=
 	beginRemoveRows(parent, beginRow, endRow);
 	FileInfoArr.remove(row, count);
 	endRemoveRows();
+	return true;
+}
+
+bool FileListModel::insertRows( int row, int count, const QModelIndex &parent /*= QModelIndex()*/ )
+{
+	int beginRow = qMax(0, row);
+	int endRow = qMin(row + count - 1, rowCount() - 1);
+
+	beginInsertRows(parent, beginRow, endRow);
+	FileInfo info;
+	FileInfoArr.insert(row, count, info);
+	endInsertRows();
+
 	return true;
 }

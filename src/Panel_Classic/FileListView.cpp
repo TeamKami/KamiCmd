@@ -8,7 +8,7 @@ FileListView::FileListView()
 	searchEdit->setVisible(isSearchMode);
 	searchEdit->setFocusPolicy(Qt::ClickFocus);
 	setDragDropMode(QAbstractItemView::DragDrop);
-	setDropIndicatorShown(true);
+	//setDropIndicatorShown(true);
 	//setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 	//viewport()->setStyleSheet("background-color: white;");
 

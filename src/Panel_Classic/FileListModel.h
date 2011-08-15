@@ -30,7 +30,7 @@ public:
 	virtual QModelIndex index(int row, int column = 0, const QModelIndex &parent = QModelIndex()) const;
 	virtual QModelIndex parent(const QModelIndex&) const;
 	virtual int rowCount(const QModelIndex& = QModelIndex()) const;
-	virtual int columnCount(const QModelIndex& = QModelIndex()) const;
+	virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 	virtual bool hasChildren(const QModelIndex &parent) const { return parent == QModelIndex();	} // This line is a fucking crutch that took me the whole evening to realize why the hell sorting was done x^2 times longer than anticipated
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
@@ -40,6 +40,7 @@ public:
 	virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 	virtual QMimeData *mimeData(const QModelIndexList &indexes) const;
 	virtual QStringList	mimeTypes() const;
+	virtual bool insertRows(int row, int count,	const QModelIndex &parent = QModelIndex());
 	virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
 	bool SetPath(QString path);
