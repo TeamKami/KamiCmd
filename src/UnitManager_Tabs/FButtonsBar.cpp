@@ -120,15 +120,32 @@ void FButtonsBar::F4_Pressed()
 	}
 }
 
+#include "IPanel.h"
+
 void FButtonsBar::F1_Pressed()
 {
-	if (QDialog *oq = qobject_cast<QDialog *>(g_Core->QueryModule("OperationsQueue", 1, "OQ_Widget")))
+// 	if (QDialog *oq = qobject_cast<QDialog *>(g_Core->QueryModule("OperationsQueue", 1, "OQ_Widget")))
+// 	{
+// 		oq->exec();
+// 		delete oq;
+// 	}
+// 	else
+// 		g_Core->DebugWrite("UnitManager_Tabs", "Check sums module not found", ICoreFunctions::Error);
+
+	LinkedUnit *link = dynamic_cast<LinkedUnit *>(UnitManager->GetActiveUnit());
+	IPanel *panel = NULL;
+	if (link)
+		panel = dynamic_cast<IPanel *>(link->GetActiveUnit());
+	else
+		panel = dynamic_cast<IPanel *>(UnitManager->GetActiveUnit());
+
+	if (panel)
 	{
-		oq->exec();
-		delete oq;
+		foreach(const FileInfo &info, panel->GetSelectedFiles())
+			QMessageBox::information(0, "", info.name);
 	}
 	else
-		g_Core->DebugWrite("UnitManager_Tabs", "Check sums module not found", ICoreFunctions::Error);
+		QMessageBox::information(0, "", "Not a panel");
 }
 
 void FButtonsBar::F5_Pressed()

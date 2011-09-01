@@ -24,7 +24,7 @@ public:
 	virtual const FileInfo * GetCurrentFile();
 	virtual const FileInfo * SetCurrentFileToPrev();
 	virtual const FileInfo * SetCurrentFileToNext();
-	virtual QVector<const FileInfo*> GetSelectedFiles();
+	virtual QVector<FileInfo> GetSelectedFiles();
 	virtual bool SetCurrentIndex(int index);
 	virtual int  GetCurrentIndex();
 

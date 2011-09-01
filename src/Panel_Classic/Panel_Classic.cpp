@@ -138,30 +138,25 @@ const FileInfo * Panel_Classic::SetCurrentFileToNext()
 	return NULL;
 }
 
-QVector<const FileInfo*> Panel_Classic::GetSelectedFiles()
+QVector<FileInfo> Panel_Classic::GetSelectedFiles()
 {
-	QVector<const FileInfo*> arr;
-	int i = 0, n = flView->selectionModel()->selectedRows().count();
+	QVector<FileInfo> arr;
+	int selectedNum = flView->selectionModel()->selectedRows().count();
 
 	if (flModel->rowCount())
 	{
-		if (n)
+		if (selectedNum)
 		{
-			const FileInfo* info = flModel->GetFileInfo( sortModel->mapToSource(flView->model()->index(0, 0)).row() );
-			if (info->attributes & FileInfo::UpOneLevel)
-				i++;
-
-			arr.reserve(n - i);
-			for (; i < flModel->rowCount(); i++ )
+			arr.reserve(selectedNum);
+			foreach(QModelIndex index, flView->selectionModel()->selectedRows())
 			{
-				const FileInfo* info = flModel->GetFileInfo( sortModel->mapToSource(flView->model()->index(i, 0)).row() );
-				g_Core->DebugWrite("Panel_Classic", "Not yet implemented", ICoreFunctions::ReportMe);
-// 				if (info->selected)
-// 					arr.append(info);
+				FileInfo &info = index.data(FileListModel::FileInfoRole).value<FileInfo>();
+				if (!(info.attributes & FileInfo::UpOneLevel))
+					arr.append(info);
 			}
 		}
 		else
-			arr.append(GetCurrentFile());
+			arr.append(*GetCurrentFile());
 	}
 	return arr;
 }
