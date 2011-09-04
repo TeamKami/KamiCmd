@@ -24,7 +24,7 @@ private:
 	Ui::CopyDialog ui;
 	FileCopy fileCopyOperation;
 	IFileSystem *fileSystem;
-	QVector<const FileInfo*> selectedFiles;
+	QVector<FileInfo> selectedFiles;
 };
 
 #endif // COPYDIALOG_H

@@ -41,7 +41,7 @@ void CopyDialog::InitializeCopy()
 	if(selectedFiles.size() > 1)
 		ui.copyDestinationLabel->setText(tr("Copy %1 files to").arg(selectedFiles.size()));
 	else if(selectedFiles.size() == 1)
-		ui.copyDestinationLabel->setText(tr("Copy %1 to").arg(selectedFiles.at(0)->path + selectedFiles.at(0)->name));
+		ui.copyDestinationLabel->setText(tr("Copy %1 to").arg(selectedFiles.at(0).path + selectedFiles.at(0).name));
 	ui.copyToComboBox->setEditText(inactivePanel->GetPath());
 
 }
@@ -52,10 +52,10 @@ void CopyDialog::on_copyPushButton_clicked()
 	QVector<FileInfo *> filesToCopy;
 	
 	for(int i = 0; i < selectedFiles.size(); i++)
-		if(selectedFiles.at(i)->attributes & FileInfo::Directory)
-			scan.push(selectedFiles.at(i));
+		if(selectedFiles.at(i).attributes & FileInfo::Directory)
+			scan.push(&selectedFiles[i]);
 		else
-			filesToCopy.append(const_cast<FileInfo *>(selectedFiles.at(i)));
+			filesToCopy.append(&selectedFiles[i]);
 
 	while(!scan.empty())
 	{

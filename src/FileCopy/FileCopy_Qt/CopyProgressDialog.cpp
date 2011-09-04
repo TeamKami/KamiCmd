@@ -43,15 +43,7 @@ int CopyProgressDialog::exec()
 	return QDialog::exec();
 }
 
-QString CopyProgressDialog::bytesToString( qint64 s )
+QString CopyProgressDialog::bytesToString( qint64 /*s*/ )
 {
-	const char * const s[] = ["B", "KB", "MB", "GB", "TB"];
-	int i = 0;
-	qint64 t = s;
-// 	while(s /= 1024)
-// 	{
-// 	
-// 		i++;
-// 	}
 	return QString();
 }
