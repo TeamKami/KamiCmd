@@ -10,10 +10,10 @@ struct FileInfo;
 class IFileCopy : public IFileOperation
 {
 public:
-	virtual bool PrepareForCopy(const QString & from, const QString & to) = 0;
-	virtual bool PrepareForCopy(const QStringList & files, const QString & to, const QString & includeMask, const QString & excludeMask) = 0;
-	virtual bool PrepareForCopy(const QList<FileInfo *> & files, const QString & to, const QString & includeMask, const QString & excludeMask) = 0;
-
+	virtual ~IFileCopy() {};
+	virtual void PrepareForCopy(const QString & source, const QString & to) = 0;
+	virtual void PrepareForCopy(const QStringList & files, const QString & destination) = 0;
+	virtual void PrepareForCopy(const QVector<FileInfo *> & files, const QString & destination) = 0;
 };
 
 #endif

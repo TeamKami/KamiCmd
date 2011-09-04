@@ -133,18 +133,8 @@ void FButtonsBar::F1_Pressed()
 
 void FButtonsBar::F5_Pressed()
 {
-	if (QDialog *copyDialog = dynamic_cast<QDialog *>(g_Core->QueryModule("FileCopy", 1, "FileCopy_Widget", -1, this)))
-	{
+	if (QDialog *copyDialog = dynamic_cast<QDialog *>(g_Core->QueryModule("FileCopyDialog", 1, "", -1, this)))
 		copyDialog->show();
-		//	delete copyDialog;
-		// 		IOperationsQueue *operationsQueue_;
-		// 		if (!(operationsQueue_ = dynamic_cast<IOperationsQueue *>(g_Core->QueryModule("OperationsQueue", 1, "OQ"))))
-		// 		{
-		// 			g_Core->DebugWrite("UnitManager_Tabs", "Operations Queue not found", ICoreFunctions::Error);
-		// 			return;
-		// 		}
-		// 		operationsQueue_->Add(*oq, oq->GetState());
-	}
 	else
 		g_Core->DebugWrite("UnitManager_Tabs", "File Copy not found", ICoreFunctions::Error);
 }
