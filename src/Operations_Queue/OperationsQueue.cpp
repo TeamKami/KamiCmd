@@ -16,18 +16,21 @@ bool OperationsQueue::Remove( int index )
 {
 	IFileOperation &operation = *operationsQueue_[index];
 	operationsQueue_.removeAt(index);
-	return operation.Cancel();
+	operation.Cancel();
+	return true;
 }
 
 bool OperationsQueue::Pause( int index )
 {
-	return operationsQueue_[index]->Pause();
+	operationsQueue_[index]->Pause();
+	return true;
 }
 
 
 bool OperationsQueue::Resume( int index )
 {
-	return operationsQueue_[index]->Resume();
+	operationsQueue_[index]->Resume();
+	return true;
 }
 
 void OperationsQueue::ChangePriority( const IFileOperation&, int )
@@ -44,6 +47,7 @@ OperationsQueue::~OperationsQueue()
 {
 	for(int i = 0; i < operationsQueue_.size(); i++)
 	{
+
 //		if(!operationsQueue_[i]->cancel())
 	//		g_Core->DebugWrite(g_moduleName, "Error when cancelling file operation!", ICoreFunctions::Info);
 	}
