@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 FileCopy::FileCopy( QObject *parent /*= 0*/ ) 
-	: QObject(parent), totalSize(0), bytesCopied(0), state(Paused), currentFileIndex(0), currentCopiedFile(0)
+	: QObject(parent), totalSize(0), bytesCopied(0), state(Paused), currentFileIndex(0), currentCopiedFile(0), currentFileBytesCopied(0)
 {
 	fileSystem = dynamic_cast<IFileSystem *>(g_Core->QueryModule("FS", 1));
 	if(!fileSystem)
@@ -20,6 +20,7 @@ FileCopy::~FileCopy()
 void FileCopy::PrepareForCopy( const FilesToCopy & files )
 {
 	filesToCopy = files;
+	totalSize = filesToCopy.GetTotalSize();
 }
 
 bool FileCopy::Exec()
@@ -83,8 +84,16 @@ int FileCopy::GetProgress() const
 	return bytesCopied / (totalSize / 100);
 }
 
+int FileCopy::GetCurrentFileProgress() const
+{
+	if(!currentCopiedFile)
+		return 100;
+	return currentFileBytesCopied / (currentCopiedFile->GetFile().size / 100);
+}
+
 void FileCopy::copyFile( const QString & from, const QString & to )
 {
+	currentFileBytesCopied = 0;
 	QFile sourceFile(from);
 	if(!sourceFile.open(QFile::ReadOnly))
 	{
@@ -116,7 +125,7 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 		if(state == Paused || state == Error)
 			return;
 */
-
+		currentFileBytesCopied++;
 		destination[i] = source[i];
 		bytesCopied++;
 	}
@@ -138,5 +147,4 @@ int FileCopy::GetTotalSize() const
 {
 	return totalSize;
 }
-
 

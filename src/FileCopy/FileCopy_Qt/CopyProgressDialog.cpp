@@ -27,6 +27,7 @@ void CopyProgressDialog::update()
 	}
 
 	ui.progressBar->setValue(fileCopy->GetProgress());
+	ui.progressBar_2->setValue(fileCopy->GetCurrentFileProgress());
 	ui.sourceLabel->setText(fileCopy->GetFileName());
 }
 

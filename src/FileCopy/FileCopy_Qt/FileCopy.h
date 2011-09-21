@@ -26,6 +26,7 @@ public:
 	void Cancel();
 
 	int GetTotalSize() const;
+	int GetCurrentFileProgress() const;
 	OperationState GetState() const;
 	QString GetType() const;
 	int GetProgress() const;
@@ -40,6 +41,7 @@ private:
 	FilesToCopy filesToCopy;
 	const CopiedFile *currentCopiedFile;
 	int currentFileIndex;
+	int currentFileBytesCopied;
 	quint64 bytesToCopy;
 	quint64 totalSize;
 	qint64 bytesCopied;
