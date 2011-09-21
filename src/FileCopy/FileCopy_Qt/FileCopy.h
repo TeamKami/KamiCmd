@@ -15,31 +15,30 @@ public:
 	FileCopy(QObject *parent = 0);
 	~FileCopy();
 
-	void PrepareForCopy(const QString & source, const QString & to);
-	void PrepareForCopy(const QStringList & files, const QString & destination);
-	void PrepareForCopy(const QVector<FileInfo *> & files, const QString & destination);
+	void PrepareForCopy(const FilesToCopy & files);
 
-	const QString & GetFileName() const;
+	const QString GetFileName() const;
 	const QString & GetDestination() const;
-	int GetTotalSize() const;
+
 	bool Exec();
 	void Pause();
 	void Resume();
 	void Cancel();
+
+	int GetTotalSize() const;
 	OperationState GetState() const;
 	QString GetType() const;
 	int GetProgress() const;
 
 private:
 	void copyFile(const QString & from, const QString & to);
-	void cleanUp();
 
 	QMutex stateMutex;
 	IFileSystem *fileSystem;
+	
 	OperationState state;
-	QStringList files;
-	QString to_;
-
+	FilesToCopy filesToCopy;
+	const CopiedFile *currentCopiedFile;
 	int currentFileIndex;
 	quint64 bytesToCopy;
 	quint64 totalSize;

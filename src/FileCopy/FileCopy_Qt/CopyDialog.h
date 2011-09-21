@@ -20,9 +20,29 @@ private slots:
 
 private:
 	void InitializeCopy();
-	QVector< FileInfo *> ScanFolder(const QString & path);
+	void GetSelectedFilesAndCopyPath();
+	void GetFilesToCopy();
+	QVector< FileInfo > ScanFolder(const QString & path);
+
+	struct FileScanElement
+	{
+		FileScanElement(const QString p, const FileInfo f)
+			: relativePath(p), fileInfo(f)
+		{
+
+		}
+		FileScanElement() {};
+
+		QString relativePath;
+		FileInfo fileInfo;
+	};
+
+
+
 	Ui::CopyDialog ui;
+	FilesToCopy filesToCopy;
 	FileCopy fileCopyOperation;
+	QString copyPath;
 	IFileSystem *fileSystem;
 	QVector<FileInfo> selectedFiles;
 };

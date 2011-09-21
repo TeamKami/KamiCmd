@@ -14,7 +14,6 @@ CopyProgressDialog::CopyProgressDialog(FileCopy *fileCopy, QWidget *parent)
 
 CopyProgressDialog::~CopyProgressDialog()
 {
-//	QMessageBox::information(NULL, "", "");
 	copyThread->wait();
 	copyThread->exit();
 }
@@ -26,11 +25,9 @@ void CopyProgressDialog::update()
 		refreshTimer.stop();
 		close();
 	}
-//	QMessageBox::information(this, "", QString::number(fileCopy->GetProgress()));
 
 	ui.progressBar->setValue(fileCopy->GetProgress());
 	ui.sourceLabel->setText(fileCopy->GetFileName());
-	
 }
 
 int CopyProgressDialog::exec()

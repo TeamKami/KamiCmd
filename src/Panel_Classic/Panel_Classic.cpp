@@ -140,8 +140,8 @@ const FileInfo * Panel_Classic::SetCurrentFileToNext()
 
 QVector<FileInfo> Panel_Classic::GetSelectedFiles()
 {
-	QVector<FileInfo> arr;
 	int selectedNum = flView->selectionModel()->selectedRows().count();
+	QVector<FileInfo> arr;
 
 	if (flModel->rowCount())
 	{
