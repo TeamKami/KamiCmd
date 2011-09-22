@@ -208,6 +208,9 @@ uint FS_Windows::GetNumberOfFiles()
 
 QFile* FS_Windows::GetFile( QString path )
 {
+	QFile *file = new QFile(path, this);
+	if (file->open(QIODevice::ReadOnly))
+		return file;
 	return NULL;
 }
 
