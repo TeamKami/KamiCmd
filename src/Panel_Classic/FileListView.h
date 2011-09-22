@@ -53,6 +53,13 @@ signals:
 public slots:
 	void KeyboardSearchNullify();
 	void SelectAll(QItemSelectionModel::SelectionFlag selectAction, bool excludeCurrent = false);
+
+// Temporary QuickSearch actions:
+	void Action_OpenQuickFind();
+	void Action_CloseQuickFind();
+	bool Action_QuickFindNext(bool isStartFromCurrent = false);
+	bool Action_QuickFindPrev();
+	void Action_QuickFindProcessKeyPressEvent(QKeyEvent *event);
 };
 
 #endif // FILELISTVIEW_H
