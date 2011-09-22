@@ -108,8 +108,7 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 	QFile sourceFile(from);
 	if(!sourceFile.open(QFile::ReadOnly))
 	{
-		QMessageBox::warning(NULL, tr("Error"), tr("File %1 can't be opened").arg(from));
-		qDebug() << "Error" <<  "File"  << from  << "can't be opened";
+		qDebug() << "Error" <<  "File"  << from  << "can't be opened" << sourceFile.errorString();;		
 		return;
 	}
 
@@ -131,16 +130,6 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 	}
 
 	copyMemory(source, destination, 0, size);
-	/*for(int i = 0; i < size; i++)
-	{
-/ *
-		if(state == Paused || state == Error)
-			return;
-* /
-		currentFileBytesCopied++;
-		destination[i] = source[i];
-		bytesCopied++;
-	}*/
 }
 
 const QString FileCopy::GetFileName() const
@@ -184,5 +173,25 @@ void FileCopy::copyMemory( const uchar *src, uchar *dst, int offset, int size )
 	memcpy(dst + steps * chunkSize, src + steps * chunkSize, remainderBytes);
 	currentFileBytesCopied += remainderBytes;
 	bytesCopied += remainderBytes;
+}
+
+qint64 FileCopy::GetCurrentFileBytesCopied() const
+{
+	return currentFileBytesCopied;
+}
+
+qint64 FileCopy::GetTotalBytesCopied() const
+{
+	return bytesCopied;
+}
+
+const FileInfo * FileCopy::GetCurrentCopiedFile()
+{
+	currentCopiedFileMutex.lock();
+	const CopiedFile *file = currentCopiedFile;
+	currentCopiedFileMutex.unlock();
+	if(file)
+		return &file->GetFile();
+	return NULL;
 }
 

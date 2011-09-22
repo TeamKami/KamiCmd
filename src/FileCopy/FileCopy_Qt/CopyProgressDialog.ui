@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>521</width>
-    <height>202</height>
+    <height>230</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,6 +75,16 @@
       <widget class="QProgressBar" name="progressBar_2">
        <property name="value">
         <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="currentFileBytesCopied">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>

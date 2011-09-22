@@ -27,6 +27,9 @@ public:
 
 	qint64 GetTotalSize() const;
 	int GetCurrentFileProgress() const;
+	const FileInfo *GetCurrentCopiedFile();
+	qint64 GetCurrentFileBytesCopied() const;
+	qint64 GetTotalBytesCopied() const;
 	OperationState GetState() const;
 	QString GetType() const;
 	int GetProgress() const;

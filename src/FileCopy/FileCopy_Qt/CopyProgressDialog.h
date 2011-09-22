@@ -18,7 +18,7 @@ public:
 private slots:
 	void update();
 private:
-	QString bytesToString(qint64 s);
+	QString formatSize(qint64 s);
 	Ui::CopyProgressDialog ui;
 	FileCopy *fileCopy;
 	IOperationsQueue *operationsQueue;
