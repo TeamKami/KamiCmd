@@ -38,7 +38,7 @@ private:
 	QMutex stateMutex;
 	OperationState state;
 
-	QMutex currentCopiedFileMutex;
+	mutable QMutex currentCopiedFileMutex;
 	const CopiedFile *currentCopiedFile;
 	
 	IFileSystem *fileSystem;

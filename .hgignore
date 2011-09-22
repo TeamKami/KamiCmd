@@ -43,3 +43,5 @@ UpgradeLog.XML
 *.exe
 *.dll
 *.lib
+*.orig
+*.xml

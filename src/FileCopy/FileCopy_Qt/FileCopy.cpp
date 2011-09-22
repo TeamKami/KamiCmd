@@ -20,12 +20,14 @@ FileCopy::~FileCopy()
 void FileCopy::PrepareForCopy( const FilesToCopy & files )
 {
 	filesToCopy = files;
-	destinationDirectory.setCurrent(files.SetDestination());
+	if(!QFile::exists(files.GetDestination()))
+		destinationDirectory.mkpath(files.GetDestination());
+	destinationDirectory.setCurrent(files.GetDestination());
 }
 
 bool FileCopy::Exec()
 {
-	
+
 	for( ; currentFileIndex < filesToCopy.Count(); ++currentFileIndex)
 	{
 		currentCopiedFileMutex.lock();
@@ -34,8 +36,9 @@ bool FileCopy::Exec()
 
 		if(!destinationDirectory.exists(currentCopiedFile->RelativePath()))
 			destinationDirectory.mkpath(currentCopiedFile->RelativePath());
+		QString path = filesToCopy.GetDestination() + currentCopiedFile->RelativePath();
 		copyFile(currentCopiedFile->GetFile().path + currentCopiedFile->GetFile().name,
-				 filesToCopy.GetDestination() + currentCopiedFile->RelativePath() + currentCopiedFile->GetFile().name);
+				 path + currentCopiedFile->GetFile().name);
 	}
 	
 	currentCopiedFileMutex.lock();
@@ -92,9 +95,12 @@ int FileCopy::GetProgress() const
 
 int FileCopy::GetCurrentFileProgress() const
 {
-	if(!currentCopiedFile)
-		return 100;
-	return currentFileBytesCopied / (currentCopiedFile->GetFile().size / 100);
+	currentCopiedFileMutex.lock();
+	const CopiedFile *file = currentCopiedFile;
+	currentCopiedFileMutex.unlock();
+		
+	int percentage = (!file || !file->GetFile().size) ? 100 : currentFileBytesCopied / (file->GetFile().size / 100);
+	return percentage;
 }
 
 void FileCopy::copyFile( const QString & from, const QString & to )
@@ -158,13 +164,25 @@ qint64 FileCopy::GetTotalSize() const
 
 void FileCopy::copyMemory( const uchar *src, uchar *dst, int offset, int size )
 {
+	currentFileBytesCopied = offset;
 	static const int chunkSize = 4096;
 
 	const int steps = (size - offset) / chunkSize;
 	const int remainderBytes = (size - offset) % chunkSize;
+	
+	dst += offset;
+	src += offset;
 
 	for(int i = 0; i < steps; i++)
-		memcpy((dst + offset) + i * chunkSize, (src + offset) + i*chunkSize, chunkSize);
-	memcpy((dst + offset) + steps * chunkSize, (src + offset) + steps * chunkSize, remainderBytes);
+	{
+		memcpy(dst + i * chunkSize, src + i*chunkSize, chunkSize);
+		
+		bytesCopied += chunkSize;
+		currentFileBytesCopied += chunkSize;
+	}
+
+	memcpy(dst + steps * chunkSize, src + steps * chunkSize, remainderBytes);
+	currentFileBytesCopied += remainderBytes;
+	bytesCopied += remainderBytes;
 }
 
