@@ -87,69 +87,20 @@ void FileListView::keyPressEvent( QKeyEvent *event )
 		case Qt::Key_PageDown:
 		case Qt::Key_Home:
 		case Qt::Key_End:
-			isSearchMode = false;
-			searchEdit->setText("");
-			searchEdit->setVisible(false);
-			emit QuickSearch(searchEdit->text());
+			Action_CloseQuickFind();
 			break;
 		}
 
-	bool modified = (event->modifiers() & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier));
-        if ((isControlEnter && isSearchMode) || (!event->text().isEmpty() && event->text() != "\x0d" && !modified && !edit(currentIndex(), AnyKeyPressed, event)))
+	if ((isControlEnter && isSearchMode) ||
+		(!event->text().isEmpty() && event->text() != "\x0d" &&
+		!(event->modifiers() & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier)) &&
+		!edit(currentIndex(), AnyKeyPressed, event)))
 	{
-		if (!isSearchMode)
-		{
-			isSearchMode = true;
-			searchEdit->setVisible(true);
-		}
+		Action_OpenQuickFind();
 		if (!isControlEnter)
-		{
-			searchEdit->keyPressEvent(event);
-			emit QuickSearch(searchEdit->text());
-		}
+			Action_QuickFindProcessKeyPressEvent(event);
 
-		bool isFound = false;
-		if (event->modifiers() & Qt::ShiftModifier)
-		{ // Is quick search order reversed?
-			for (int i = currentIndex().row() - (isControlEnter ? 1 : 0); i >= 0; i--)
-				if (model()->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
-				{
-					setCurrentIndex(model()->index(i, 0));
-					isFound = true;
-					break;
-				}
-			if (!isFound)
-			{
-				for (int i = model()->rowCount() - 1; i > currentIndex().row(); i--)
-					if (model()->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
-					{
-						setCurrentIndex(model()->index(i, 0));
-						isFound = true;
-						break;
-					}
-			}
-		}
-		else
-		{
-			for (int i = currentIndex().row() + (isControlEnter ? 1 : 0); i < model()->rowCount(); i++)
-				if (model()->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
-				{
-					setCurrentIndex(model()->index(i, 0));
-					isFound = true;
-					break;
-				}
-			if (!isFound)
-			{
-				for (int i = 0; i < currentIndex().row(); i++)
-					if (model()->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
-					{
-						setCurrentIndex(model()->index(i, 0));
-						isFound = true;
-						break;
-					}
-			}
-		}
-
+		bool isFound = (event->modifiers() & Qt::ShiftModifier) ? Action_QuickFindPrev() : Action_QuickFindNext(!isControlEnter);
 		if (!isControlEnter)
 		{
 			static bool wasFound = true;
@@ -421,4 +372,64 @@ void FileListView::changeEvent( QEvent *event )
 	if (event->type() == QEvent::PaletteChange)
 		emit PaletteChanged();
 	return QTreeView::changeEvent(event);
+}
+
+bool FileListView::Action_QuickFindNext(bool isStartFromCurrent /*= false*/)
+{
+	for (int i = currentIndex().row() + (!isStartFromCurrent ? 1 : 0); i < model()->rowCount(); i++)
+		if (model()->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
+		{
+			setCurrentIndex(model()->index(i, 0));
+			return true;
+		}
+	for (int i = 0; i < currentIndex().row(); i++)
+		if (model()->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
+		{
+			setCurrentIndex(model()->index(i, 0));
+			return true;
+		}
+	return false;
+}
+
+bool FileListView::Action_QuickFindPrev()
+{
+	for (int i = currentIndex().row() - 1; i >= 0; i--)
+		if (model()->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
+		{
+			setCurrentIndex(model()->index(i, 0));
+			return true;
+		}
+	for (int i = model()->rowCount() - 1; i > currentIndex().row(); i--)
+		if (model()->index(i, 0).data(Qt::DisplayRole).toString().indexOf(searchEdit->text(), 0, Qt::CaseInsensitive) != -1)
+		{
+			setCurrentIndex(model()->index(i, 0));
+			return true;
+		}
+	return false;
+}
+
+void FileListView::Action_OpenQuickFind()
+{
+	if (!isSearchMode)
+	{
+		isSearchMode = true;
+		searchEdit->setVisible(true);
+	}
+}
+
+void FileListView::Action_CloseQuickFind()
+{
+	if (isSearchMode)
+	{
+		isSearchMode = false;
+		searchEdit->setText("");
+		searchEdit->setVisible(false);
+		emit QuickSearch(searchEdit->text());
+	}
+}
+
+void FileListView::Action_QuickFindProcessKeyPressEvent( QKeyEvent * event )
+{
+	searchEdit->keyPressEvent(event);
+	emit QuickSearch(searchEdit->text());
 }
