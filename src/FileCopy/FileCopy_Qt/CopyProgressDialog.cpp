@@ -8,8 +8,7 @@ CopyProgressDialog::CopyProgressDialog(FileCopy *fileCopy, QWidget *parent)
 	: QDialog(parent), fileCopy(fileCopy), ticksPassed(0), oldTotalCopied(0)
 {
 	ui.setupUi(this);
-	for(int i = 0 ; i < 10; i++)
-		bytesCopiedBetweenTicks[i] = 0;
+	memset(bytesCopiedBetweenTicks, 0, sizeof(bytesCopiedBetweenTicks));
 	setAttribute(Qt::WA_DeleteOnClose);
 	connect(&refreshTimer, SIGNAL(timeout()), SLOT(update()));
 }
@@ -94,12 +93,14 @@ void CopyProgressDialog::updateSpeed()
 {
 	qint64 totalCopied = fileCopy->GetTotalBytesCopied();
 	bytesCopiedBetweenTicks[ticksPassed %= 10] = totalCopied - oldTotalCopied;
-	qDebug() << bytesCopiedBetweenTicks[ticksPassed %= 10] / 0.25;
+	qDebug() << bytesCopiedBetweenTicks[ticksPassed %= 10] / 2.5;
+	ticksPassed++;
 	oldTotalCopied = totalCopied;
 	
 	qint64 t = 0;
 	for(int i = 0; i < 10; i++)
 		t += bytesCopiedBetweenTicks[i];
 	int speed = t / 2.5;
+
 	ui.speed->setText(tr("Speed: ") + formatSize(speed) + "/s");
 }
