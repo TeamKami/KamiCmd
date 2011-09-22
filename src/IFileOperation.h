@@ -14,7 +14,8 @@ public:
         ForcedRunning, 
         Queued,
         Error,
-		Finished
+		Finished,
+		Canceled
     };
 
 	virtual ~IFileOperation() {};

@@ -28,7 +28,7 @@ void FileCopy::PrepareForCopy( const FilesToCopy & files )
 bool FileCopy::Exec()
 {
 
-	for( ; currentFileIndex < filesToCopy.Count(); ++currentFileIndex)
+	for( ; currentFileIndex < filesToCopy.Count() && GetState() != Canceled; ++currentFileIndex)
 	{
 		currentCopiedFileMutex.lock();
 		currentCopiedFile = &filesToCopy.GetNextFile();
@@ -46,7 +46,8 @@ bool FileCopy::Exec()
 	currentCopiedFileMutex.unlock();
 
 	stateMutex.lock();
-	state = Finished;
+	if(state != Canceled)
+		state = Finished;
 	stateMutex.unlock();
 	
 	return true;
@@ -55,14 +56,17 @@ bool FileCopy::Exec()
 void FileCopy::Pause()
 {
 	QMutexLocker locker(&stateMutex);
-	state = Paused;
-	pauseMutex.lock();
+	if(state != Paused && state != Error && state != Canceled)
+	{
+		state = Paused;
+		pauseMutex.lock();
+	}
 }
 
 void FileCopy::Resume()
 {
 	QMutexLocker locker(&stateMutex);
-	if(state == Paused)
+	if(state == Paused && state != Canceled && state != Finished)
 	{
 		state = Running;
 		qDebug() << "State changed from " << state << "to Running";
@@ -73,7 +77,9 @@ void FileCopy::Resume()
 void FileCopy::Cancel()
 {
 	QMutexLocker locker(&stateMutex);
-	state = Finished;
+	if(state == Paused)
+		pauseMutex.unlock();
+	state = Canceled;
 }
 
 FileCopy::OperationState FileCopy::GetState() const
@@ -125,13 +131,19 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 	
 	const uchar *source = sourceFile.map(0, size - 1);
 	uchar *destination = destinationFile.map(0, size - 1);
+
 	if(!source || !destination)
 	{ 
 		qDebug() << "Error" << "Can't copy file " << sourceFile.fileName();
 		return;		
 	}
-
-	copyMemory(source, destination, 0, size);
+	bool r = copyMemory(source, destination, 0, size);
+	
+	if(GetState() == Canceled && !r)
+	{
+		destinationFile.unmap(destination);
+		destinationFile.remove();
+	}
 }
 
 const QString FileCopy::GetFileName() const
@@ -153,7 +165,7 @@ qint64 FileCopy::GetTotalSize() const
 	return filesToCopy.GetTotalSize();
 }
 
-void FileCopy::copyMemory( const uchar *src, uchar *dst, int offset, int size )
+bool FileCopy::copyMemory( const uchar *src, uchar *dst, int offset, int size )
 {
 	currentFileBytesCopied = offset;
 	static const int chunkSize = 4096;
@@ -171,7 +183,10 @@ void FileCopy::copyMemory( const uchar *src, uchar *dst, int offset, int size )
 			pauseMutex.lock();
 			pauseMutex.unlock();
 		}
-
+		
+		if(state == Canceled)
+			return false;
+	
 		memcpy(dst + i * chunkSize, src + i*chunkSize, chunkSize);
 		bytesCopied += chunkSize;
 		currentFileBytesCopied += chunkSize;
@@ -180,6 +195,8 @@ void FileCopy::copyMemory( const uchar *src, uchar *dst, int offset, int size )
 	memcpy(dst + steps * chunkSize, src + steps * chunkSize, remainderBytes);
 	currentFileBytesCopied += remainderBytes;
 	bytesCopied += remainderBytes;
+	
+	return true;
 }
 
 qint64 FileCopy::GetCurrentFileBytesCopied() const

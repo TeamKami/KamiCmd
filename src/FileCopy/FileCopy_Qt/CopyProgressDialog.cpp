@@ -25,7 +25,7 @@ void CopyProgressDialog::update()
 	if(state == FileCopy::Finished)
 	{
 		refreshTimer.stop();
-		close();
+		done(Accepted);
 	}
 
 	if(state != FileCopy::Running && state != FileCopy::ForcedRunning)
@@ -81,16 +81,20 @@ QString CopyProgressDialog::formatSize( qint64 size )
 
 void CopyProgressDialog::reject()
 {
-	if(fileCopy->GetState() == FileCopy::Finished)
-		QDialog::reject();
+
+	fileCopy->Pause();
+	int r = QMessageBox::question(this, tr("Warning"),
+		tr("Are you sure you want to cancel copy?"),
+		QMessageBox::Yes | QMessageBox::No);
+
+ 	if(r == QMessageBox::Yes)
+	{
+		fileCopy->Cancel();
+		refreshTimer.stop();
+		done(Rejected);
+	}
 	else
-		if(QMessageBox::question(this, tr("Warning"),
-			tr("Are you sure you want to cancel copy?"),
-			QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-		{
-			fileCopy->Cancel();
-			QDialog::reject();
-		}
+		fileCopy->Resume();
 }
 
 void CopyProgressDialog::updateSpeed()
@@ -126,4 +130,9 @@ void CopyProgressDialog::on_pauseResume_clicked()
 		ui.pauseResume->setText(tr("Pause"));
 		fileCopy->Resume();
 	}
+}
+
+void CopyProgressDialog::on_cancelCopy_clicked()
+{
+	reject();
 }

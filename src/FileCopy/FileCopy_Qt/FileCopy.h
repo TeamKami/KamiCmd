@@ -36,7 +36,7 @@ public:
 
 private:
 	void copyFile(const QString & from, const QString & to);
-	void copyMemory(const uchar *src, uchar *dst, int offset, int size);
+	bool copyMemory(const uchar *src, uchar *dst, int offset, int size);
 
 	QMutex stateMutex;
 	OperationState state;
