@@ -44,7 +44,7 @@ public:
 	void SetDestination(QString destination);
 	int Count() const;
 	const CopiedFile GetNextFile() const;
-	int GetTotalSize() const;
+	qint64 GetTotalSize() const;
 
 	void PrintAllFiles();
 
@@ -54,7 +54,7 @@ private:
 	int fileCount;
 	QString destination;
 	QMap <QString, QVector<FileInfo> > files; // key is relative path
-	int totalSize;
+	qint64 totalSize;
 };
 
 #endif

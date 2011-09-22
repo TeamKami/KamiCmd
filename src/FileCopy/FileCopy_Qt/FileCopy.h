@@ -25,7 +25,7 @@ public:
 	void Resume();
 	void Cancel();
 
-	int GetTotalSize() const;
+	qint64 GetTotalSize() const;
 	int GetCurrentFileProgress() const;
 	OperationState GetState() const;
 	QString GetType() const;
@@ -33,17 +33,20 @@ public:
 
 private:
 	void copyFile(const QString & from, const QString & to);
+	void copyMemory(const uchar *src, uchar *dst, int offset, int size);
 
 	QMutex stateMutex;
-	IFileSystem *fileSystem;
-	
 	OperationState state;
-	FilesToCopy filesToCopy;
+
+	QMutex currentCopiedFileMutex;
 	const CopiedFile *currentCopiedFile;
+	
+	IFileSystem *fileSystem;
+	QDir destinationDirectory;
+	
+	FilesToCopy filesToCopy;
 	int currentFileIndex;
 	int currentFileBytesCopied;
-	quint64 bytesToCopy;
-	quint64 totalSize;
 	qint64 bytesCopied;
 };
 
