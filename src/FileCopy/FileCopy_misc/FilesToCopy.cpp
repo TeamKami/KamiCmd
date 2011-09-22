@@ -30,7 +30,7 @@ const FileInfo & CopiedFile::GetFile() const
 
 
 FilesToCopy::FilesToCopy()
-	: fileCount(0), currentFileNumber(-1)
+	: fileCount(0), currentFileNumber(-1), totalSize(0)
 {
 
 }

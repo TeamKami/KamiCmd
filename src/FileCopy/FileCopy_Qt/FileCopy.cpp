@@ -87,10 +87,9 @@ QString FileCopy::GetType() const
 
 int FileCopy::GetProgress() const
 {
-	int size = filesToCopy.GetTotalSize();
-	if(!size)
-		return 100;
-	return bytesCopied / (size / 100);
+	qint64 size = filesToCopy.GetTotalSize();
+	int percentage = !size ? 100 : bytesCopied / (size / 100);
+	return percentage;
 }
 
 int FileCopy::GetCurrentFileProgress() const
