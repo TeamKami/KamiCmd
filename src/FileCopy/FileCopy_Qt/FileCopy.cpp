@@ -88,7 +88,7 @@ QString FileCopy::GetType() const
 int FileCopy::GetProgress() const
 {
 	qint64 size = filesToCopy.GetTotalSize();
-	int percentage = !size ? 100 : bytesCopied / (size / 100);
+	int percentage = !size ? 100 : bytesCopied / (size / 100.0);
 	return percentage;
 }
 
@@ -98,7 +98,7 @@ int FileCopy::GetCurrentFileProgress() const
 	const CopiedFile *file = currentCopiedFile;
 	currentCopiedFileMutex.unlock();
 		
-	int percentage = (!file || !file->GetFile().size) ? 100 : currentFileBytesCopied / (file->GetFile().size / 100);
+	int percentage = (!file || !file->GetFile().size) ? 100 : currentFileBytesCopied / (file->GetFile().size / 100.0);
 	return percentage;
 }
 
@@ -130,16 +130,17 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 		return;		
 	}
 
-	for(int i = 0; i < size; i++)
+	copyMemory(source, destination, 0, size);
+	/*for(int i = 0; i < size; i++)
 	{
-/*
+/ *
 		if(state == Paused || state == Error)
 			return;
-*/
+* /
 		currentFileBytesCopied++;
 		destination[i] = source[i];
 		bytesCopied++;
-	}
+	}*/
 }
 
 const QString FileCopy::GetFileName() const
