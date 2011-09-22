@@ -5,9 +5,11 @@
 #include <QMessageBox>
 
 CopyProgressDialog::CopyProgressDialog(FileCopy *fileCopy, QWidget *parent)
-	: QDialog(parent), fileCopy(fileCopy)
+	: QDialog(parent), fileCopy(fileCopy), ticksPassed(0), oldTotalCopied(0)
 {
 	ui.setupUi(this);
+	for(int i = 0 ; i < 10; i++)
+		bytesCopiedBetweenTicks[i] = 0;
 	setAttribute(Qt::WA_DeleteOnClose);
 	connect(&refreshTimer, SIGNAL(timeout()), SLOT(update()));
 }
@@ -26,6 +28,8 @@ void CopyProgressDialog::update()
 		close();
 	}
 	
+	updateSpeed();
+
 	ui.progressBar->setValue(fileCopy->GetProgress());
 	ui.sourceLabel->setText(fileCopy->GetFileName());
 	ui.totalSizeLabel->setText(tr("Total: ") + formatSize(fileCopy->GetTotalBytesCopied()) 
@@ -34,7 +38,7 @@ void CopyProgressDialog::update()
 	
 	if(const FileInfo *file = fileCopy->GetCurrentCopiedFile())
 	{
-		ui.currentFileBytesCopied->setText(formatSize(fileCopy->GetCurrentFileBytesCopied()) 
+		ui.currentFileBytesCopied->setText(formatSize(fileCopy->GetCurrentFileBytesCopied())
 			+ '/' + formatSize(file->size));
 		ui.progressBar_2->setValue(fileCopy->GetCurrentFileProgress());		
 	}
@@ -62,12 +66,40 @@ QString CopyProgressDialog::formatSize( qint64 size )
 	quint64 bytes = size;
 
 	if (bytes >= 10*pb)
-		return QLocale().toString((bytes + tb/2) / tb) + QString::fromLatin1(" T");
+		return QLocale().toString((bytes + tb/2) / tb) + QString::fromLatin1(" TB");
 	if (bytes >= 10*tb)
-		return QLocale().toString((bytes + gb/2) / gb) + QString::fromLatin1(" G");
+		return QLocale().toString((bytes + gb/2) / gb) + QString::fromLatin1(" GB");
 	if (bytes >= 10*gb)
-		return QLocale().toString((bytes + mb/2) / mb) + QString::fromLatin1(" M");
+		return QLocale().toString((bytes + mb/2) / mb) + QString::fromLatin1(" MB");
 	if (bytes >= gb)
-		return QLocale().toString((bytes + kb/2) / kb) + QString::fromLatin1(" K");
-	return QLocale().toString(bytes);
+		return QLocale().toString((bytes + kb/2) / kb) + QString::fromLatin1(" KB");
+	return QLocale().toString(bytes) + QString::fromLatin1(" B");
+}
+
+void CopyProgressDialog::reject()
+{
+	if(fileCopy->GetState() == FileCopy::Finished)
+		QDialog::reject();
+	else
+		if(QMessageBox::question(this, tr("Warning"),
+			tr("Are you sure you want to cancel copy?"),
+			QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+		{
+			fileCopy->Cancel();
+			QDialog::reject();
+		}
+}
+
+void CopyProgressDialog::updateSpeed()
+{
+	qint64 totalCopied = fileCopy->GetTotalBytesCopied();
+	bytesCopiedBetweenTicks[ticksPassed %= 10] = totalCopied - oldTotalCopied;
+	qDebug() << bytesCopiedBetweenTicks[ticksPassed %= 10] / 0.25;
+	oldTotalCopied = totalCopied;
+	
+	qint64 t = 0;
+	for(int i = 0; i < 10; i++)
+		t += bytesCopiedBetweenTicks[i];
+	int speed = t / 2.5;
+	ui.speed->setText(tr("Speed: ") + formatSize(speed) + "/s");
 }

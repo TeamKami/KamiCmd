@@ -17,13 +17,18 @@ public:
 	int exec();
 private slots:
 	void update();
+	void reject();
 private:
-	QString formatSize(qint64 s);
+	void updateSpeed();
+	QString formatSize(qint64 size);
 	Ui::CopyProgressDialog ui;
 	FileCopy *fileCopy;
 	IOperationsQueue *operationsQueue;
 	QTimer refreshTimer;
 	CopyThread *copyThread;
+	int ticksPassed;
+	qint64 bytesCopiedBetweenTicks[10];
+	qint64 oldTotalCopied;
 };
 
 #endif // COPYPROGRESSDIALOG_H
