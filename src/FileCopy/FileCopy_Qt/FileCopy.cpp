@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 FileCopy::FileCopy( QObject *parent /*= 0*/ ) 
-	: QObject(parent), bytesCopied(0), state(Paused), currentFileIndex(0), currentCopiedFile(0), currentFileBytesCopied(0)
+	: QObject(parent), bytesCopied(0), state(Running), currentFileIndex(0), currentCopiedFile(0), currentFileBytesCopied(0)
 {
 	fileSystem = dynamic_cast<IFileSystem *>(g_Core->QueryModule("FS", 1));
 	if(!fileSystem)
@@ -45,8 +45,9 @@ bool FileCopy::Exec()
 	currentCopiedFile = NULL;
 	currentCopiedFileMutex.unlock();
 
-	QMutexLocker locker(&stateMutex);
+	stateMutex.lock();
 	state = Finished;
+	stateMutex.unlock();
 	
 	return true;
 }
@@ -55,16 +56,17 @@ void FileCopy::Pause()
 {
 	QMutexLocker locker(&stateMutex);
 	state = Paused;
+	pauseMutex.lock();
 }
 
 void FileCopy::Resume()
 {
 	QMutexLocker locker(&stateMutex);
-	if(state != Finished || state != Error)
+	if(state == Paused)
 	{
 		state = Running;
 		qDebug() << "State changed from " << state << "to Running";
-
+		pauseMutex.unlock();
 	}
 }
 
@@ -164,8 +166,13 @@ void FileCopy::copyMemory( const uchar *src, uchar *dst, int offset, int size )
 
 	for(int i = 0; i < steps; i++)
 	{
+		if(state == Paused)
+		{
+			pauseMutex.lock();
+			pauseMutex.unlock();
+		}
+
 		memcpy(dst + i * chunkSize, src + i*chunkSize, chunkSize);
-		
 		bytesCopied += chunkSize;
 		currentFileBytesCopied += chunkSize;
 	}

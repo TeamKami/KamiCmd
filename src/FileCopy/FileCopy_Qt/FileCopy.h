@@ -40,6 +40,7 @@ private:
 
 	QMutex stateMutex;
 	OperationState state;
+	QMutex pauseMutex;
 
 	mutable QMutex currentCopiedFileMutex;
 	const CopiedFile *currentCopiedFile;

@@ -21,11 +21,15 @@ CopyProgressDialog::~CopyProgressDialog()
 
 void CopyProgressDialog::update()
 {
-	if(fileCopy->GetState() == FileCopy::Finished)
+	const int state = fileCopy->GetState();
+	if(state == FileCopy::Finished)
 	{
 		refreshTimer.stop();
 		close();
 	}
+
+	if(state != FileCopy::Running && state != FileCopy::ForcedRunning)
+		return;
 	
 	updateSpeed();
 
@@ -91,6 +95,10 @@ void CopyProgressDialog::reject()
 
 void CopyProgressDialog::updateSpeed()
 {
+	const int state = fileCopy->GetState();
+	if(state != FileCopy::Running && state != FileCopy::ForcedRunning)
+		return;
+
 	qint64 totalCopied = fileCopy->GetTotalBytesCopied();
 	bytesCopiedBetweenTicks[ticksPassed %= 10] = totalCopied - oldTotalCopied;
 	qDebug() << bytesCopiedBetweenTicks[ticksPassed %= 10] / 2.5;
@@ -103,4 +111,19 @@ void CopyProgressDialog::updateSpeed()
 	int speed = t / 2.5;
 
 	ui.speed->setText(tr("Speed: ") + formatSize(speed) + "/s");
+}
+
+void CopyProgressDialog::on_pauseResume_clicked()
+{
+
+	if(fileCopy->GetState() == FileCopy::Running)
+	{
+		ui.pauseResume->setText(tr("Resume"));
+		fileCopy->Pause();
+	}
+	else if(fileCopy->GetState() == FileCopy::Paused)
+	{
+		ui.pauseResume->setText(tr("Pause"));
+		fileCopy->Resume();
+	}
 }

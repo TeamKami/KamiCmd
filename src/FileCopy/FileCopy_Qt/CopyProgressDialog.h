@@ -18,6 +18,7 @@ public:
 private slots:
 	void update();
 	void reject();
+	void on_pauseResume_clicked();
 private:
 	void updateSpeed();
 	QString formatSize(qint64 size);
