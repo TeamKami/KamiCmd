@@ -1,5 +1,7 @@
 #include "KamiCmd.h"
 
+#include <QtCore/QDebug>
+
 bool moduleLessThan( Module *first, Module *second )
 {
 	if (first->type == second->type)
@@ -11,6 +13,8 @@ bool moduleLessThan( Module *first, Module *second )
 	}
 	return first->type < second->type;
 }
+
+DebugLog *CoreFunctions::log = 0;
 
 bool CoreFunctions::LoadModules()
 {
@@ -59,19 +63,20 @@ bool CoreFunctions::LoadModules()
 
 void CoreFunctions::DebugWrite( QString sender, QString message, DebugWriteImportance importance /*= Info*/ )
 {
+	message = QString("Module: %1\t Message: %2").arg(sender, message);
 	switch (importance)
 	{
 	case Error:
-		QMessageBox::critical(NULL, QObject::tr("Error occurred"), QObject::tr("Module: %1\nMessage: %2").arg(sender, message), QMessageBox::Ok);
+		qCritical() << message;
 		break;
 	case Warning:
-		QMessageBox::warning(NULL, QObject::tr("Warning"), QObject::tr("Module: %1\nMessage: %2").arg(sender, message), QMessageBox::Ok);
+		qWarning() << message;
 		break;
 	case Info:
-		QMessageBox::information(NULL, QObject::tr("Information"), QObject::tr("Module: %1\nMessage: %2").arg(sender, message), QMessageBox::Ok);
+		qDebug() << message;
 		break;
 	case ReportMe:
-		QMessageBox::critical(NULL, QObject::tr("Unpredicted behavior occurred"), QObject::tr("Module: %1\nMessage: %2\n-----------\nREPORT THIS TO DEVELOPER!!!").arg(sender, message), QMessageBox::Ok);
+		qFatal(static_cast<char *>(message.toLocal8Bit().data()));
 		break;
 	}
 }
@@ -97,4 +102,25 @@ QVector<const Module *> CoreFunctions::GetModulesInfo(QString type /*= ""*/, int
 			arr.append(modules[i]);
 
 	return arr;
+}
+
+void CoreFunctions::ShowDebugOutput()
+{
+	RedirectDebug();
+	emit ShowDebug();
+}
+
+void CoreFunctions::OutputDebugMesage( QtMsgType type, const char *msg )
+{
+	if(log)
+		log->Write(type, msg);
+}
+
+void CoreFunctions::RedirectDebug()
+{
+	if(log)
+		return;
+	log = new DebugLog(this);
+	connect(this, SIGNAL(ShowDebug()), log, SLOT(ShowDebugDialog()));
+	qInstallMsgHandler(OutputDebugMesage);
 }

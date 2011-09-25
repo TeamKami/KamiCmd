@@ -25,6 +25,10 @@ int main(int argc, char *argv[])
 		if (!core.LoadModules())
 			return 1;
 
+#ifdef _DEBUG
+		core.ShowDebugOutput();
+#endif
+
 		IUnitManager *unitManager;
                 if ((unitManager = dynamic_cast<IUnitManager *>(core.QueryModule("UnitManager", 1))) != 0)
 			unitManager->Start();

@@ -9,11 +9,12 @@ struct Module;
 class ICoreFunctions
 {
 public:
-	enum DebugWriteImportance {Error, Warning, Info, ReportMe};
-
+	enum DebugWriteImportance {Info, Warning, Error, ReportMe, Fatal};
+	
 	virtual void DebugWrite(QString sender, QString message, DebugWriteImportance importance = Info) = 0;
 	virtual QObject *QueryModule(QString type, int interfaceVersion, QString name = "", int moduleVersion = -1, QObject *parent = NULL) = 0;
 	virtual QVector<const Module *> GetModulesInfo(QString type = "", int interfaceVersion = 0) = 0;
+	virtual void ShowDebugOutput() = 0;
 };
 
 struct Module
