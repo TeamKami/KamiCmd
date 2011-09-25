@@ -3,7 +3,8 @@
 DebugLog::DebugLog(QObject *parent)
 	: QObject(parent), dialog(new DebugDialog)
 {
-	connect(this, SIGNAL(SendText(QtMsgType, const QString &)), dialog, SLOT(outputMessage(QtMsgType, const QString &)));
+	qRegisterMetaType<QtMsgType>("QtMsgType");
+	connect(this, SIGNAL(SendText(QtMsgType, const QString &)), dialog, SLOT(outputMessage(QtMsgType, const QString &)), Qt::QueuedConnection);
 }
 
 DebugLog::~DebugLog()
