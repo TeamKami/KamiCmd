@@ -26,7 +26,7 @@ private:
 	static void OutputDebugMesage( QtMsgType type, const char *msg );
 
 	QVector<Module *> modules;
-	
+	static QMutex logMutex;	
 	static DebugLog* log;
 };
 

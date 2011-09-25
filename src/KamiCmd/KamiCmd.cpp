@@ -15,6 +15,7 @@ bool moduleLessThan( Module *first, Module *second )
 }
 
 DebugLog *CoreFunctions::log = 0;
+QMutex CoreFunctions::logMutex;
 
 bool CoreFunctions::LoadModules()
 {
@@ -112,15 +113,19 @@ void CoreFunctions::ShowDebugOutput()
 
 void CoreFunctions::OutputDebugMesage( QtMsgType type, const char *msg )
 {
+	QMutexLocker lock(&logMutex);
 	if(log)
 		log->Write(type, msg);
 }
 
 void CoreFunctions::RedirectDebug()
 {
+	QMutexLocker lock(&logMutex);
 	if(log)
 		return;
 	log = new DebugLog(this);
 	connect(this, SIGNAL(ShowDebug()), log, SLOT(ShowDebugDialog()));
 	qInstallMsgHandler(OutputDebugMesage);
 }
+
+
