@@ -7,16 +7,16 @@
 class IFileOperation
 {	
 public:
-    enum OperationState
-    {
-        Paused,
-        Running,
-        ForcedRunning, 
-        Queued,
-        Error,
+	enum OperationState
+	{
+		Paused,
+		Running,
+		ForcedRunning, 
+		Queued,
+		Error,
 		Finished,
 		Canceled
-    };
+	};
 
 	virtual ~IFileOperation() {};
 	virtual OperationState GetState() const = 0;
@@ -27,14 +27,17 @@ public:
 	virtual void Pause() = 0;
 	virtual void Resume() = 0;
 	virtual void Cancel() = 0;
+
+	friend class FileOperationProxy;
 };
 
-class IOperationsQueue 
+
+class IOperationsQueue
 {
 public:
 	virtual ~IOperationsQueue() {};
-    virtual void Add(IFileOperation&, IFileOperation::OperationState state) = 0;
-	
+	virtual void Add(IFileOperation&, IFileOperation::OperationState state) = 0;
+
 	virtual IFileOperation *GetFileOperation(int index) const = 0;
 	virtual bool Remove(int index) = 0;
 	virtual bool Pause(int index) = 0;
@@ -43,3 +46,12 @@ public:
 	virtual void ChangePriority(const IFileOperation&, int) = 0;  // changes fileOperation place in waiting queue 
 	virtual int Count() const = 0;	
 };
+
+namespace Internal
+{
+	class FileOperationProxy
+	{
+		FileOperationProxy(IFileOperation *fileOperation);
+	};
+
+}

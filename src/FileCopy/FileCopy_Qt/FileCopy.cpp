@@ -1,6 +1,7 @@
 #include "FileCopy.h"
 #include "IFileSystem.h"
 
+//#include <QTest>
 #include <QDir>
 #include <QMessageBox>
 
@@ -30,10 +31,11 @@ bool FileCopy::Exec()
 
 	for( ; currentFileIndex < filesToCopy.Count() && GetState() != Canceled; ++currentFileIndex)
 	{
-		currentCopiedFileMutex.lock();
+	//	currentCopiedFileMutex.lock();
 		currentCopiedFile = &filesToCopy.GetNextFile();
-		currentCopiedFileMutex.unlock();
 
+	//	currentCopiedFileMutex.unlock();
+	
 		if(!destinationDirectory.exists(currentCopiedFile->RelativePath()))
 			destinationDirectory.mkpath(currentCopiedFile->RelativePath());
 		QString path = filesToCopy.GetDestination() + currentCopiedFile->RelativePath();
@@ -41,9 +43,9 @@ bool FileCopy::Exec()
 				 path + currentCopiedFile->GetFile().name);
 	}
 	
-	currentCopiedFileMutex.lock();
+//	currentCopiedFileMutex.lock();
 	currentCopiedFile = NULL;
-	currentCopiedFileMutex.unlock();
+//	currentCopiedFileMutex.unlock();
 
 	stateMutex.lock();
 	if(state != Canceled)
@@ -102,9 +104,9 @@ int FileCopy::GetProgress() const
 
 int FileCopy::GetCurrentFileProgress() const
 {
-	currentCopiedFileMutex.lock();
+//	currentCopiedFileMutex.lock();
 	const CopiedFile *file = currentCopiedFile;
-	currentCopiedFileMutex.unlock();
+//	currentCopiedFileMutex.unlock();
 		
 	int percentage = (!file || !file->GetFile().size) ? 100 : currentFileBytesCopied / (file->GetFile().size / 100.0);
 	return percentage;
@@ -116,7 +118,8 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 	QFile sourceFile(from);
 	if(!sourceFile.open(QFile::ReadOnly))
 	{
-		qDebug() << "Error" <<  "File"  << from  << "can't be opened" << sourceFile.errorString();;		
+		qDebug() << "Error" <<  "File"  << from  << "can't be opened" << sourceFile.errorString();
+		processFileError(sourceFile);
 		return;
 	}
 
@@ -139,18 +142,31 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 	}
 	bool r = copyMemory(source, destination, 0, size);
 	
+	destinationFile.unmap(destination);
+	sourceFile.unmap(const_cast<uchar *>(source));
+	destinationFile.close();
+	sourceFile.close();
+
 	if(GetState() == Canceled && !r)
-	{
-		destinationFile.unmap(destination);
 		destinationFile.remove();
-	}
+}
+
+void FileCopy::processFileError( const QFile & file )
+{
+// 	int e = file.error();
+// 	if(e == QFile::OpenError || e == QFile::PermissionsError || e == QFile::ReadError || e == QFile::FatalError)
+// 		emit reportError(file.error(), file.errorString());
+// 	}
+
+
 }
 
 const QString FileCopy::GetFileName() const
 {
-	currentCopiedFileMutex.lock();
-	const QString fileName = currentCopiedFile ? currentCopiedFile->GetFile().name : QString();
-	currentCopiedFileMutex.unlock();
+//	currentCopiedFileMutex.lock();
+	const CopiedFile *file = currentCopiedFile ;
+	const QString fileName = file ? file->GetFile().name : QString();
+//	currentCopiedFileMutex.unlock();
 
 	return fileName;
 }
@@ -211,9 +227,9 @@ qint64 FileCopy::GetTotalBytesCopied() const
 
 const FileInfo * FileCopy::GetCurrentCopiedFile()
 {
-	currentCopiedFileMutex.lock();
+//	currentCopiedFileMutex.lock();
 	const CopiedFile *file = currentCopiedFile;
-	currentCopiedFileMutex.unlock();
+//	currentCopiedFileMutex.unlock();
 	if(file)
 		return &file->GetFile();
 	return NULL;

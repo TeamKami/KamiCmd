@@ -4,6 +4,7 @@
 
 #include <QMessageBox>
 
+
 CopyProgressDialog::CopyProgressDialog(FileCopy *fileCopy, QWidget *parent)
 	: QDialog(parent), fileCopy(fileCopy), ticksPassed(0), oldTotalCopied(0)
 {
@@ -25,7 +26,7 @@ void CopyProgressDialog::update()
 	if(state == FileCopy::Finished)
 	{
 		refreshTimer.stop();
-		done(Accepted);
+		accept();
 	}
 
 	if(state != FileCopy::Running && state != FileCopy::ForcedRunning)
@@ -49,6 +50,8 @@ void CopyProgressDialog::update()
 
 int CopyProgressDialog::exec()
 {
+	ui.time->setText(QDateTime::currentDateTime().toString() + "/ ???");
+
 	copyThread = new CopyThread(this, fileCopy);
 	ui.destinationLabel->setText(fileCopy->GetDestination());
 	refreshTimer.start(250);
@@ -79,19 +82,17 @@ QString CopyProgressDialog::formatSize( qint64 size )
 	return QLocale().toString(bytes) + QString::fromLatin1(" B");
 }
 
-void CopyProgressDialog::reject()
+void CopyProgressDialog::cancelCopy()
 {
-
 	fileCopy->Pause();
 	int r = QMessageBox::question(this, tr("Warning"),
 		tr("Are you sure you want to cancel copy?"),
 		QMessageBox::Yes | QMessageBox::No);
-
- 	if(r == QMessageBox::Yes)
+  	if(r == QMessageBox::Yes)
 	{
 		fileCopy->Cancel();
 		refreshTimer.stop();
-		done(Rejected);
+ 		QDialog::reject();
 	}
 	else
 		fileCopy->Resume();
@@ -99,13 +100,11 @@ void CopyProgressDialog::reject()
 
 void CopyProgressDialog::updateSpeed()
 {
-	const int state = fileCopy->GetState();
-	if(state != FileCopy::Running && state != FileCopy::ForcedRunning)
-		return;
+	// speed is calculated by averaging speed in last 10 update ticks
 
 	qint64 totalCopied = fileCopy->GetTotalBytesCopied();
 	bytesCopiedBetweenTicks[ticksPassed %= 10] = totalCopied - oldTotalCopied;
-	qDebug() << bytesCopiedBetweenTicks[ticksPassed %= 10] / 2.5;
+
 	ticksPassed++;
 	oldTotalCopied = totalCopied;
 	
@@ -134,5 +133,5 @@ void CopyProgressDialog::on_pauseResume_clicked()
 
 void CopyProgressDialog::on_cancelCopy_clicked()
 {
-	reject();
+	cancelCopy();
 }

@@ -11,6 +11,7 @@
 
 class FileCopy : public QObject, public IFileCopy
 {
+	Q_OBJECT
 public:
 	FileCopy(QObject *parent = 0);
 	~FileCopy();
@@ -34,9 +35,12 @@ public:
 	QString GetType() const;
 	int GetProgress() const;
 
+signals:
+	void reportError(QFile::FileError error, const QString & textError);
 private:
 	void copyFile(const QString & from, const QString & to);
 	bool copyMemory(const uchar *src, uchar *dst, int offset, int size);
+	void processFileError(const QFile & file);
 
 	QMutex stateMutex;
 	OperationState state;

@@ -17,7 +17,7 @@ public:
 	int exec();
 private slots:
 	void update();
-	void reject();
+	void cancelCopy();
 	void on_pauseResume_clicked();
 	void on_cancelCopy_clicked();
 
