@@ -5,6 +5,7 @@ DebugLog::DebugLog(QObject *parent)
 {
 	qRegisterMetaType<QtMsgType>("QtMsgType");
 	connect(this, SIGNAL(SendText(QtMsgType, const QString &)), dialog, SLOT(outputMessage(QtMsgType, const QString &)), Qt::QueuedConnection);
+	connect(this, SIGNAL(ShowDialog()), dialog, SLOT(show()), Qt::QueuedConnection);
 }
 
 DebugLog::~DebugLog()
@@ -19,6 +20,6 @@ void DebugLog::Write( QtMsgType type, const QString & msg )
 
 void DebugLog::ShowDebugDialog()
 {
-	dialog->show();
+	emit ShowDialog();
 }
 

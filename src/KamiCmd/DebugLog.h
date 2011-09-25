@@ -20,6 +20,7 @@ public slots:
 	void ShowDebugDialog();
 signals:
 	void SendText(QtMsgType type, const QString & msg);
+	void ShowDialog();
 private:
 	DebugDialog *dialog;
 };
