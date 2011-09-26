@@ -2,6 +2,7 @@
 #define DEBUGDIALOG_H
 
 #include <QDialog>
+#include "ILibrary.h"
 #include "ui_DebugDialog.h"
 
 class DebugDialog : public QDialog
@@ -12,7 +13,7 @@ public:
 	DebugDialog(QWidget *parent = 0);
 	~DebugDialog();
 public slots:
-	void outputMessage(QtMsgType type, const QString & msg);
+	void outputMessage(ICoreFunctions::DebugWriteImportance type, const QString & msg);
 private slots:
 	void on_saveButton_clicked();
 private:

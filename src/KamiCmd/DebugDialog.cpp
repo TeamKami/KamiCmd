@@ -15,7 +15,7 @@ DebugDialog::~DebugDialog()
 
 }
 
-void DebugDialog::outputMessage(QtMsgType type, const QString &msg)
+void DebugDialog::outputMessage(ICoreFunctions::DebugWriteImportance type, const QString &msg)
 {
 	switch (type)
 	{
@@ -33,6 +33,9 @@ void DebugDialog::outputMessage(QtMsgType type, const QString &msg)
 
 	case QtFatalMsg:
 		ui.debugBrowser->append(tr("-- FATAL: %1").arg(msg));
+		break;
+	default:
+		ui.debugBrowser->append(msg);
 		break;
 	}
 }

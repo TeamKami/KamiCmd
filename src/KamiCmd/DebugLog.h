@@ -5,6 +5,7 @@
 #include <QtCore/QDebug>
 
 #include "DebugDialog.h"
+#include "ILibrary.h"
 
 class DebugLog : public QObject
 {
@@ -14,12 +15,12 @@ public:
 	DebugLog(QObject *parent);
 	~DebugLog();
 
-	void Write(QtMsgType type, const QString & msg);
+	void Write(ICoreFunctions::DebugWriteImportance type, const QString & msg);
 
 public slots:
 	void ShowDebugDialog();
 signals:
-	void SendText(QtMsgType type, const QString & msg);
+	void SendText(ICoreFunctions::DebugWriteImportance type, const QString & msg);
 	void ShowDialog();
 private:
 	DebugDialog *dialog;

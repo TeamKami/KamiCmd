@@ -9,7 +9,7 @@ struct Module;
 class ICoreFunctions
 {
 public:
-	enum DebugWriteImportance {Info, Warning, Error, ReportMe, Fatal};
+	enum DebugWriteImportance {QtDebug, QtWarning, QtCritical, QtFatal, QtSystem = QtFatal, Info = QtFatal + 10, Warning, Error, ReportMe, Fatal};
 	
 	virtual void DebugWrite(QString sender, QString message, DebugWriteImportance importance = Info) = 0;
 	virtual QObject *QueryModule(QString type, int interfaceVersion, QString name = "", int moduleVersion = -1, QObject *parent = NULL) = 0;

@@ -64,7 +64,20 @@ bool CoreFunctions::LoadModules()
 
 void CoreFunctions::DebugWrite( QString sender, QString message, DebugWriteImportance importance /*= Info*/ )
 {
+
 	message = QString("Module: %1\t Message: %2").arg(sender, message);
+
+	logMutex.lock();
+
+	if(log)
+	{
+		log->Write(importance, static_cast<char *>(message.toLocal8Bit().data()));
+		logMutex.unlock();
+		return;
+	}
+	logMutex.unlock();
+	
+	
 	switch (importance)
 	{
 	case Error:
@@ -115,7 +128,7 @@ void CoreFunctions::OutputDebugMesage( QtMsgType type, const char *msg )
 {
 	QMutexLocker lock(&logMutex);
 	if(log)
-		log->Write(type, msg);
+		log->Write(static_cast<ICoreFunctions::DebugWriteImportance>(type), msg);
 }
 
 void CoreFunctions::RedirectDebug()
