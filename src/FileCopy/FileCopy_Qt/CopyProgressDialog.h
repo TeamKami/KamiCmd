@@ -14,7 +14,7 @@ class CopyProgressDialog : public QDialog
 public:
 	CopyProgressDialog(FileCopy *fileCopy, QWidget *parent = 0);
 	~CopyProgressDialog();
-	int exec();
+	void show();
 private slots:
 	void update();
 	void cancelCopy();

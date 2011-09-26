@@ -84,8 +84,8 @@ void CopyDialog::on_copyPushButton_clicked()
 	CopyProgressDialog *dialog = new CopyProgressDialog(&fileCopyOperation, this);
 //	connect(dialog, SIGNAL(finished(int)), SLOT(close()));
 	hide();
-	dialog->exec();
-	close();
+	connect(dialog, SIGNAL(finished(int)), SLOT(close()));
+	dialog->show();
 }
 
 void CopyDialog::GetFilesToCopy()

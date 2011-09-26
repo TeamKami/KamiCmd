@@ -48,7 +48,7 @@ void CopyProgressDialog::update()
 	}
 }
 
-int CopyProgressDialog::exec()
+void CopyProgressDialog::show()
 {
 	ui.time->setText(QDateTime::currentDateTime().toString() + "/ ???");
 
@@ -56,7 +56,8 @@ int CopyProgressDialog::exec()
 	ui.destinationLabel->setText(fileCopy->GetDestination());
 	refreshTimer.start(250);
 	copyThread->start();
-	return QDialog::exec();
+	
+	QDialog::show();
 }
 
 QString CopyProgressDialog::formatSize( qint64 size )
