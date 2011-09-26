@@ -45,3 +45,5 @@ UpgradeLog.XML
 *.lib
 *.orig
 *.xml
+*Amplifier*
+* Inspector*

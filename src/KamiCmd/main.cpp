@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 		else
 		{
 			QVector<const Module*> modulesInfo = core.GetModulesInfo();
-			QString msg;
+			QString msg; 
 			QSet<QString> set;
 			foreach(const Module * module, modulesInfo)
 				set.insert(module->parentLibName);

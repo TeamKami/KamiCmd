@@ -13,6 +13,8 @@ public:
 	~DebugDialog();
 public slots:
 	void outputMessage(QtMsgType type, const QString & msg);
+private slots:
+	void on_saveButton_clicked();
 private:
 	Ui::DebugDialog ui;
 };
