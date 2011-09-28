@@ -10,12 +10,15 @@ class DebugDialog : public QDialog
 	Q_OBJECT
 
 public:
-	DebugDialog(QWidget *parent = 0);
+	DebugDialog(QWidget *parent = NULL);
 	~DebugDialog();
+
 public slots:
-	void outputMessage(ICoreFunctions::DebugWriteImportance type, const QString & msg);
+	void outputMessage(ICoreFunctions::DebugWriteImportance type, QString msg);
+
 private slots:
 	void on_saveButton_clicked();
+
 private:
 	Ui::DebugDialog ui;
 };

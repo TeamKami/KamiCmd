@@ -29,7 +29,7 @@ bool SortModel::lessThan(const QModelIndex &upIndex, const QModelIndex &downInde
 
         if (up->attributes & FileInfo::UpOneLevel || (up->attributes & FileInfo::Directory && !(down->attributes & FileInfo::Directory)))
 			return !order_;
-        else if (down->attributes & FileInfo::Directory || (down->attributes & FileInfo::Directory && !(up->attributes & FileInfo::Directory)))
+        else if (down->attributes & FileInfo::UpOneLevel || (down->attributes & FileInfo::Directory && !(up->attributes & FileInfo::Directory)))
 			return order_;
 
 	switch (column_)

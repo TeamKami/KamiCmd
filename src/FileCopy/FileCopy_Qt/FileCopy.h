@@ -37,15 +37,20 @@ public:
 	int GetCurentFileNumber() const;
 
 	void SetErrorHandling(QFile::FileError error, ErrorHandling handling);
-	int GetErrorHandling(QFile::FileError error) const;
+	FileCopy::ErrorHandling GetErrorHandling(QFile::FileError error) const;
 
 signals:
 	void reportError(const QString filePath, QFile::FileError error, const QString errorText);
 
 private:
+	enum ErrorProcessingDesicion
+	{
+		Stop, Continue, Retry
+	};
+
 	void copyFile(const QString & from, const QString & to);
 	bool copyMemory(const uchar *src, uchar *dst, int offset, int size);
-	void processFileError(const QFile & file);
+	ErrorProcessingDesicion processFileError(const QFile & file);
 	
 
 	ErrorHandling errorHandling[15]; // this array describes behaviour if some error from QFile::FileError happens

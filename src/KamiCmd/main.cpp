@@ -1,5 +1,5 @@
 #include <QtGui/QApplication>
-#include "KamiCmd.h"
+#include "CoreFunctions.h"
 
 int main(int argc, char *argv[])
 {
@@ -22,15 +22,16 @@ int main(int argc, char *argv[])
 		}
 
 		CoreFunctions core;
+
+#ifdef _DEBUG
+		core.RedirectDebug();
+#endif // _DEBUG
+
 		if (!core.LoadModules())
 			return 1;
 
-#ifdef _DEBUG
-		core.ShowDebugOutput();
-#endif
-
 		IUnitManager *unitManager;
-                if ((unitManager = dynamic_cast<IUnitManager *>(core.QueryModule("UnitManager", 1))) != 0)
+        if ((unitManager = dynamic_cast<IUnitManager *>(core.QueryModule("UnitManager", 1))) != 0)
 			unitManager->Start();
 		else
 		{

@@ -8,7 +8,6 @@ include ($${Root}/config.pri)
 # Input
 HEADERS += *.h
 SOURCES += *.cpp
-FORMS += *.ui
 
 #Windows
 win32:RC_FILE = KamiCmd.rc

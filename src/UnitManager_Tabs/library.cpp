@@ -5,10 +5,11 @@
 #include "ModulesDialog.h"
 #include "Associations.h"
 #include "ActionManager.h"
+#include "DebugDialog.h"
 
 ICoreFunctions *g_Core;
 
-enum Modules {MUnitManager, MLinkedUnit, MFButtonsBar, MModulesDialog, MAssociations, MActionManager};
+enum Modules {MUnitManager, MLinkedUnit, MFButtonsBar, MModulesDialog, MAssociations, MActionManager, MDebugDialog};
 
 QVector<Module *> UnitManager_Tabs_Library::ListModulesAndGetCore( ICoreFunctions *core )
 {
@@ -20,15 +21,17 @@ QVector<Module *> UnitManager_Tabs_Library::ListModulesAndGetCore( ICoreFunction
 		<< new Module("FButtonsBar", 1, "UnitManager_FButtonsBar", 1, MFButtonsBar)
 		<< new Module("ModulesDialog", 1, "UnitManager_ModulesDialog", 1, MModulesDialog)
 		<< new Module("Associations", 1, "UnitManager_Associations", 1, MAssociations)
-		<< new Module("ActionManager", 1, "UnitManager_ActionManager", 1, MActionManager);
+		<< new Module("ActionManager", 1, "UnitManager_ActionManager", 1, MActionManager)
+		<< new Module("DebugDialog", 1, "UnitManager_DebugDialog", 1, MDebugDialog);
 	return arr;
 }
 
 QObject* UnitManager_Tabs_Library::CreateModuleInstance( int id, QObject *parent )
 {
 	static UnitManager_Tabs *moduleUnitManager = NULL;
-	static Associations *moduleAssociations;
-	static ActionManager *moduleActionManager;
+	static Associations *moduleAssociations = NULL;
+	static ActionManager *moduleActionManager = NULL;
+	static DebugDialog *debugDialog = NULL;
 	
 	switch (id)
 	{
@@ -55,6 +58,11 @@ QObject* UnitManager_Tabs_Library::CreateModuleInstance( int id, QObject *parent
 		if (!moduleActionManager)
 			moduleActionManager = new ActionManager(parent);
 		return moduleActionManager;
+
+	case MDebugDialog:
+		if (!debugDialog)
+			debugDialog = new DebugDialog();
+		return debugDialog;
 	}
 	return NULL;
 }

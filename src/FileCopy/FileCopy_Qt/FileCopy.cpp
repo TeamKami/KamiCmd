@@ -112,9 +112,10 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 	QFile sourceFile(from);
 	if(!sourceFile.open(QFile::ReadOnly))
 	{
-		qDebug() << "Error" <<  "File"  << from  << "can't be opened" << sourceFile.errorString();
 		processFileError(sourceFile);
-		return;
+
+		if(state == Canceled) // if processFileError() canceled copy
+			return;
 	}
 
 	const int size = sourceFile.size();
@@ -122,8 +123,10 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 	QFile destinationFile(to);
 	if(!destinationFile.open(QFile::ReadWrite) || !destinationFile.resize(size))
 	{
-		qDebug() << tr("Error") << destinationFile.errorString();
-		return;
+		processFileError(destinationFile);
+
+		if(GetState() == Canceled) // if processFileError() canceled copy
+			return;
 	}
 	
 	const uchar *source = sourceFile.map(0, size - 1);
@@ -135,21 +138,34 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 		return;		
 	}
 	bool r = copyMemory(source, destination, 0, size);
-	
-	destinationFile.unmap(destination);
-	sourceFile.unmap(const_cast<uchar *>(source));
-	destinationFile.close();
-	sourceFile.close();
+// 	
+// 	destinationFile.unmap(destination);
+// 	sourceFile.unmap(const_cast<uchar *>(source));
+// 	destinationFile.close();
+// 	sourceFile.close();
 
 	if(GetState() == Canceled && !r)
 		destinationFile.remove();
 }
 
-void FileCopy::processFileError( const QFile & file )
+FileCopy::ErrorProcessingDesicion FileCopy::processFileError( const QFile & file )
 {
- 	if(GetErrorHandling(file.error()) == ErrorHandling::AskUser)
+	ErrorHandling handling = GetErrorHandling(file.error());
+	switch(handling)
 	{
+	case ErrorHandling::AskUser:
 		emit reportError(file.fileName(),file.error(), file.errorString());
+		return ErrorProcessingDesicion::Continue;
+
+	case ErrorHandling::Ignore:
+		return ErrorProcessingDesicion::Continue;
+
+	case ErrorHandling::Retry:
+		return ErrorProcessingDesicion::Retry;
+
+	case ErrorHandling::Cancel:
+		return ErrorProcessingDesicion::Stop;
+
 	}
 }
 
@@ -238,7 +254,7 @@ void FileCopy::SetErrorHandling( QFile::FileError error, ErrorHandling handling 
 	errorHandling[error] = handling;
 }
 
-int FileCopy::GetErrorHandling( QFile::FileError error ) const
+FileCopy::ErrorHandling FileCopy::GetErrorHandling( QFile::FileError error ) const
 {
 	return errorHandling[error];
 }

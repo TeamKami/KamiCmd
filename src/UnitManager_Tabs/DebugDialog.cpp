@@ -1,13 +1,19 @@
 #include "DebugDialog.h"
+#include "library.h"
 
 #include <QtCore/QTextStream>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include "IUnitManager.h"
 
 DebugDialog::DebugDialog(QWidget *parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
+	QList<QPair<ICoreFunctions::DebugWriteImportance, QString> > writeLog = g_Core->GetDebugWriteLog();
+	for (int i = 0; i < writeLog.size(); i++)
+		outputMessage(writeLog.at(i).first, writeLog.at(i).second);
+	connect(g_Core, SIGNAL(DebugMessageReceived(ICoreFunctions::DebugWriteImportance, QString)), SLOT(outputMessage(ICoreFunctions::DebugWriteImportance, QString)));
 }
 
 DebugDialog::~DebugDialog()
@@ -15,8 +21,10 @@ DebugDialog::~DebugDialog()
 
 }
 
-void DebugDialog::outputMessage(ICoreFunctions::DebugWriteImportance type, const QString &msg)
+void DebugDialog::outputMessage(ICoreFunctions::DebugWriteImportance type, QString msg)
 {
+	QString moduleName = "Qt";
+
 	switch (type)
 	{
 	case QtDebugMsg:

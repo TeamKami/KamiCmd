@@ -2,11 +2,12 @@
 #define LIBRARIES_INTERFACE_H
 
 #include <QVector>
+#include <QPair>
 #define QT_NO_QT_INCLUDE_WARN
 
 struct Module;
 
-class ICoreFunctions
+class ICoreFunctions : public QObject
 {
 public:
 	enum DebugWriteImportance {QtDebug, QtWarning, QtCritical, QtFatal, QtSystem = QtFatal, Info = QtFatal + 10, Warning, Error, ReportMe, Fatal};
@@ -14,7 +15,11 @@ public:
 	virtual void DebugWrite(QString sender, QString message, DebugWriteImportance importance = Info) = 0;
 	virtual QObject *QueryModule(QString type, int interfaceVersion, QString name = "", int moduleVersion = -1, QObject *parent = NULL) = 0;
 	virtual QVector<const Module *> GetModulesInfo(QString type = "", int interfaceVersion = 0) = 0;
-	virtual void ShowDebugOutput() = 0;
+	virtual QList<QPair<DebugWriteImportance, QString> > GetDebugWriteLog() = 0;
+	virtual bool LoadModules() = 0;
+
+signals:
+	void DebugMessageReceived(ICoreFunctions::DebugWriteImportance importance, QString message);
 };
 
 struct Module

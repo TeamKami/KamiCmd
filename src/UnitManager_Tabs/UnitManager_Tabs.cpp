@@ -2,6 +2,7 @@
 #include "UnitManager_Tabs.h"
 #include "LinkedUnit.h"
 #include "ActionManager.h"
+#include "DebugDialog.h"
 
 int UnitManager_Tabs::AddUnit( IUnit *unit, bool isNextToActive, bool doActivate /*= false*/ )
 {
@@ -138,6 +139,20 @@ void UnitManager_Tabs::Start()
 	resourcesDir.cd("Resources");
 	foreach (QString fileName, resourcesDir.entryList(QStringList("*.rcc"), QDir::Files))
 		QResource::registerResource(resourcesDir.absoluteFilePath(fileName));
+
+#ifdef _DEBUG
+	// Creating DebugDialog
+	if (QDialog *debugDialog = qobject_cast<DebugDialog *>(g_Core->QueryModule("DebugDialog", 1)))
+	{
+		QDockWidget *dock = new QDockWidget(tr("Debug log"), this);
+		dock->setAllowedAreas(Qt::BottomDockWidgetArea);
+		dock->setWidget(debugDialog);
+		debugDialog->show();
+		addDockWidget(Qt::BottomDockWidgetArea, dock);
+	}
+	else
+		g_Core->DebugWrite("UnitManager", "DebugDialog module not found", ICoreFunctions::Error);
+#endif // _DEBUG
 
 	// Init tabs
 	tabs = new TabWidget(this);
