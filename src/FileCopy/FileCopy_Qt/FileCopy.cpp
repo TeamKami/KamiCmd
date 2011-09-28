@@ -138,14 +138,13 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 		return;		
 	}
 	bool r = copyMemory(source, destination, 0, size);
-// 	
-// 	destinationFile.unmap(destination);
-// 	sourceFile.unmap(const_cast<uchar *>(source));
-// 	destinationFile.close();
-// 	sourceFile.close();
 
 	if(GetState() == Canceled && !r)
+	{
+		destinationFile.unmap(destination);
+		destinationFile.close();
 		destinationFile.remove();
+	}
 }
 
 FileCopy::ErrorProcessingDesicion FileCopy::processFileError( const QFile & file )
