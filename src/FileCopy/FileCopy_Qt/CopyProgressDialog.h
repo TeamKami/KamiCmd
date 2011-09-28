@@ -15,11 +15,13 @@ public:
 	CopyProgressDialog(FileCopy *fileCopy, QWidget *parent = 0);
 	~CopyProgressDialog();
 	void show();
+
 private slots:
 	void update();
 	void cancelCopy();
 	void on_pauseResume_clicked();
 	void on_cancelCopy_clicked();
+	void HandleError( const QString filePath, QFile::FileError error, const QString errorText );
 
 private:
 	void updateSpeed();

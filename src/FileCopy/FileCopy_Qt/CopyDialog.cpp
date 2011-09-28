@@ -82,7 +82,6 @@ void CopyDialog::on_copyPushButton_clicked()
 	GetFilesToCopy();
 	fileCopyOperation.PrepareForCopy(filesToCopy);
 	CopyProgressDialog *dialog = new CopyProgressDialog(&fileCopyOperation, this);
-//	connect(dialog, SIGNAL(finished(int)), SLOT(close()));
 	hide();
 	connect(dialog, SIGNAL(finished(int)), SLOT(close()));
 	dialog->show();
@@ -128,4 +127,3 @@ QVector< FileInfo > CopyDialog::ScanFolder( const QString & path )
 
 	return files;		
 }
-

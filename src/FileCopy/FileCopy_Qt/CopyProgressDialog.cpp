@@ -12,7 +12,7 @@ CopyProgressDialog::CopyProgressDialog(FileCopy *fileCopy, QWidget *parent)
 	memset(bytesCopiedBetweenTicks, 0, sizeof(bytesCopiedBetweenTicks));
 	setAttribute(Qt::WA_DeleteOnClose);
 	connect(&refreshTimer, SIGNAL(timeout()), SLOT(update()));
-}
+} 
 
 CopyProgressDialog::~CopyProgressDialog()
 {
@@ -35,17 +35,17 @@ void CopyProgressDialog::update()
 	updateSpeed();
 
 	ui.progressBar->setValue(fileCopy->GetProgress());
-	ui.sourceLabel->setText(fileCopy->GetFileName());
 	ui.totalSizeLabel->setText(tr("Total: ") + formatSize(fileCopy->GetTotalBytesCopied()) 
 		+ '/' + formatSize(fileCopy->GetTotalSize()));	
 	
 	
 	if(const FileInfo *file = fileCopy->GetCurrentCopiedFile())
 	{
-		ui.currentFileBytesCopied->setText(formatSize(fileCopy->GetCurrentFileBytesCopied())
-			+ '/' + formatSize(file->size));
-		ui.progressBar_2->setValue(fileCopy->GetCurrentFileProgress());		
+		ui.sourceLabel->setText(file->name);
+		ui.currentFileBytesCopied->setText(formatSize(fileCopy->GetCurrentFileBytesCopied())	 + '/' + formatSize(file->size));
 	}
+	
+	ui.progressBar_2->setValue(fileCopy->GetCurrentFileProgress());		
 }
 
 void CopyProgressDialog::show()
@@ -135,4 +135,22 @@ void CopyProgressDialog::on_pauseResume_clicked()
 void CopyProgressDialog::on_cancelCopy_clicked()
 {
 	cancelCopy();
+}
+
+void CopyProgressDialog::HandleError( const QString filePath, QFile::FileError error, const QString errorText )
+{
+	switch(error)
+	{
+	case QFile::OpenError:
+	case QFile::PermissionsError:
+	case QFile::ReadError:
+	case QFile::FatalError:
+	case QFile::RenameError:
+	case QFile::UnspecifiedError:
+	case QFile::RemoveError:
+	case QFile::ResizeError:
+		{
+
+		}
+	}
 }

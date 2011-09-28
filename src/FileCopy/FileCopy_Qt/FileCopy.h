@@ -28,19 +28,27 @@ public:
 
 	qint64 GetTotalSize() const;
 	int GetCurrentFileProgress() const;
-	const FileInfo *GetCurrentCopiedFile();
+	const FileInfo *GetCurrentCopiedFile() const;
 	qint64 GetCurrentFileBytesCopied() const;
 	qint64 GetTotalBytesCopied() const;
 	OperationState GetState() const;
 	QString GetType() const;
 	int GetProgress() const;
+	int GetCurentFileNumber() const;
+
+	void SetErrorHandling(QFile::FileError error, ErrorHandling handling);
+	int GetErrorHandling(QFile::FileError error) const;
 
 signals:
-	void reportError(QFile::FileError error, const QString & textError);
+	void reportError(const QString filePath, QFile::FileError error, const QString errorText);
+
 private:
 	void copyFile(const QString & from, const QString & to);
 	bool copyMemory(const uchar *src, uchar *dst, int offset, int size);
 	void processFileError(const QFile & file);
+	
+
+	ErrorHandling errorHandling[15]; // this array describes behaviour if some error from QFile::FileError happens
 
 	QMutex stateMutex;
 	OperationState state;

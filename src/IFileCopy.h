@@ -12,9 +12,18 @@ class FilesToCopy;
 class IFileCopy : public IFileOperation
 {
 public:
+	
+	enum ErrorHandling // behavior on error
+	{
+		Ignore,
+		Cancel,
+		Retry,
+		Wait,
+		AskUser
+	};
+
 	virtual ~IFileCopy() {};
 	virtual void PrepareForCopy(const FilesToCopy & files) = 0;
-
 };
 
 class CopiedFile

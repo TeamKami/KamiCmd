@@ -17,7 +17,6 @@ public:
 
 private slots:
 	void on_copyPushButton_clicked();
-
 private:
 	void InitializeCopy();
 	void GetSelectedFilesAndCopyPath();

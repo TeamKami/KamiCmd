@@ -1,7 +1,7 @@
 #include "FileCopy.h"
 #include "IFileSystem.h"
+#include "ILibrary.h"
 
-//#include <QTest>
 #include <QDir>
 #include <QMessageBox>
 
@@ -11,6 +11,9 @@ FileCopy::FileCopy( QObject *parent /*= 0*/ )
 	fileSystem = dynamic_cast<IFileSystem *>(g_Core->QueryModule("FS", 1));
 	if(!fileSystem)
 		g_Core->DebugWrite("FileCopy", "Can't query File system");
+
+	for(int i = 0; i < 15; i++)
+		errorHandling[i] = ErrorHandling::AskUser;
 }
 
 FileCopy::~FileCopy()
@@ -31,11 +34,7 @@ bool FileCopy::Exec()
 
 	for( ; currentFileIndex < filesToCopy.Count() && GetState() != Canceled; ++currentFileIndex)
 	{
-	//	currentCopiedFileMutex.lock();
 		currentCopiedFile = &filesToCopy.GetNextFile();
-
-	//	currentCopiedFileMutex.unlock();
-	
 		if(!destinationDirectory.exists(currentCopiedFile->RelativePath()))
 			destinationDirectory.mkpath(currentCopiedFile->RelativePath());
 		QString path = filesToCopy.GetDestination() + currentCopiedFile->RelativePath();
@@ -43,9 +42,7 @@ bool FileCopy::Exec()
 				 path + currentCopiedFile->GetFile().name);
 	}
 	
-//	currentCopiedFileMutex.lock();
 	currentCopiedFile = NULL;
-//	currentCopiedFileMutex.unlock();
 
 	stateMutex.lock();
 	if(state != Canceled)
@@ -68,7 +65,7 @@ void FileCopy::Pause()
 void FileCopy::Resume()
 {
 	QMutexLocker locker(&stateMutex);
-	if(state == Paused && state != Canceled && state != Finished)
+	if(state == Paused && (state != Canceled || state != Finished))
 	{
 		state = Running;
 		qDebug() << "State changed from " << state << "to Running";
@@ -86,7 +83,6 @@ void FileCopy::Cancel()
 
 FileCopy::OperationState FileCopy::GetState() const
 {
-	QMutexLocker locker(const_cast<QMutex *>(&stateMutex));
 	return state;
 }
 
@@ -104,9 +100,7 @@ int FileCopy::GetProgress() const
 
 int FileCopy::GetCurrentFileProgress() const
 {
-//	currentCopiedFileMutex.lock();
 	const CopiedFile *file = currentCopiedFile;
-//	currentCopiedFileMutex.unlock();
 		
 	int percentage = (!file || !file->GetFile().size) ? 100 : currentFileBytesCopied / (file->GetFile().size / 100.0);
 	return percentage;
@@ -153,21 +147,16 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 
 void FileCopy::processFileError( const QFile & file )
 {
-// 	int e = file.error();
-// 	if(e == QFile::OpenError || e == QFile::PermissionsError || e == QFile::ReadError || e == QFile::FatalError)
-// 		emit reportError(file.error(), file.errorString());
-// 	}
-
-
+ 	if(GetErrorHandling(file.error()) == ErrorHandling::AskUser)
+	{
+		emit reportError(file.fileName(),file.error(), file.errorString());
+	}
 }
 
 const QString FileCopy::GetFileName() const
 {
-//	currentCopiedFileMutex.lock();
-	const CopiedFile *file = currentCopiedFile ;
+	const CopiedFile *file = currentCopiedFile;
 	const QString fileName = file ? file->GetFile().name : QString();
-//	currentCopiedFileMutex.unlock();
-
 	return fileName;
 }
 
@@ -194,7 +183,8 @@ bool FileCopy::copyMemory( const uchar *src, uchar *dst, int offset, int size )
 
 	for(int i = 0; i < steps; i++)
 	{
-		if(state == Paused)
+		// workaround. since we dont have anything like WaitForSingleObject in Qt, we just try to lock pauseMutex, and it it's already been locked thread will sleep until it's unlocked
+		if(state == Paused) 
 		{
 			pauseMutex.lock();
 			pauseMutex.unlock();
@@ -202,13 +192,18 @@ bool FileCopy::copyMemory( const uchar *src, uchar *dst, int offset, int size )
 		
 		if(state == Canceled)
 			return false;
-	
-		memcpy(dst + i * chunkSize, src + i*chunkSize, chunkSize);
+		
+		memcpy(dst, src, chunkSize);
+
+		dst += chunkSize;
+		src += chunkSize;
+
 		bytesCopied += chunkSize;
 		currentFileBytesCopied += chunkSize;
 	}
 
-	memcpy(dst + steps * chunkSize, src + steps * chunkSize, remainderBytes);
+	memcpy(dst, src, remainderBytes);
+
 	currentFileBytesCopied += remainderBytes;
 	bytesCopied += remainderBytes;
 	
@@ -225,13 +220,26 @@ qint64 FileCopy::GetTotalBytesCopied() const
 	return bytesCopied;
 }
 
-const FileInfo * FileCopy::GetCurrentCopiedFile()
+const FileInfo * FileCopy::GetCurrentCopiedFile() const
 {
-//	currentCopiedFileMutex.lock();
 	const CopiedFile *file = currentCopiedFile;
-//	currentCopiedFileMutex.unlock();
 	if(file)
 		return &file->GetFile();
 	return NULL;
+}
+
+int FileCopy::GetCurentFileNumber() const
+{
+	return currentFileIndex + 1;
+}
+
+void FileCopy::SetErrorHandling( QFile::FileError error, ErrorHandling handling )
+{
+	errorHandling[error] = handling;
+}
+
+int FileCopy::GetErrorHandling( QFile::FileError error ) const
+{
+	return errorHandling[error];
 }
 
