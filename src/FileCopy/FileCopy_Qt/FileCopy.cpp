@@ -167,6 +167,7 @@ FileCopy::ErrorProcessingDesicion FileCopy::processFileError( const QFile & file
 		return ErrorProcessingDesicion::Stop;
 
 	}
+	return ErrorProcessingDesicion::Continue;
 }
 
 const QString FileCopy::GetFileName() const
