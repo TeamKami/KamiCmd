@@ -19,6 +19,7 @@ CopyDialog::CopyDialog(QWidget *parent)
 	fileSystem = dynamic_cast<IFileSystem *>(g_Core->QueryModule("FS", 1));
 	if(!fileSystem)
 		g_Core->DebugWrite("FileCopy", "Can't query FS");
+	connect(ui.cancelPushButton, SIGNAL(clicked()), SLOT(close()));
 }
 
 CopyDialog::~CopyDialog()
