@@ -7,6 +7,7 @@
 #include "FileListModel.h"
 #include <QTreeView>
 #include <QHeaderView>
+#include <QApplication>
 
 // This whole file is a pack of hacks and crutches
 
@@ -51,8 +52,10 @@ void FilesDelegate::QCommonStylePrivate_viewItemDrawText(QStyle *style, QPainter
 			// Drawing QuickSearched text
 			QBrush brush = p->background();
 			QPen pen = p->pen();
+#if defined(Q_OS_WIN32)
 			if (!FilesDelegate_win_useVista(style) && opt->state & QStyle::State_Selected)
 				p->setPen(QPen(Qt::black));
+#endif // Q_OS_WIN32
 			Qt::BGMode bgMode = p->backgroundMode();
 			p->setBackgroundMode(Qt::OpaqueMode);
 			p->setBackground(QBrush(QColor(255, 255, 64)));
@@ -94,12 +97,11 @@ void FilesDelegate::paint( QPainter *p, const QStyleOptionViewItem &option, cons
 	initStyleOption(&opt, index);
 	const QWidget *widget = opt.widget;
 	const QTreeView *view = qobject_cast<const QTreeView *>(widget);
-	QStyle *style = widget ? widget->style() : QApplication::style();
+        QStyle *style = widget ? widget->style() : qApp->style();
 // 	style->drawControl(QStyle::CE_ItemViewItem, &opt, p, widget);
 // 	return;
 
-#if defined(Q_OS_WIN32) || defined(Q_OS_WINCE)
-
+#if defined(Q_OS_WIN32)
 	// Based on QWindowsVistaStyle::drawControl case CE_ItemViewItem
 	if (FilesDelegate_win_useVista(style))
 	{

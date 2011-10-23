@@ -140,7 +140,7 @@ void UnitManager_Tabs::Start()
 	foreach (QString fileName, resourcesDir.entryList(QStringList("*.rcc"), QDir::Files))
 		QResource::registerResource(resourcesDir.absoluteFilePath(fileName));
 
-#ifdef _DEBUG
+#ifdef QT_DEBUG
 	// Creating DebugDialog
 	if (QDialog *debugDialog = qobject_cast<DebugDialog *>(g_Core->QueryModule("DebugDialog", 1)))
 	{
@@ -152,7 +152,7 @@ void UnitManager_Tabs::Start()
 	}
 	else
 		g_Core->DebugWrite("UnitManager", "DebugDialog module not found", ICoreFunctions::Error);
-#endif // _DEBUG
+#endif // QT_DEBUG
 
 	// Init tabs
 	tabs = new TabWidget(this);

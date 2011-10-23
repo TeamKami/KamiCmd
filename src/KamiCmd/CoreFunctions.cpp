@@ -32,14 +32,19 @@ bool CoreFunctions::LoadModules()
 	QDir modulesDir(QApplication::applicationDirPath());
 	modulesDir.cd("Modules");
 
-#ifdef Q_WS_WIN
- 	foreach (QString fileName, modulesDir.entryList(QStringList("*.dll"), QDir::Files))
+#if defined(Q_WS_WIN)
+	foreach (QString fileName, modulesDir.entryList(QStringList("*.dll"), QDir::Files))
+#elif defined(Q_WS_X11)
+	foreach (QString fileName, modulesDir.entryList(QStringList("*.so"), QDir::Files))
+#elif defined(Q_WS_MAC)
+	foreach (QString fileName, modulesDir.entryList(QStringList("*.dylib"), QDir::Files))
 #else
 	foreach (QString fileName, modulesDir.entryList(QDir::Files))
 #endif // Q_WS_WIN
 	{
         QPluginLoader loader(modulesDir.absoluteFilePath(fileName));
 	    QObject *libObject = loader.instance();
+		qDebug() << loader.errorString();
 		if (ILibrary *lib = qobject_cast<ILibrary *>(libObject))
 		{
 			libObject->setParent(this);
@@ -53,14 +58,9 @@ bool CoreFunctions::LoadModules()
 
 			num++;
 			//DebugWrite(modules.last()->name, "");
-        }
-		else
-		{
-			QMessageBox::warning(0, tr("Application"), tr("Failed to load %1\n%2")
-					.arg(fileName)
-					.arg(loader.errorString())
-					);
 		}
+		else
+			DebugWrite(("Core"), QString("Failed to load %1\n%2").arg(fileName).arg(loader.errorString()));
 	}
 	if (!num)
 		DebugWrite("Core", QString("Modules not found\nSearched in: \"%1\"").arg(modulesDir.absolutePath()), Error);
@@ -121,6 +121,8 @@ void CoreFunctions::DebugWrite( QString sender, QString message, DebugWriteImpor
 		break;
 	case ReportMe:
 		qFatal(static_cast<char *>(message.toLocal8Bit().data()));
+		break;
+	default:
 		break;
 	}
 }

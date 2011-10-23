@@ -1,4 +1,4 @@
-#ifndef FILE_COPY_INTERFACE 
+#ifndef FILE_COPY_INTERFACE
 #define FILE_COPY_INTERFACE
 
 #include <QtCore>
@@ -22,7 +22,7 @@ public:
 		AskUser
 	};
 
-	virtual ~IFileCopy() {};
+	virtual ~IFileCopy() {}
 	virtual void PrepareForCopy(const FilesToCopy & files) = 0;
 };
 

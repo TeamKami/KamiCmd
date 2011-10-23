@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
 
 		CoreFunctions core;
 
-#ifdef _DEBUG
+#ifdef QT_DEBUG
 		core.RedirectDebug();
-#endif // _DEBUG
+#endif // QT_DEBUG
 
 		if (!core.LoadModules())
 			return 1;

@@ -150,7 +150,7 @@ QVector<FileInfo> Panel_Classic::GetSelectedFiles()
 			arr.reserve(selectedNum);
 			foreach(QModelIndex index, flView->selectionModel()->selectedRows())
 			{
-				FileInfo &info = index.data(FileListModel::FileInfoRole).value<FileInfo>();
+                                const FileInfo &info = index.data(FileListModel::FileInfoRole).value<FileInfo>();
 				if (!(info.attributes & FileInfo::UpOneLevel))
 					arr.append(info);
 			}
