@@ -60,7 +60,7 @@ private:
 	ErrorHandling errorHandling[15]; // this array describes behaviour if some error from QFile::FileError happens
 
 	QMutex stateMutex;
-	QAtomicInt state;
+	OperationState state;
 	QMutex pauseMutex;
 
 	const CopiedFile *currentCopiedFile;

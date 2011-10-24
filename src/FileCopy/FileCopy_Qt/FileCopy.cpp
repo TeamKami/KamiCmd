@@ -112,7 +112,7 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 	QFile sourceFile(from);
 	if(!sourceFile.open(QFile::ReadOnly))
 	{
-		if(processFileError(sourceFile) == ErrorHandling::Cancel)
+		if(processFileError(sourceFile) == IFileCopy::Cancel)
 			return;
 	}
 
@@ -121,7 +121,7 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 	QFile destinationFile(to);
 	if(!destinationFile.open(QFile::ReadWrite) || !destinationFile.resize(size))
 	{
-		if(processFileError(destinationFile) == ErrorHandling::Cancel)
+		if(processFileError(destinationFile) == IFileCopy::Cancel)
 			return;
 	}
 	
