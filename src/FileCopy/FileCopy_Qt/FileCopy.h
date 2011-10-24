@@ -3,6 +3,7 @@
 
 #include <QtCore/QMutex>
 #include <QtCore/QList>
+#include <QtCore/QAtomicInt>
 #include <QtGui/QDialog>
 
 #include "IFileCopy.h"
@@ -12,6 +13,7 @@
 class FileCopy : public QObject, public IFileCopy
 {
 	Q_OBJECT
+
 public:
 	FileCopy(QObject *parent = 0);
 	~FileCopy();
@@ -35,6 +37,8 @@ public:
 	QString GetType() const;
 	int GetProgress() const;
 	int GetCurentFileNumber() const;
+	
+	void ShowProgressDialog();
 
 	void SetErrorHandling(QFile::FileError error, ErrorHandling handling);
 	FileCopy::ErrorHandling GetErrorHandling(QFile::FileError error) const;
@@ -56,10 +60,9 @@ private:
 	ErrorHandling errorHandling[15]; // this array describes behaviour if some error from QFile::FileError happens
 
 	QMutex stateMutex;
-	OperationState state;
+	QAtomicInt state;
 	QMutex pauseMutex;
 
-	mutable QMutex currentCopiedFileMutex;
 	const CopiedFile *currentCopiedFile;
 	
 	IFileSystem *fileSystem;
@@ -69,6 +72,7 @@ private:
 	int currentFileIndex;
 	int currentFileBytesCopied;
 	qint64 bytesCopied;
+	
 };
 
 #endif // FILE_COPY

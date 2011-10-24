@@ -10,13 +10,13 @@ OQWidget::OQWidget(QWidget *parent)
 	
 	if (!(operationsQueue_ = dynamic_cast<IOperationsQueue *>(g_Core->QueryModule("OperationsQueue", 1, "OQ"))))
 	{
-		g_Core->DebugWrite(g_moduleName, "Operations Queue module not found", ICoreFunctions::Error);
+		g_Core->DebugWrite("OperationsQueue", "Operations Queue module not found", ICoreFunctions::Error);
 		done(0);
 		return;
 	}
-	int count = operationsQueue_->Count();
+	int count = operationsQueue_->GetCount();
  	QList<QTreeWidgetItem *> items;
-	
+/*	
 	for(int i = 0; i < count; i++)
 	{
 		const IFileOperation* fileOperation = operationsQueue_->GetFileOperation(i);
@@ -45,10 +45,13 @@ OQWidget::OQWidget(QWidget *parent)
 		default:
 			state = tr("Unknown state");
 		}
+		
 		QString t = fileOperation->GetType();
 		items << new QTreeWidgetItem((QTreeWidget*)0, QStringList() << t
 			<< QString::number(fileOperation->GetProgress()) + "%" << state);
-	}
+			*/
+//	}
+
 	ui.treeWidget->insertTopLevelItems(0, items);
 }
 

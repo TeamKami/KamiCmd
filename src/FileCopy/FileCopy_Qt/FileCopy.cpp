@@ -112,9 +112,7 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 	QFile sourceFile(from);
 	if(!sourceFile.open(QFile::ReadOnly))
 	{
-		processFileError(sourceFile);
-
-		if(state == Canceled) // if processFileError() canceled copy
+		if(processFileError(sourceFile) == ErrorHandling::Cancel)
 			return;
 	}
 
@@ -123,9 +121,7 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 	QFile destinationFile(to);
 	if(!destinationFile.open(QFile::ReadWrite) || !destinationFile.resize(size))
 	{
-		processFileError(destinationFile);
-
-		if(GetState() == Canceled) // if processFileError() canceled copy
+		if(processFileError(destinationFile) == ErrorHandling::Cancel)
 			return;
 	}
 	
@@ -199,7 +195,7 @@ bool FileCopy::copyMemory( const uchar *src, uchar *dst, int offset, int size )
 
 	for(int i = 0; i < steps; i++)
 	{
-		// workaround. since we dont have anything like WaitForSingleObject in Qt, we just try to lock pauseMutex, and it it's already been locked thread will sleep until it's unlocked
+		// workaround. since we dont have anything like WaitForSingleObject in Qt, we just try to lock pauseMutex, and if it's already been locked thread will sleep until it's unlocked
 		if(state == Paused) 
 		{
 			pauseMutex.lock();
@@ -257,5 +253,10 @@ void FileCopy::SetErrorHandling( QFile::FileError error, ErrorHandling handling 
 FileCopy::ErrorHandling FileCopy::GetErrorHandling( QFile::FileError error ) const
 {
 	return errorHandling[error];
+}
+
+void FileCopy::ShowProgressDialog()
+{
+	
 }
 

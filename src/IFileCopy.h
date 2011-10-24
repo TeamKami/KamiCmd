@@ -12,7 +12,7 @@ class FilesToCopy;
 class IFileCopy : public IFileOperation
 {
 public:
-	
+
 	enum ErrorHandling // behavior on error
 	{
 		Ignore,
