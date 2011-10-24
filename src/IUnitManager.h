@@ -6,10 +6,10 @@
 class IUnit : public QMainWindow//QWidget
 {
 public:
-	IUnit(QWidget *parent) : QMainWindow(parent) { setLayout(new QVBoxLayout(this)); };
+	IUnit(QWidget *parent) : QMainWindow(parent) { setLayout(new QVBoxLayout(this)); }
 	virtual void Create(IUnit *createdFrom = NULL) = 0;
 	virtual void Link(IUnit *withUnit = NULL) = 0;
-	virtual void Close() {};
+	virtual void Close() {}
 	virtual QString GetText() = 0;
 	virtual QIcon GetIcon() = 0;
 	virtual void SaveState(QSettings &set) = 0;
@@ -24,7 +24,7 @@ signals:
 class ILinkedUnit : public IUnit
 {
 public:
-	ILinkedUnit(QWidget *parent) : IUnit(parent) {};
+	ILinkedUnit(QWidget *parent) : IUnit(parent) {}
 	virtual void Create(IUnit *active, IUnit *inactive, bool isActiveLeft) = 0;
 	virtual IUnit *GetActiveUnit() = 0;
 	virtual IUnit *GetInactiveUnit() = 0;

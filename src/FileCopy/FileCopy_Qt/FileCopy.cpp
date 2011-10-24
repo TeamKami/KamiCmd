@@ -12,8 +12,8 @@ FileCopy::FileCopy( QObject *parent /*= 0*/ )
 	if(!fileSystem)
 		g_Core->DebugWrite("FileCopy", "Can't query File system");
 
-	for(int i = 0; i < 15; i++)
-		errorHandling[i] = ErrorHandling::AskUser;
+//	for(int i = 0; i < 15; i++)
+//		errorHandling[i] = ErrorHandling::AskUser;
 }
 
 FileCopy::~FileCopy()
@@ -148,21 +148,21 @@ FileCopy::ErrorProcessingDesicion FileCopy::processFileError( const QFile & file
 	ErrorHandling handling = GetErrorHandling(file.error());
 	switch(handling)
 	{
-	case ErrorHandling::AskUser:
+        case AskUser:
 		emit reportError(file.fileName(),file.error(), file.errorString());
-		return ErrorProcessingDesicion::Continue;
+                return Continue;
 
-	case ErrorHandling::Ignore:
-		return ErrorProcessingDesicion::Continue;
+        case Ignore:
+                return Continue;
 
-	case ErrorHandling::Retry:
-		return ErrorProcessingDesicion::Retry;
+        case Retry:
+                return Retry;
 
-	case ErrorHandling::Cancel:
-		return ErrorProcessingDesicion::Stop;
+        case IFileCopy::Cancel:
+                return Stop;
 
 	}
-	return ErrorProcessingDesicion::Continue;
+        return Continue;
 }
 
 const QString FileCopy::GetFileName() const

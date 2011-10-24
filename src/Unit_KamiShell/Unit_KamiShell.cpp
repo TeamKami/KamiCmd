@@ -55,7 +55,7 @@ void Unit_KamiShell::Create(IUnit *createdFrom)
     CreateConsole();
 }
 
-void Unit_KamiShell::finished(int status, QProcess::ExitStatus exitStatus)
+void Unit_KamiShell::finished(int /*status*/, QProcess::ExitStatus exitStatus)
 {
     if (cmd)
     {
@@ -84,7 +84,7 @@ void Unit_KamiShell::terminate()
     }
 }
 
-void Unit_KamiShell::error(QProcess::ProcessError error)
+void Unit_KamiShell::error(QProcess::ProcessError /*error*/)
 {
     console->append("Command failed (" + cmd->errorString() + ")\n");
     console->changeMode(NORMAL);
@@ -186,7 +186,7 @@ bool Unit_KamiShell::innerCommand(QString const & cmd, QStringList const & args)
     return false;
 }
 
-void Unit_KamiShell::about(QStringList const & args)
+void Unit_KamiShell::about(QStringList const & /*args*/)
 {
 
     QString msg(

@@ -28,7 +28,7 @@ private:
 		FileScanElement(const QString p, const FileInfo f)
 			: relativePath(p), fileInfo(f)
 		{}
-		FileScanElement() {};
+		FileScanElement() {}
 
 		QString relativePath;
 		FileInfo fileInfo;

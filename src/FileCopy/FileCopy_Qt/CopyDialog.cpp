@@ -6,7 +6,6 @@
 #include "IUnitManager.h"
 #include "IPanel.h"
 #include "IUnitManager.h"
-#include "UnitManager_Tabs/LinkedUnit.h"
 
 CopyDialog::CopyDialog(QWidget *parent)
 	: QDialog(parent)
@@ -53,7 +52,7 @@ void CopyDialog::GetSelectedFilesAndCopyPath()
 		close();
 	}
 
-	LinkedUnit *link = dynamic_cast<LinkedUnit *>(unitManager->GetActiveUnit());
+	ILinkedUnit *link = dynamic_cast<ILinkedUnit *>(unitManager->GetActiveUnit());
 	IPanel *activePanel = NULL;
 	IPanel *inactivePanel = NULL;
 

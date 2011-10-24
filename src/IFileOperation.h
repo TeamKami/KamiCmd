@@ -18,7 +18,7 @@ public:
 		Canceled
 	};
 
-	virtual ~IFileOperation() {};
+	virtual ~IFileOperation() {}
 	virtual OperationState GetState() const = 0;
 	virtual QString GetType() const = 0; // i.e. copying, etc...
 	virtual int GetProgress() const = 0; // percentage
@@ -37,7 +37,7 @@ public:
 class IOperationsQueue
 {
 public:
-	virtual ~IOperationsQueue() {};
+	virtual ~IOperationsQueue() {}
 	virtual void Add(IFileOperation *, IFileOperation::OperationState state) = 0;
 	virtual void Pause(IFileOperation *) = 0;
 	virtual void Cancel(IFileOperation *) = 0;
