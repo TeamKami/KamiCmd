@@ -1,12 +1,12 @@
 #include "FileCopy.h"
 #include "IFileSystem.h"
-#include "ILibrary.h"
+#include "library.h"
 
 #include <QDir>
 #include <QMessageBox>
 
 FileCopy::FileCopy( QObject *parent /*= 0*/ ) 
-	: QObject(parent), bytesCopied(0), state(Running), currentFileIndex(0), currentCopiedFile(0), currentFileBytesCopied(0)
+	: IFileCopy(parent), bytesCopied(0), state(Running), currentFileIndex(0), currentCopiedFile(0), currentFileBytesCopied(0)
 {
 	fileSystem = dynamic_cast<IFileSystem *>(g_Core->QueryModule("FS", 1));
 	if(!fileSystem)
@@ -21,23 +21,23 @@ FileCopy::~FileCopy()
 
 }
 
-void FileCopy::PrepareForCopy( const FilesToCopy & files )
+void FileCopy::PrepareForCopy( const IFilesToCopy & files )
 {
-	filesToCopy = files;
-	if(!QFile::exists(files.GetDestination()))
-		destinationDirectory.mkpath(files.GetDestination());
+	filesToCopy = &files;
+//	if(!QFile::exists(files.GetDestination()))
+//		destinationDirectory.mkpath(files.GetDestination());
 	destinationDirectory.setCurrent(files.GetDestination());
 }
 
 bool FileCopy::Exec()
 {
 
-	for( ; currentFileIndex < filesToCopy.Count() && GetState() != Canceled; ++currentFileIndex)
+	for( ; currentFileIndex < filesToCopy->Count() && GetState() != Canceled; ++currentFileIndex)
 	{
-		currentCopiedFile = &filesToCopy.GetNextFile();
+		currentCopiedFile = &filesToCopy->GetNextFile();
 		if(!destinationDirectory.exists(currentCopiedFile->RelativePath()))
 			destinationDirectory.mkpath(currentCopiedFile->RelativePath());
-		QString path = filesToCopy.GetDestination() + currentCopiedFile->RelativePath();
+		QString path = filesToCopy->GetDestination() + currentCopiedFile->RelativePath();
 		copyFile(currentCopiedFile->GetFile().path + currentCopiedFile->GetFile().name,
 				 path + currentCopiedFile->GetFile().name);
 	}
@@ -49,13 +49,15 @@ bool FileCopy::Exec()
 		state = Finished;
 	stateMutex.unlock();
 	
+	emit finished();
+
 	return true;
 }
 
 void FileCopy::Pause()
 {
 	QMutexLocker locker(&stateMutex);
-	if(state != Paused && state != Error && state != Canceled)
+	if(state != Paused && state != Canceled)
 	{
 		state = Paused;
 		pauseMutex.lock();
@@ -68,7 +70,7 @@ void FileCopy::Resume()
 	if(state == Paused && (state != Canceled || state != Finished))
 	{
 		state = Running;
-		qDebug() << "State changed from " << state << "to Running";
+		g_Core->DebugWrite("FileCopy_Qt", "State changed to Running");
 		pauseMutex.unlock();
 	}
 }
@@ -93,7 +95,7 @@ QString FileCopy::GetType() const
 
 int FileCopy::GetProgress() const
 {
-	qint64 size = filesToCopy.GetTotalSize();
+	qint64 size = filesToCopy->GetTotalSize();
 	int percentage = !size ? 100 : bytesCopied / (size / 100.0);
 	return percentage;
 }
@@ -108,6 +110,9 @@ int FileCopy::GetCurrentFileProgress() const
 
 void FileCopy::copyFile( const QString & from, const QString & to )
 {
+	if(from == to)
+		return;
+
 	currentFileBytesCopied = 0;
 	QFile sourceFile(from);
 	if(!sourceFile.open(QFile::ReadOnly))
@@ -116,7 +121,7 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 			return;
 	}
 
-	const int size = sourceFile.size();
+	const qint64 size = sourceFile.size();
 
 	QFile destinationFile(to);
 	if(!destinationFile.open(QFile::ReadWrite) || !destinationFile.resize(size))
@@ -130,7 +135,9 @@ void FileCopy::copyFile( const QString & from, const QString & to )
 
 	if(!source || !destination)
 	{ 
-		qDebug() << "Error" << "Can't copy file " << sourceFile.fileName();
+		g_Core->DebugWrite("FileCopy_Qt", destinationFile.errorString());
+		g_Core->DebugWrite("FileCopy_Qt", "Can't copy file " + sourceFile.fileName());
+		destinationFile.remove();
 		return;		
 	}
 	bool r = copyMemory(source, destination, 0, size);
@@ -148,21 +155,21 @@ FileCopy::ErrorProcessingDesicion FileCopy::processFileError( const QFile & file
 	ErrorHandling handling = GetErrorHandling(file.error());
 	switch(handling)
 	{
-        case AskUser:
+	case AskUser:
 		emit reportError(file.fileName(),file.error(), file.errorString());
-                return Continue;
+		return Continue;
 
-        case Ignore:
-                return Continue;
+	case Ignore:
+		return Continue;
 
-        case Retry:
-                return Retry;
+	case Retry:
+		return Retry;
 
-        case IFileCopy::Cancel:
-                return Stop;
+	case IFileCopy::Cancel:
+		return Stop;
 
 	}
-        return Continue;
+	return Continue;
 }
 
 const QString FileCopy::GetFileName() const
@@ -174,12 +181,12 @@ const QString FileCopy::GetFileName() const
 
 const QString & FileCopy::GetDestination() const
 {
-	return filesToCopy.GetDestination();
+	return filesToCopy->GetDestination();
 }
 
 qint64 FileCopy::GetTotalSize() const
 {
-	return filesToCopy.GetTotalSize();
+	return filesToCopy->GetTotalSize();
 }
 
 bool FileCopy::copyMemory( const uchar *src, uchar *dst, int offset, int size )
@@ -255,7 +262,7 @@ FileCopy::ErrorHandling FileCopy::GetErrorHandling( QFile::FileError error ) con
 	return errorHandling[error];
 }
 
-void FileCopy::ShowProgressDialog()
+void FileCopy::ShowProgressDialog(QWidget *parent)
 {
 	
 }

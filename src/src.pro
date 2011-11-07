@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 SUBDIRS = KamiCmd \
           FS_Qt \
           FileCopy/FileCopy_Qt \
+       	  FileOperationDummy \
           Operations_Queue \
           Panel_Classic \
           Unit_KamiShell \

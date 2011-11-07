@@ -28,5 +28,5 @@ QObject* FC_Library::CreateModuleInstance( int id, QObject *parent )
 }
 
 QT_BEGIN_NAMESPACE
-	Q_EXPORT_PLUGIN2(FC_Library, FC_Library)
-	QT_END_NAMESPACE
+Q_EXPORT_PLUGIN2(FC_Library, FC_Library)
+QT_END_NAMESPACE

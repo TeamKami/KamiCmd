@@ -6,6 +6,6 @@ Root = ../..
 include ($${Root}/config.pri)
 
 # Input
-HEADERS += *.h 
+HEADERS += *.h ../IFileOperation.h
 SOURCES += *.cpp
 FORMS += *.ui

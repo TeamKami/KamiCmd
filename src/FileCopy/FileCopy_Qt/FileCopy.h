@@ -10,7 +10,10 @@
 #include "IFileSystem.h"
 #include "library.h"
 
-class FileCopy : public QObject, public IFileCopy
+#include "FilesToCopy.h"
+
+
+class FileCopy : public IFileCopy
 {
 	Q_OBJECT
 
@@ -18,7 +21,7 @@ public:
 	FileCopy(QObject *parent = 0);
 	~FileCopy();
 
-	void PrepareForCopy(const FilesToCopy & files);
+	void PrepareForCopy(const IFilesToCopy & files);
 
 	const QString GetFileName() const;
 	const QString & GetDestination() const;
@@ -38,7 +41,7 @@ public:
 	int GetProgress() const;
 	int GetCurentFileNumber() const;
 	
-	void ShowProgressDialog();
+	virtual void ShowProgressDialog(QWidget *parent = 0);
 
 	void SetErrorHandling(QFile::FileError error, ErrorHandling handling);
 	FileCopy::ErrorHandling GetErrorHandling(QFile::FileError error) const;
@@ -68,7 +71,7 @@ private:
 	IFileSystem *fileSystem;
 	QDir destinationDirectory;
 	
-	FilesToCopy filesToCopy;
+	const IFilesToCopy *filesToCopy;
 	int currentFileIndex;
 	int currentFileBytesCopied;
 	qint64 bytesCopied;

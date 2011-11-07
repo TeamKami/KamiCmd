@@ -10,47 +10,62 @@ OperationsQueue::OperationsQueue( QObject *parent /*= 0*/ )
 
 OperationsQueue::~OperationsQueue()
 {
-
+ 	foreach(IFileOperation *op, operations)
+ 		Internal::FileOperationProxy(op).Cancel();
+	threadPool.waitForDone();
 }
 
-void OperationsQueue::Add( IFileOperation *fileOperation, IFileOperation::OperationState state )
+void OperationsQueue::Add( IFileOperation *fileOperation, IFileOperation::OperationState /*state*/ )
 {
-	operations.append(qMakePair(fileOperation, (int) state));
+	operations.append(fileOperation);
 	FileOperationTask *task = new FileOperationTask(fileOperation);
-	task->setAutoDelete(false);
+	task->setAutoDelete(true);
 	threadPool.start(task);
+	
+	emit operationAdded(fileOperation);
 }
 
 void OperationsQueue::Pause( IFileOperation * fileOperation)
 {
-	if(Operation *operation = findFileOperation(fileOperation))
-		Internal::FileOperationProxy(operation->first).Pause();
+	if(IsFileOperationInQueue(fileOperation))
+	{
+		Internal::FileOperationProxy(fileOperation).Pause();
+		emit operationStateChanged(fileOperation, IFileOperation::Paused);
+	}
 }
 
 void OperationsQueue::Cancel( IFileOperation * fileOperation )
 {
-	if(Operation *operation = findFileOperation(fileOperation))
-		Internal::FileOperationProxy(operation->first).Cancel();
+	if(IsFileOperationInQueue(fileOperation))
+	{
+		Internal::FileOperationProxy(fileOperation).Cancel();
+		emit operationStateChanged(fileOperation, IFileOperation::Canceled);
+	}
 }
 
 void OperationsQueue::Remove( IFileOperation * fileOperation )
 {
-	if(Operation *operation = findFileOperation(fileOperation))
-		Internal::FileOperationProxy(operation->first).Cancel();
-	// TODO implemet operation removal
-
+	if(IsFileOperationInQueue(fileOperation))
+	{
+		Internal::FileOperationProxy(fileOperation).Cancel();
+		RemoveFileOperation(fileOperation);
+		emit operationRemoved(fileOperation);
+	}
 }
 void OperationsQueue::Resume( IFileOperation * fileOperation )
 {
-	if(Operation *operation = findFileOperation(fileOperation))
-		Internal::FileOperationProxy(operation->first).Resume();
+	if(IsFileOperationInQueue(fileOperation))
+	{
+		Internal::FileOperationProxy(fileOperation).Resume();
+		emit operationStateChanged(fileOperation, IFileOperation::Running);
+	}
 }
 
 void OperationsQueue::AddPriority( const IFileOperation * fileOperation, int steps)
 {
 	int operationIndex = -1;
 	for(int i = 0; i < operations.size(); i++)
-		if(operations[i].first == fileOperation)
+		if(operations[i] == fileOperation)
 		{
 			operationIndex = i;
 			break;
@@ -68,10 +83,31 @@ int OperationsQueue::GetCount() const
 	return operations.size();
 }
 
-Operation* OperationsQueue::findFileOperation( const IFileOperation *fileOperation )
+bool OperationsQueue::IsFileOperationInQueue( const IFileOperation *fileOperation ) const
 {
+	return qFind(operations, fileOperation) != operations.end();
+}
+
+bool OperationsQueue::IsValid( IFileOperation *operation ) const
+{
+	return IsFileOperationInQueue(operation);
+}
+
+void OperationsQueue::RemoveFileOperation( const IFileOperation *fileOperation )
+{
+	int ind = -1;
 	for(int i = 0; i < operations.size(); i++)
-		if(operations.at(i).first == fileOperation)
-			return &operations[i];
-	return NULL;
+		if(operations.at(i) == fileOperation)
+		{
+			ind = i;
+			break;
+		}
+
+	if(ind != -1)
+		operations.removeAt(ind);
+}
+
+IFileOperation * OperationsQueue::GetOperation( int index )
+{
+	return operations[index];
 }

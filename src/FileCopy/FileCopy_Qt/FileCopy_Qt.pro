@@ -7,5 +7,5 @@ include ($${Root}/config.pri)
 
 # Input
 HEADERS += *.h ../../IFileOperation.h ../../IFileCopy.h
-SOURCES += *.cpp ../FileCopy_misc/FilesToCopy.cpp
+SOURCES += *.cpp
 FORMS += *.ui

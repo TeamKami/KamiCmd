@@ -2,17 +2,20 @@
 #define OQWIDGET_H
 
 #include <QDialog>
-#include "ui_oqwidget.h"
+#include "ui_OperationQueueDialog.h"
 
 class IOperationsQueue;
 
-class OQWidget : public QDialog
+class OperationsQueueDialog : public QDialog
 {
 	Q_OBJECT
 
 public:
-	OQWidget(QWidget *parent = 0);
-	~OQWidget();
+	OperationsQueueDialog(QWidget *parent = 0);
+	~OperationsQueueDialog();
+
+private slots:
+	void on_addDummyButton_clicked();
 
 private:
 	Ui::OQWidget ui;

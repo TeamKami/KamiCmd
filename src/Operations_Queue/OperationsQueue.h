@@ -22,16 +22,24 @@ public:
 	virtual void Pause(IFileOperation *fileOperation);
 	virtual void Cancel(IFileOperation *fileOperation);
 	virtual int GetCount() const;	
+	virtual bool IsValid( IFileOperation *operation ) const;
+	IFileOperation *GetOperation(int index);
 
 protected:
 	virtual void Remove(IFileOperation *fileOperation);
 	virtual void Resume(IFileOperation *fileOperation);
 	void AddPriority(const IFileOperation *, int); 
 
-private:
-	Operation *findFileOperation(const IFileOperation *fileOperation);
+signals:
+	void operationRemoved(IFileOperation *);
+	void operationAdded(IFileOperation *);
+	void operationStateChanged(IFileOperation *operation, IFileOperation::OperationState newState);
 
-	QList < Operation > operations;
+private:
+	bool IsFileOperationInQueue( const IFileOperation *fileOperation ) const;
+	void RemoveFileOperation(const IFileOperation *fileOperation);
+
+	QList < IFileOperation *> operations;
 	QThreadPool threadPool;
 };
 

@@ -17,7 +17,7 @@ FButtonsBar::FButtonsBar(QWidget *parent)
 
 	// Default init of F-keys
 	Actions.reserve(12);
-	Actions << new QAction(QIcon(":/Images/F1.png"), tr("F1 Help"), this);
+	Actions << new QAction(QIcon(":/Images/F1.png"), tr("F1 Operations Queue"), this);
 	Actions << new QAction(QIcon(":/Images/F2.png"), tr("F2 Assc"), this);
 	Actions << new QAction(QIcon(":/Images/F3.png"), tr("F3 View"), this);
 	Actions << new QAction(QIcon(":/Images/F4.png"), tr("F4 Edit"), this);
@@ -124,28 +124,25 @@ void FButtonsBar::F4_Pressed()
 
 void FButtonsBar::F1_Pressed()
 {
-// 	if (QDialog *oq = qobject_cast<QDialog *>(g_Core->QueryModule("OperationsQueue", 1, "OQ_Widget")))
+ 	if (QDialog *oq = qobject_cast<QDialog *>(g_Core->QueryModule("OperationsQueueDialog", 1, "", -1, this)))
+ 		oq->show();
+ 	else
+ 		g_Core->DebugWrite("UnitManager_Tabs", "OperationsQueueDialog not found", ICoreFunctions::Error);
+
+// 	LinkedUnit *link = dynamic_cast<LinkedUnit *>(UnitManager->GetActiveUnit());
+// 	IPanel *panel = NULL;
+// 	if (link)
+// 		panel = dynamic_cast<IPanel *>(link->GetActiveUnit());
+// 	else
+// 		panel = dynamic_cast<IPanel *>(UnitManager->GetActiveUnit());
+// 
+// 	if (panel)
 // 	{
-// 		oq->exec();
-// 		delete oq;
+// 		foreach(const FileInfo &info, panel->GetSelectedFiles())
+// 			QMessageBox::information(0, "", info.name);
 // 	}
 // 	else
-// 		g_Core->DebugWrite("UnitManager_Tabs", "Check sums module not found", ICoreFunctions::Error);
-
-	LinkedUnit *link = dynamic_cast<LinkedUnit *>(UnitManager->GetActiveUnit());
-	IPanel *panel = NULL;
-	if (link)
-		panel = dynamic_cast<IPanel *>(link->GetActiveUnit());
-	else
-		panel = dynamic_cast<IPanel *>(UnitManager->GetActiveUnit());
-
-	if (panel)
-	{
-		foreach(const FileInfo &info, panel->GetSelectedFiles())
-			QMessageBox::information(0, "", info.name);
-	}
-	else
-		QMessageBox::information(0, "", "Not a panel");
+// 		QMessageBox::information(0, "", "Not a panel");
 }
 
 void FButtonsBar::F5_Pressed()
