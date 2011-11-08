@@ -16,8 +16,8 @@ OperationsQueueDialog::OperationsQueueDialog(QWidget *parent)
 	}
 
 	OperationQueueModel *model = new OperationQueueModel(static_cast<OperationsQueue *>(queue), this);
-	ui.treeView->setModel(model);
 	ui.treeView->setItemDelegate(new ProgressDelegate(ui.treeView));
+	ui.treeView->setModel(model);
 }
 
 OperationsQueueDialog::~OperationsQueueDialog()

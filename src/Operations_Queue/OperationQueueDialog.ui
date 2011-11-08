@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTreeView" name="treeView"/>
+    <widget class="OperationsView" name="treeView"/>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -44,6 +44,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>OperationsView</class>
+   <extends>QTreeView</extends>
+   <header>OperationsView.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
