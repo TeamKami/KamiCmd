@@ -1,34 +1,48 @@
 #ifndef OPERATIONS_QUEUE
 #define OPERATIONS_QUEUE
 
-#include <QList>
-#include <QtGui/QDialog>
+#include <QtCore/QList>
+#include <QtCore/QThreadPool>
 
-#include "../IFileOperation.h"
+
 #include "library.h"
+#include "IFileOperation.h"
 
-const static char* g_moduleName = "Operations Queue";
+typedef QPair< IFileOperation *, int> Operation;
+
 class OperationsQueue : public QObject, public IOperationsQueue
 {
 	Q_OBJECT
 
 public:
-	OperationsQueue(QObject *parent = 0) : QObject(parent)
-	{}
+	OperationsQueue(QObject *parent = 0);
 	~OperationsQueue();
 
-	virtual void Add(IFileOperation&, IFileOperation::OperationState state);
-	virtual IFileOperation* GetFileOperation(int index) const;
-	virtual bool Remove(int index);
-	virtual bool Pause(int index);
-	virtual bool Resume(int index);
+	virtual void Add(IFileOperation *fileOperation, IFileOperation::OperationState state);
+	virtual void Pause(IFileOperation *fileOperation);
+	virtual void Cancel(IFileOperation *fileOperation);
+	virtual int GetCount() const;	
+	virtual bool IsValid( IFileOperation *operation ) const;
+	IFileOperation *GetOperation(int index);
 
-	virtual void ChangePriority(const IFileOperation&, int);  // changes fileOperation place in waiting queue 
-	virtual int Count() const;
+protected:
+	virtual void Remove(IFileOperation *fileOperation);
+	virtual void Resume(IFileOperation *fileOperation);
+	void AddPriority(const IFileOperation *, int); 
+
+signals:
+	void operationRemoved(IFileOperation *);
+	void operationAdded(IFileOperation *);
+	void operationStateChanged(IFileOperation *operation, IFileOperation::OperationState newState);
+	void operationFinished(IFileOperation *);
+	void operationProgressChanged(IFileOperation *, int);
 
 private:
-	QList<IFileOperation *> operationsQueue_;
-	int size_;
+	bool IsFileOperationInQueue( const IFileOperation *fileOperation ) const;
+	void RemoveFileOperation(const IFileOperation *fileOperation);
+
+	QList < IFileOperation *> operations;
+	QThreadPool threadPool;
 };
 
 #endif // OPERATIONS_QUEUE

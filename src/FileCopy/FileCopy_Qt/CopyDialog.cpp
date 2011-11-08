@@ -109,8 +109,6 @@ void CopyDialog::GetFilesToCopy()
 			else
 				filesToCopy.AddFile(topItem.relativePath, filesInFolder.at(i));
 	}
-
-	filesToCopy.PrintAllFiles();
 }
 
 QVector< FileInfo > CopyDialog::ScanFolder( const QString & path )

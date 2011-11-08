@@ -1,4 +1,5 @@
-#include "IFileCopy.h"
+#include "FilesToCopy.h"
+
 #include "IFileSystem.h"
 
 
@@ -27,7 +28,6 @@ const FileInfo & CopiedFile::GetFile() const
 {
 	return *file;
 }
-
 
 FilesToCopy::FilesToCopy()
 	: fileCount(0), currentFileNumber(-1), totalSize(0)
@@ -60,7 +60,6 @@ void FilesToCopy::AddFiles(const QString & relativePath, const QVector<FileInfo>
 	foreach(const FileInfo & file, files)
 		AddFile(relativePath, file);
 }
-
 
 int FilesToCopy::Count() const
 {
@@ -95,13 +94,12 @@ const QString & FilesToCopy::GetDestination() const
 	return destination;
 }
 
-
 qint64 FilesToCopy::GetTotalSize() const
 {
 	return totalSize;
 }
 
-void FilesToCopy::PrintAllFiles()
+void FilesToCopy::DumpFiles()
 {
 	QMap< QString, QVector<FileInfo> >::const_iterator i = files.begin();
 	for( ; i != files.end() ;  ++i )

@@ -7,12 +7,12 @@
 
 class QString;
 struct FileInfo;
-class FilesToCopy;
+class IFilesToCopy;
 
 class IFileCopy : public IFileOperation
 {
 public:
-	
+
 	enum ErrorHandling // behavior on error
 	{
 		Ignore,
@@ -21,9 +21,9 @@ public:
 		Wait,
 		AskUser
 	};
-
+	IFileCopy(QObject *parent = 0) : IFileOperation(parent) {}
 	virtual ~IFileCopy() {}
-	virtual void PrepareForCopy(const FilesToCopy & files) = 0;
+	virtual void PrepareForCopy(const IFilesToCopy & files) = 0;
 };
 
 class CopiedFile
@@ -41,29 +41,24 @@ private:
 
 
 
-class FilesToCopy
+class IFilesToCopy
 {
 public:
-	FilesToCopy();
-	~FilesToCopy();
 
-	void AddFile(const QString & relativePath, const FileInfo & file);
-	void AddFiles(const QString & relativePath, const QVector<FileInfo> & files);
-	const QString & GetDestination() const;
-	void SetDestination(QString destination);
-	int Count() const;
-	const CopiedFile GetNextFile() const;
-	qint64 GetTotalSize() const;
+	virtual ~IFilesToCopy() {};
 
-	void PrintAllFiles();
+	virtual void AddFile(const QString & relativePath, const FileInfo & file) = 0;
+	virtual void AddFiles(const QString & relativePath, const QVector<FileInfo> & files) = 0;
 
-private:
-	mutable QMap< QString, QVector<FileInfo> >::const_iterator it;
-	mutable int currentFileNumber;
-	int fileCount;
-	QString destination;
-	QMap <QString, QVector<FileInfo> > files; // key is relative path
-	qint64 totalSize;
+	virtual const QString & GetDestination() const = 0;
+	virtual void SetDestination(QString destination) = 0;
+
+	virtual int Count() const = 0;
+
+	virtual const CopiedFile GetNextFile() const = 0;
+
+	virtual qint64 GetTotalSize() const = 0;
+
 };
 
 #endif

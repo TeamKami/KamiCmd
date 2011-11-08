@@ -127,6 +127,7 @@ void CoreFunctions::DebugWrite( QString sender, QString message, DebugWriteImpor
 	}
 }
 
+
 void CoreFunctions::RedirectDebug()
 {
 	QMutexLocker lock(&debugLog.mutex);

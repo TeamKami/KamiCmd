@@ -23,8 +23,6 @@ DebugDialog::~DebugDialog()
 
 void DebugDialog::outputMessage(ICoreFunctions::DebugWriteImportance type, QString msg)
 {
-	QString moduleName = "Qt";
-
 	switch (type)
 	{
 	case QtDebugMsg:
