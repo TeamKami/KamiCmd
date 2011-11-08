@@ -39,13 +39,13 @@ void DummyProgressDialog::on_pause_clicked()
 	int s = f->GetState();
 	if(s == IFileOperation::Paused)
 	{
-		ui.pause->setText("Resume");
-		queue->Pause(f);
+		ui.pause->setText("Pause");
+		queue->Resume(f);
 	}
 	else if(s == IFileOperation::Running)
 	{
-		ui.pause->setText("Pause");
-		queue->Resume(f);
+		ui.pause->setText("Resume");
+		queue->Pause(f);
 	}
 }
 

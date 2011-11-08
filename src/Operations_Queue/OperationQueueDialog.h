@@ -19,7 +19,7 @@ private slots:
 
 private:
 	Ui::OQWidget ui;
-	IOperationsQueue *operationsQueue_;
+	IOperationsQueue *queue;
 };
 
 #endif // OQWIDGET_H

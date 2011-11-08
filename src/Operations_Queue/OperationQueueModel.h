@@ -3,16 +3,39 @@
 
 #include <QAbstractListModel>
 #include <QStringList>
+#include "IFileOperation.h"
 
 class OperationsQueue;
-class IFileOperation;
+
+class OperationsQueueModelItem
+{
+public:
+	OperationsQueueModelItem( const IFileOperation *fileOperation );
+	QString GetType() const;
+	QString GetStateString() const;
+	int GetProgress() const;
+
+	void SetProgress(int newProgress);
+	void SetState(IFileOperation::OperationState newState);
+
+	const IFileOperation *GetOperation() const;
+
+private:
+	QString type;
+	QString operation;
+	IFileOperation::OperationState state;
+	int progress;
+
+	const IFileOperation *fileOperation;
+};
 
 class OperationQueueModel : public QAbstractListModel 
 {
 	Q_OBJECT
 
 public:
-	enum Columns {
+	enum Columns
+	{
 		OperationType,
 		Progress,
 		State
@@ -32,18 +55,15 @@ public:
 public slots:
 	void AddOperation(IFileOperation *operation);
 	void RemoveOperation(IFileOperation *operation);
+	void ChangeOperationState(IFileOperation *operation, IFileOperation::OperationState newState);
+	void FinishOperation(IFileOperation *operation);
 
 private:
+	int FindOperationIndex(const IFileOperation *operation) const;
 
 	OperationsQueue *queue;
-	QList<IFileOperation *> operations;
+	QList<OperationsQueueModelItem> operations;
 	QStringList headers;
-};
-
-class OperationsQueueModelItem
-{
-	OperationsQueueModelItem();
-	~OperationsQueueModelItem();
 };
 
 #endif // OPERATIONQUEUEMODEL_H

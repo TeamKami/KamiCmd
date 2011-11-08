@@ -18,6 +18,8 @@ OperationsQueue::~OperationsQueue()
 void OperationsQueue::Add( IFileOperation *fileOperation, IFileOperation::OperationState /*state*/ )
 {
 	operations.append(fileOperation);
+	connect(fileOperation, SIGNAL(finished(IFileOperation *)), SIGNAL(operationFinished(IFileOperation *)));
+
 	FileOperationTask *task = new FileOperationTask(fileOperation);
 	task->setAutoDelete(true);
 	threadPool.start(task);

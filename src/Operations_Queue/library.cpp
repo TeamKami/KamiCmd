@@ -8,6 +8,8 @@ QVector<Module *> FC_Library::ListModulesAndGetCore( ICoreFunctions *core )
 {
 	g_Core = core;
 	module = 0;
+	dialog = 0;
+
 	QVector<Module *> arr;
 	arr += new Module("OperationsQueue", CURRENT_FILE_OPERATION_INTERFACE_VERSION, "OperationsQueueClassic", 1, 0);
 	arr += new Module("OperationsQueueDialog", CURRENT_FILE_OPERATION_INTERFACE_VERSION, "OQ_Widget", 1, 1);
@@ -23,9 +25,14 @@ QObject* FC_Library::CreateModuleInstance( int id, QObject *parent )
 		return module;
 	}
 	else
-		return new OperationsQueueDialog(qobject_cast<QWidget *>(parent));
+	{
+		if(!dialog)
+			dialog = new OperationsQueueDialog(qobject_cast<QWidget *>(parent));
+		else
+			dialog->setParent(qobject_cast<QWidget *>(parent));
 
-//	return new OQWidget(qobject_cast<QWidget *>(parent));//OperationsQueue(parent);
+		return dialog;
+	}
 }
 
 QT_BEGIN_NAMESPACE

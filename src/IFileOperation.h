@@ -36,7 +36,7 @@ public:
 
 signals:
 	void finished();
-
+	void finished(IFileOperation *); // workaround - allows operations queue to know which operation finished. need to change it to better solution
 };
 
 

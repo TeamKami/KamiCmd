@@ -34,6 +34,9 @@ private slots:
 
 signals:
 	void cancelOperation();
+	void pauseOperation();
+	void resumeOperation();
+	void startOperation();
 
 private:
 	enum {Interval = 100};

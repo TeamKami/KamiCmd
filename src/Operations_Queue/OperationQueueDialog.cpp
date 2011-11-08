@@ -1,22 +1,23 @@
 #include "OperationsQueue.h"
 #include "OperationQueueDialog.h"
 #include "OperationQueueModel.h"
+#include "ProgressDelegate.h"
 
 OperationsQueueDialog::OperationsQueueDialog(QWidget *parent)
 	: QDialog(parent)
 {
 	ui.setupUi(this);
 	
-	if (!(operationsQueue_ = dynamic_cast<IOperationsQueue *>(g_Core->QueryModule("OperationsQueue", 1, "", -1, this))))
+	if (!(queue = dynamic_cast<IOperationsQueue *>(g_Core->QueryModule("OperationsQueue", 1, "", -1, this))))
 	{
 		g_Core->DebugWrite("OperationsQueue", "Operations Queue module not found", ICoreFunctions::Error);
 		close();
 		return;
 	}
-	int count = operationsQueue_->GetCount();
 
-	OperationQueueModel *model = new OperationQueueModel(static_cast<OperationsQueue *>(operationsQueue_), this);
+	OperationQueueModel *model = new OperationQueueModel(static_cast<OperationsQueue *>(queue), this);
 	ui.treeView->setModel(model);
+	ui.treeView->setItemDelegate(new ProgressDelegate(ui.treeView));
 }
 
 OperationsQueueDialog::~OperationsQueueDialog()
@@ -30,7 +31,7 @@ void OperationsQueueDialog::on_addDummyButton_clicked()
 
 	if(op)
 	{
-		operationsQueue_->Add(op, IFileOperation::Running);
+		queue->Add(op, IFileOperation::Running);
 		op->ShowProgressDialog(this);
 	}
 	else

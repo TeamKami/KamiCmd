@@ -11,7 +11,7 @@ FileOperationTask::FileOperationTask( IFileOperation *fileOperation )
 FileOperationTask::~FileOperationTask()
 {
 	g_Core->DebugWrite("OperationQueue", "File Operation task is complete. Deleting...");
-//	delete operation.operation;
+	operation.operation->deleteLater();
 }
 
 void FileOperationTask::run()

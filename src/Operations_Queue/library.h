@@ -6,6 +6,7 @@
 
 extern ICoreFunctions *g_Core;
 class OperationsQueue;
+class OperationsQueueDialog;
 
 class FC_Library : public QObject, public ILibrary
 {
@@ -15,8 +16,10 @@ class FC_Library : public QObject, public ILibrary
 public:
 	QVector<Module *> ListModulesAndGetCore(ICoreFunctions *core);
 	QObject* CreateModuleInstance(int id, QObject *parent);
+
 private:
 	OperationsQueue *module;
+	OperationsQueueDialog *dialog;
 };
 
 #endif // FS_WINDOWS_LIBRARY_H

@@ -5,10 +5,14 @@ OperationQueueModel::OperationQueueModel( OperationsQueue *queue, QObject *paren
 	: QAbstractListModel(parent), queue(queue)
 {
 	headers << tr("Operation Type") << tr("Progress") << tr("State");
+
 	for(int i = 0; i < queue->GetCount(); i++)
-		operations << queue->GetOperation(i);
+		AddOperation(queue->GetOperation(i));
+
 	connect(queue, SIGNAL(operationAdded(IFileOperation *)), SLOT(AddOperation(IFileOperation *)));
 	connect(queue, SIGNAL(operationRemoved(IFileOperation *)), SLOT(RemoveOperation(IFileOperation *)));
+	connect(queue, SIGNAL(operationStateChanged(IFileOperation *, IFileOperation::OperationState )), SLOT(ChangeOperationState(IFileOperation *, IFileOperation::OperationState)));
+	connect(queue, SIGNAL(operationFinished(IFileOperation *)), SLOT(FinishOperation(IFileOperation *)));
 }
 
 OperationQueueModel::~OperationQueueModel()
@@ -31,15 +35,15 @@ QVariant OperationQueueModel::data( const QModelIndex &index, int role ) const
 	if(role == Qt::DisplayRole)
 		if(index.row() < rowCount())
 		{
-			IFileOperation *op = operations[index.row()];
+			const OperationsQueueModelItem & item = operations.at(index.row());
 			switch(index.column())
 			{
 			case OperationType:
-				return op->GetType();
+				return item.GetType();
 			case Progress:
-				return op->GetProgress();
+				return item.GetProgress();
 			case State:
-				return op->GetState();
+				return item.GetStateString();
 			default:
 				return QVariant();
 			}
@@ -57,7 +61,7 @@ QVariant OperationQueueModel::headerData( int section, Qt::Orientation /*orienta
 bool OperationQueueModel::addRow( IFileOperation *operation)
 {
 	beginInsertRows(QModelIndex(), operations.size(), operations.size() + 1);
-	operations.append(operation);
+	operations.append(OperationsQueueModelItem(operation));
 	endInsertRows();
 	return true;
 }
@@ -77,14 +81,85 @@ void OperationQueueModel::AddOperation( IFileOperation *operation )
 
 void OperationQueueModel::RemoveOperation( IFileOperation *operation )
 {
-	int ind = -1;
-	for(int i = 0; i < operations.size(); i++)
-		if(operations.at(i) == operation)
-		{
-			ind = i;
-			break;
-		}
-	if(ind != -1)
-		removeRow(ind);
+	int index = FindOperationIndex(operation);
+	if(index != -1)
+		removeRow(index);
 }
 
+void OperationQueueModel::ChangeOperationState( IFileOperation *operation, IFileOperation::OperationState newState )
+{
+	int i = FindOperationIndex(operation);
+	if(i != -1)
+	{
+		operations[i].SetState(newState);
+		QModelIndex ind = index(i, State);
+		emit dataChanged(ind, ind);
+	}
+}
+
+int OperationQueueModel::FindOperationIndex( const IFileOperation *operation ) const
+{
+	int index = -1;
+	for(int i = 0; i < operations.size(); i++)
+		if(operations.at(i).GetOperation() == operation)
+		{
+			index = i;
+			break;
+		}
+	return index;
+}
+
+void OperationQueueModel::FinishOperation( IFileOperation *operation )
+{
+	int i = FindOperationIndex(operation);
+	if(i != -1)
+	{
+		operations[i].SetState(IFileOperation::Finished);
+		operations[i].SetProgress(100);
+		QModelIndex left = index(i, Progress);
+		QModelIndex right = index(i, State);
+		emit dataChanged(left, right);
+	}
+}
+
+
+OperationsQueueModelItem::OperationsQueueModelItem( const IFileOperation *fileOperation )
+	: fileOperation(fileOperation)
+{
+	type = fileOperation->GetType();
+	progress = fileOperation->GetProgress();
+	state = fileOperation->GetState();
+}
+
+QString OperationsQueueModelItem::GetType() const
+{
+	return type;
+}
+
+QString OperationsQueueModelItem::GetStateString() const
+{
+	const static char *states[] = {"Paused", "Running", "Forced Running", "Queued", "Error", "Finished", "Canceled"};
+	if(state > 6 || state < 0) // fucking workaround. need to change it
+		return "FUUUUU";
+	return states[state];
+}
+
+void OperationsQueueModelItem::SetProgress(int newProgress)
+{
+	progress = newProgress;
+}
+
+void OperationsQueueModelItem::SetState( IFileOperation::OperationState newState )
+{
+	state = newState;
+}
+
+const IFileOperation * OperationsQueueModelItem::GetOperation() const
+{
+	return fileOperation;
+}
+
+int OperationsQueueModelItem::GetProgress() const
+{
+	return progress;
+}
