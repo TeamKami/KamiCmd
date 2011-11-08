@@ -61,15 +61,15 @@ QVariant OperationQueueModel::headerData( int section, Qt::Orientation /*orienta
 
 bool OperationQueueModel::addRow( IFileOperation *operation)
 {
-	beginInsertRows(QModelIndex(), operations.size(), operations.size() + 1);
-	operations.append(OperationsQueueModelItem(operation));
+	beginInsertRows(QModelIndex(), 0, 0);
+	operations.prepend(OperationsQueueModelItem(operation));
 	endInsertRows();
 	return true;
 }
 
 bool OperationQueueModel::removeRow( int position )
 {
-	beginRemoveRows(QModelIndex(), position, position + 1);
+	beginRemoveRows(QModelIndex(), position, position);
 	operations.removeAt(position);
 	endRemoveRows();
 	return true;
