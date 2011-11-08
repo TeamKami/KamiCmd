@@ -35,6 +35,7 @@ signals:
 	void operationAdded(IFileOperation *);
 	void operationStateChanged(IFileOperation *operation, IFileOperation::OperationState newState);
 	void operationFinished(IFileOperation *);
+	void operationProgressChanged(IFileOperation *, int);
 
 private:
 	bool IsFileOperationInQueue( const IFileOperation *fileOperation ) const;

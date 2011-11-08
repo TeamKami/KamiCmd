@@ -49,6 +49,7 @@ private:
 	int elapsed;
 	OperationState state;
 	QMutex m;
+	int oldProgress;
 };
 
 #endif

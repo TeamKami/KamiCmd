@@ -6,6 +6,7 @@ FileOperationDummy::FileOperationDummy(QObject *parent)
 {
 	elapsed = 0;
 	duration = 6000;
+	oldProgress = 0;
 }
 
 FileOperationDummy::~FileOperationDummy()
@@ -77,6 +78,13 @@ void FileOperationDummy::ShowProgressDialog(QWidget *parent)
 void FileOperationDummy::update()
 {
 	elapsed += Interval;
+	int progress = GetProgress();
+	if(progress != oldProgress)
+	{
+		oldProgress = progress;
+		emit progressChanged(this, progress);
+	}
+
 	if(elapsed >= duration)
 	{
 		state = Finished;

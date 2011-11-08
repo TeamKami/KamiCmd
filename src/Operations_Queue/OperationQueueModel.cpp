@@ -13,6 +13,7 @@ OperationQueueModel::OperationQueueModel( OperationsQueue *queue, QObject *paren
 	connect(queue, SIGNAL(operationRemoved(IFileOperation *)), SLOT(RemoveOperation(IFileOperation *)));
 	connect(queue, SIGNAL(operationStateChanged(IFileOperation *, IFileOperation::OperationState )), SLOT(ChangeOperationState(IFileOperation *, IFileOperation::OperationState)));
 	connect(queue, SIGNAL(operationFinished(IFileOperation *)), SLOT(FinishOperation(IFileOperation *)));
+	connect(queue, SIGNAL(operationProgressChanged(IFileOperation *, int)), SLOT(ChangeOperationProgress(IFileOperation *, int)));
 }
 
 OperationQueueModel::~OperationQueueModel()
@@ -119,6 +120,17 @@ void OperationQueueModel::FinishOperation( IFileOperation *operation )
 		QModelIndex left = index(i, Progress);
 		QModelIndex right = index(i, State);
 		emit dataChanged(left, right);
+	}
+}
+
+void OperationQueueModel::ChangeOperationProgress( IFileOperation *operation, int progress )
+{
+	int i = FindOperationIndex(operation);
+	if(i != -1)
+	{
+		operations[i].SetProgress(progress);
+		QModelIndex left = index(i, Progress);
+		emit dataChanged(left, left);
 	}
 }
 

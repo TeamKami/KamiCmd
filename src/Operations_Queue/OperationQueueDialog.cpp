@@ -32,7 +32,7 @@ void OperationsQueueDialog::on_addDummyButton_clicked()
 	if(op)
 	{
 		queue->Add(op, IFileOperation::Running);
-		op->ShowProgressDialog(this);
+//		op->ShowProgressDialog(this);
 	}
 	else
 		g_Core->DebugWrite("OperationsQueue", "Can't query DummyFileOperation");

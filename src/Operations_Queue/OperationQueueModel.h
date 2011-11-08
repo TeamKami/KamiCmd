@@ -57,7 +57,7 @@ public slots:
 	void RemoveOperation(IFileOperation *operation);
 	void ChangeOperationState(IFileOperation *operation, IFileOperation::OperationState newState);
 	void FinishOperation(IFileOperation *operation);
-
+	void ChangeOperationProgress(IFileOperation *operation, int progress);
 private:
 	int FindOperationIndex(const IFileOperation *operation) const;
 

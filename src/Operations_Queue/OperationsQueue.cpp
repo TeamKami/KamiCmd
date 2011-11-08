@@ -19,6 +19,7 @@ void OperationsQueue::Add( IFileOperation *fileOperation, IFileOperation::Operat
 {
 	operations.append(fileOperation);
 	connect(fileOperation, SIGNAL(finished(IFileOperation *)), SIGNAL(operationFinished(IFileOperation *)));
+	connect(fileOperation, SIGNAL(progressChanged(IFileOperation *, int)), SIGNAL(operationProgressChanged(IFileOperation *, int)));
 
 	FileOperationTask *task = new FileOperationTask(fileOperation);
 	task->setAutoDelete(true);
