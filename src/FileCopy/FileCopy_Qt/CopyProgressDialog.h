@@ -26,13 +26,15 @@ private slots:
 private:
 	void updateSpeed();
 	QString formatSize(qint64 size);
+
 	Ui::CopyProgressDialog ui;
 	FileCopy *fileCopy;
 	IOperationsQueue *operationsQueue;
 	QTimer refreshTimer;
 	CopyThread *copyThread;
 	int ticksPassed;
-	qint64 bytesCopiedBetweenTicks[10];
+	static const int ticksMeasured = 10;
+	qint64 bytesCopiedBetweenTicks[ticksMeasured];
 	qint64 oldTotalCopied;
 };
 

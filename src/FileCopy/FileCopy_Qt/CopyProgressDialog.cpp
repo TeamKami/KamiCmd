@@ -89,14 +89,13 @@ void CopyProgressDialog::cancelCopy()
 	int r = QMessageBox::question(this, tr("Warning"),
 		tr("Are you sure you want to cancel copy?"),
 		QMessageBox::Yes | QMessageBox::No);
-  	if(r == QMessageBox::Yes)
-	{
-		fileCopy->Cancel();
-		refreshTimer.stop();
- 		QDialog::reject();
+   	if(r == QMessageBox::Yes)
+ 	{
+ 		fileCopy->Cancel();
+		reject();
 	}
-	else
-		fileCopy->Resume();
+ 	else
+ 		fileCopy->Resume();
 }
 
 void CopyProgressDialog::updateSpeed()
@@ -104,13 +103,13 @@ void CopyProgressDialog::updateSpeed()
 	// speed is calculated by averaging speed in last 10 update ticks
 
 	qint64 totalCopied = fileCopy->GetTotalBytesCopied();
-	bytesCopiedBetweenTicks[ticksPassed %= 10] = totalCopied - oldTotalCopied;
+	bytesCopiedBetweenTicks[ticksPassed %= ticksMeasured] = totalCopied - oldTotalCopied;
 
 	ticksPassed++;
 	oldTotalCopied = totalCopied;
 	
 	qint64 t = 0;
-	for(int i = 0; i < 10; i++)
+	for(int i = 0; i < ticksMeasured; i++)
 		t += bytesCopiedBetweenTicks[i];
 	int speed = t / 2.5;
 

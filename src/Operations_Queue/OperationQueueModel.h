@@ -25,7 +25,6 @@ private:
 	QString operation;
 	IFileOperation::OperationState state;
 	int progress;
-
 	const IFileOperation *fileOperation;
 };
 

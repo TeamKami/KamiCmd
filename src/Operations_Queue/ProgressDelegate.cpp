@@ -24,10 +24,12 @@ void ProgressDelegate::paint( QPainter * painter, const QStyleOptionViewItem & o
 		return;
 	}
 
-	QStyleOptionProgressBar opt;
+	QStyleOptionProgressBarV2 opt;
+
 	opt.rect = option.rect;
 	opt.minimum = 0;
 	opt.maximum = 100;
+	opt.textAlignment = Qt::AlignCenter;
 	opt.progress = index.data().toInt();
 	opt.text = QString("%1%").arg(opt.progress);
 	opt.textVisible = true;

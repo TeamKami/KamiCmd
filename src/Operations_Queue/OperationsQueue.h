@@ -3,12 +3,12 @@
 
 #include <QtCore/QList>
 #include <QtCore/QThreadPool>
-
+#include <QtCore/QSignalMapper>
 
 #include "library.h"
 #include "IFileOperation.h"
 
-typedef QPair< IFileOperation *, int> Operation;
+class FileOperationThread;
 
 class OperationsQueue : public QObject, public IOperationsQueue
 {
@@ -42,7 +42,9 @@ private:
 	void RemoveFileOperation(const IFileOperation *fileOperation);
 
 	QList < IFileOperation *> operations;
+	QList <FileOperationThread *> operationTasks;
 	QThreadPool threadPool;
+	QSignalMapper mapper;
 };
 
 #endif // OPERATIONS_QUEUE

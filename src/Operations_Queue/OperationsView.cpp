@@ -6,7 +6,7 @@
 OperationsView::OperationsView(QWidget *parent)
 	: QTreeView(parent)
 {
-
+	
 }
 
 OperationsView::~OperationsView()
@@ -20,9 +20,9 @@ void OperationsView::paintEvent( QPaintEvent* event )
 	QPainter painter(viewport());
 	for (int i = 0; i < model()->columnCount(); ++i)
 	{
-		// draw only visible sections starting from second column
-// 		if (header()->isSectionHidden(i) || header()->visualIndex(i) <= 0)
-// 			continue;
+//		 draw only visible sections starting from second column
+ 		if (header()->isSectionHidden(i) || header()->visualIndex(i) <= 0)
+ 			continue;
 		// position mapped to viewport
 
 		int pos = header()->sectionViewportPosition(i) - 1;
@@ -38,5 +38,5 @@ void OperationsView::scrollContentsBy( int dx, int dy )
 {
 	QTreeView::scrollContentsBy(dx, dy);
 	// make sure lines get updated even if the view is empty
-//	()->update();
+	viewport()->update();
 }
