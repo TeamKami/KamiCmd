@@ -31,20 +31,20 @@ void CopyProgressDialog::update()
 
 	if(state != FileCopy::Running && state != FileCopy::ForcedRunning)
 		return;
-	
+
 	updateSpeed();
 
 	ui.progressBar->setValue(fileCopy->GetProgress());
 	ui.totalSizeLabel->setText(tr("Total: ") + formatSize(fileCopy->GetTotalBytesCopied()) 
 		+ '/' + formatSize(fileCopy->GetTotalSize()));	
-	
-	
+
+
 	if(const FileInfo *file = fileCopy->GetCurrentCopiedFile())
 	{
 		ui.sourceLabel->setText(file->name);
 		ui.currentFileBytesCopied->setText(formatSize(fileCopy->GetCurrentFileBytesCopied())	 + '/' + formatSize(file->size));
 	}
-	
+
 	ui.progressBar_2->setValue(fileCopy->GetCurrentFileProgress());		
 }
 
@@ -54,9 +54,9 @@ void CopyProgressDialog::show()
 
 	copyThread = new CopyThread(this, fileCopy);
 	ui.destinationLabel->setText(fileCopy->GetDestination());
-	refreshTimer.start(250);
+	refreshTimer.start(100);
 	copyThread->start();
-	
+
 	QDialog::show();
 }
 
@@ -89,13 +89,13 @@ void CopyProgressDialog::cancelCopy()
 	int r = QMessageBox::question(this, tr("Warning"),
 		tr("Are you sure you want to cancel copy?"),
 		QMessageBox::Yes | QMessageBox::No);
-   	if(r == QMessageBox::Yes)
- 	{
- 		fileCopy->Cancel();
+	if(r == QMessageBox::Yes)
+	{
+		fileCopy->Cancel();
 		reject();
 	}
- 	else
- 		fileCopy->Resume();
+	else
+		fileCopy->Resume();
 }
 
 void CopyProgressDialog::updateSpeed()
@@ -107,11 +107,11 @@ void CopyProgressDialog::updateSpeed()
 
 	ticksPassed++;
 	oldTotalCopied = totalCopied;
-	
+
 	qint64 t = 0;
 	for(int i = 0; i < ticksMeasured; i++)
 		t += bytesCopiedBetweenTicks[i];
-	int speed = t / 2.5;
+	int speed = t;
 
 	ui.speed->setText(tr("Speed: ") + formatSize(speed) + "/s");
 }

@@ -151,8 +151,7 @@ QString OperationsQueueModelItem::GetType() const
 QString OperationsQueueModelItem::GetStateString() const
 {
 	const static char *states[] = {"Paused", "Running", "Forced Running", "Queued", "Error", "Finished", "Canceled"};
-	if(state > 6 || state < 0) // fucking workaround. need to change it
-		return "FUUUUU";
+	Q_ASSERT(state < 6 && state >= 0);
 	return states[state];
 }
 
