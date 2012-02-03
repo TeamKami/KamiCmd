@@ -66,7 +66,7 @@ int FilesToCopy::Count() const
 	return fileCount;
 }
 
-const CopiedFile FilesToCopy::GetNextFile() const
+const CopiedFile* FilesToCopy::GetNextFile() const
 {
 	if(currentFileNumber == -1)
 	{
@@ -81,7 +81,7 @@ const CopiedFile FilesToCopy::GetNextFile() const
 		currentFileNumber = 0;
 	}
 
-	return CopiedFile(&it.key(), &v.at(currentFileNumber++));;
+	return new CopiedFile(&it.key(), &v.at(currentFileNumber++));;
 }
 
 void FilesToCopy::SetDestination( QString destination )

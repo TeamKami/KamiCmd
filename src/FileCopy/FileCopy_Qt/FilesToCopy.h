@@ -13,7 +13,7 @@ public:
 	virtual void AddFile( const QString & relativePath, const FileInfo & file );
 	virtual void AddFiles( const QString & relativePath, const QVector<FileInfo> & files );
 
-	virtual const CopiedFile GetNextFile() const;
+	virtual const CopiedFile* GetNextFile() const;
 
 	virtual void SetDestination( QString destination );
 	virtual const QString & GetDestination() const;

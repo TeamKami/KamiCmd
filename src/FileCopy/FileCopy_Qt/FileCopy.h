@@ -66,7 +66,7 @@ private:
 	OperationState state;
 	QMutex pauseMutex;
 
-
+	const CopiedFile *currentCopiedFile;
 	IFileSystem *fileSystem;
 	QDir destinationDirectory;
 	

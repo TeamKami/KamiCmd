@@ -55,7 +55,7 @@ public:
 
 	virtual int Count() const = 0;
 
-	virtual const CopiedFile GetNextFile() const = 0;
+	virtual const CopiedFile *GetNextFile() const = 0;
 
 	virtual qint64 GetTotalSize() const = 0;
 

@@ -34,13 +34,17 @@ bool FileCopy::Exec()
 
 	for( ; currentFileIndex < filesToCopy->Count() && GetState() != Canceled; ++currentFileIndex)
 	{
-        const CopiedFile currentCopiedFile = filesToCopy->GetNextFile();
-        if(!destinationDirectory.exists(currentCopiedFile.RelativePath()))
-            destinationDirectory.mkpath(currentCopiedFile.RelativePath());
-        QString path = filesToCopy->GetDestination() + currentCopiedFile.RelativePath();
-        copyFile(currentCopiedFile.GetFile().path + currentCopiedFile.GetFile().name,
-                 path + currentCopiedFile.GetFile().name);
+        currentCopiedFile = filesToCopy->GetNextFile();
+        if(!destinationDirectory.exists(currentCopiedFile->RelativePath()))
+            destinationDirectory.mkpath(currentCopiedFile->RelativePath());
+        QString path = filesToCopy->GetDestination() + currentCopiedFile->RelativePath();
+		
+        copyFile(currentCopiedFile->GetFile().path + currentCopiedFile->GetFile().name,
+                 path + currentCopiedFile->GetFile().name);
+
+		currentCopiedFile = 0; // memory leak, need to change it later so that it will be threadsafe
 	}	
+
 
 
 	stateMutex.lock();

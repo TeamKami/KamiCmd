@@ -5,6 +5,7 @@
 #include <QMimeData>
 #include <QUrl>
 #include <QMessageBox>
+#include <QtCore/QDebug>
 
 
 bool archiverLessThan( const Module *first, const Module *second )

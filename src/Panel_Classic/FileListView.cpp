@@ -201,7 +201,7 @@ void FileListView::currentChanged(const QModelIndex &current, const QModelIndex 
 
 void FileListView::mousePressEvent( QMouseEvent *event )
 {
-    if ((event->button() == Qt::RightButton) || (event->button() == Qt::LeftButton && event->modifiers() & Qt::ControlModifier)
+    if ((event->button() == Qt::RightButton) || (event->button() == Qt::LeftButton && event->modifiers() & Qt::ControlModifier))
 	{
 		QModelIndex index = indexAt(event->pos());
 		if (!index.isValid())
