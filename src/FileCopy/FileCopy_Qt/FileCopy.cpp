@@ -6,7 +6,7 @@
 #include <QMessageBox>
 
 FileCopy::FileCopy( QObject *parent /*= 0*/ ) 
-	: IFileCopy(parent), bytesCopied(0), state(Running), currentFileIndex(0), currentCopiedFile(0), currentFileBytesCopied(0)
+    : IFileCopy(parent), state(Running), currentFileIndex(0), currentFileBytesCopied(0), bytesCopied(0)
 {
 	fileSystem = dynamic_cast<IFileSystem *>(g_Core->QueryModule("FS", 1));
 	if(!fileSystem)
@@ -34,15 +34,14 @@ bool FileCopy::Exec()
 
 	for( ; currentFileIndex < filesToCopy->Count() && GetState() != Canceled; ++currentFileIndex)
 	{
-		currentCopiedFile = &filesToCopy->GetNextFile();
-		if(!destinationDirectory.exists(currentCopiedFile->RelativePath()))
-			destinationDirectory.mkpath(currentCopiedFile->RelativePath());
-		QString path = filesToCopy->GetDestination() + currentCopiedFile->RelativePath();
-		copyFile(currentCopiedFile->GetFile().path + currentCopiedFile->GetFile().name,
-				 path + currentCopiedFile->GetFile().name);
-	}
-	
-	currentCopiedFile = NULL;
+        const CopiedFile currentCopiedFile = filesToCopy->GetNextFile();
+        if(!destinationDirectory.exists(currentCopiedFile.RelativePath()))
+            destinationDirectory.mkpath(currentCopiedFile.RelativePath());
+        QString path = filesToCopy->GetDestination() + currentCopiedFile.RelativePath();
+        copyFile(currentCopiedFile.GetFile().path + currentCopiedFile.GetFile().name,
+                 path + currentCopiedFile.GetFile().name);
+	}	
+
 
 	stateMutex.lock();
 	if(state != Canceled)
@@ -168,6 +167,8 @@ FileCopy::ErrorProcessingDesicion FileCopy::processFileError( const QFile & file
 	case IFileCopy::Cancel:
 		return Stop;
 
+     default:
+        break;
 	}
 	return Continue;
 }
@@ -264,6 +265,6 @@ FileCopy::ErrorHandling FileCopy::GetErrorHandling( QFile::FileError error ) con
 
 void FileCopy::ShowProgressDialog(QWidget *parent)
 {
-	
+    Q_UNUSED(parent)
 }
 

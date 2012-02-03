@@ -342,6 +342,7 @@ bool FileListModel::dropMimeData( const QMimeData *mimeData, Qt::DropAction acti
 		case Qt::LinkAction: actionStr = "link"; break;
 		case Qt::TargetMoveAction: actionStr = "target-move"; break;
 		case Qt::IgnoreAction: actionStr = "ignore"; break;
+        case Qt::ActionMask: actionStr = ""; qDebug() << "not implemented"; break;
 		}
 		//QMessageBox::information(NULL, QString("Files to %1").arg(actionStr), str);
 

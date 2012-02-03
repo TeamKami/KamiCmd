@@ -120,7 +120,7 @@ void CoreFunctions::DebugWrite( QString sender, QString message, DebugWriteImpor
 		qDebug() << message;
 		break;
 	case ReportMe:
-		qFatal(static_cast<char *>(message.toLocal8Bit().data()));
+        qFatal(static_cast<char *>(message.toLocal8Bit().data()));
 		break;
 	default:
 		break;

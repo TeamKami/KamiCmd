@@ -138,18 +138,13 @@ void CopyProgressDialog::on_cancelCopy_clicked()
 
 void CopyProgressDialog::HandleError( const QString filePath, QFile::FileError error, const QString errorText )
 {
+    Q_UNUSED(filePath)
+    Q_UNUSED(errorText)
+
 	switch(error)
 	{
-	case QFile::OpenError:
-	case QFile::PermissionsError:
-	case QFile::ReadError:
-	case QFile::FatalError:
-	case QFile::RenameError:
-	case QFile::UnspecifiedError:
-	case QFile::RemoveError:
-	case QFile::ResizeError:
-		{
-
-		}
+        default:
+        qDebug() << "Not implemented for now";
+            break;
 	}
 }
