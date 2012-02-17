@@ -3,3 +3,5 @@ INCLUDEPATH += 3rdparty/QScintilla/QScintilla2 \
 TEMPLATE = subdirs
 SUBDIRS = src\
 	3rdparty
+
+src.depends = 3rdparty
