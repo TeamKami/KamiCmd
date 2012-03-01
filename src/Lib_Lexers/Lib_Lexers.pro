@@ -20,7 +20,12 @@ LIBS += -L../../debug
 }
 CONFIG(release, debug|release)
 {
-LIBS += -L../../release
+    macx {
+        LIBS += -L../../release/KamiCmd.app/Contents/MacOS
+    }
+    else {
+        LIBS += -L../../release
+    }
 }
 
 LIBS += -lqscintilla2

@@ -155,8 +155,7 @@ protected:
 class Folding: public Setting<QsciScintilla::FoldStyle>
 {
 public:
-    Folding() :
-        Setting("folding", &QsciScintilla::folding, 0,
+    Folding() : Setting<QsciScintilla::FoldStyle>("folding", &QsciScintilla::folding, 0,
                 &Ui::EditorSettings::foldingStyle)
     {
     }

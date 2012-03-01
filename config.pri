@@ -12,7 +12,12 @@ CONFIG(debug, debug|release)
 CONFIG(release, debug|release)
 { 
     contains(TEMPLATE, vclib) | contains(TEMPLATE, lib) {
-        DESTDIR = $${Root}/release/Modules
+        macx {
+            DESTDIR = $${Root}/release/KamiCmd.app/Contents/MacOS
+        }
+        else {
+            DESTDIR = $${Root}/release/Modules
+        }
     } else {
         DESTDIR = $${Root}/release
     }
