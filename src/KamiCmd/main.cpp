@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 		if (!core.LoadModules())
 			return 1;
 
-		IUnitManager *unitManager;
+        IUnitManager *unitManager;
         if ((unitManager = dynamic_cast<IUnitManager *>(core.QueryModule("UnitManager", 1))) != 0)
 			unitManager->Start();
 		else

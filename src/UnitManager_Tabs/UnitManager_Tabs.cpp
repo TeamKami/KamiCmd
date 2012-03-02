@@ -305,7 +305,9 @@ void UnitManager_Tabs::LoadState()
 			g_Core->DebugWrite("UnitManager_Tabs", "Panel module not found", ICoreFunctions::Error);
 	}
 	tabs->setCurrentIndex(set.value("UnitManager/ActiveUnit", 0).toInt());
-	tabs->widget(tabs->currentIndex())->setFocus();
+    int curIndex = tabs->currentIndex();
+    if (curIndex != -1)
+        tabs->widget(curIndex)->setFocus();
 
 	set.beginGroup("MainWindow");
 	restoreGeometry(set.value("geometry").toByteArray());

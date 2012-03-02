@@ -146,8 +146,20 @@ void DebugLog::OutputDebugMessage( QtMsgType type, const char *msg )
 	qRegisterMetaType<ICoreFunctions::DebugWriteImportance>("ICoreFunctions::DebugWriteImportance");
 
 	QMutexLocker lock(&mutex);
+    QString debugMsg = QString::fromLocal8Bit(msg); // FIXME: Is it really local 8bit?
 
-	log.append(qMakePair((ICoreFunctions::DebugWriteImportance)type, QString::fromLocal8Bit(msg))); // FIXME: Is it really local 8bit?
+#ifdef Q_WS_MAC
+    static bool isTabletDeviceUnknownMsgShown = false;
+    if (debugMsg.startsWith("QCocoaView handleTabletEvent: This tablet device is unknown"))
+    {
+        if (isTabletDeviceUnknownMsgShown)
+            return;
+        isTabletDeviceUnknownMsgShown = true;
+        debugMsg.append(" This message is posted hundred times, so KamiCmd only shows it once");
+    }
+#endif
+
+    log.append(qMakePair((ICoreFunctions::DebugWriteImportance)type, debugMsg));
 	emitter.EmitMessage(log.last().first, log.last().second);
 }
 

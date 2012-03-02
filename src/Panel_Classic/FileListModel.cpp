@@ -20,7 +20,7 @@ FileListModel::FileListModel(QObject *parent /*= NULL*/)
 {
 	columns = 2;
 
-	if (IFileSystem *fileSystem = dynamic_cast<IFileSystem *>(g_Core->QueryModule("FS", 1)))
+    if (IFileSystem *fileSystem = dynamic_cast<IFileSystem *>(g_Core->QueryModule("FS", 1)))
 		fs.push(fileSystem);
 	else
 		g_Core->DebugWrite("Panel_Classic", "FileSystem module not found", ICoreFunctions::Error);
@@ -158,6 +158,9 @@ QVariant FileListModel::data( const QModelIndex & index, int role /*= Qt::Displa
 bool FileListModel::SetPath( QString path )
 {
 	bool isSuccess = false;
+    if (!GetFs())
+        return false;
+
 	if (GetFs()->SetPath(path))
 		isSuccess = true;
 	else
@@ -310,7 +313,7 @@ const FileInfo * FileListModel::GetFileInfo( int index )
 
 IFileSystem* FileListModel::GetFs()
 {
-	return fs.top();
+    return fs.isEmpty() ? NULL : fs.top();
 }
 
 void FileListModel::QuickSearchChanged( QString search )
