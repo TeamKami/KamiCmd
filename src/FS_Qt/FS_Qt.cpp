@@ -24,7 +24,7 @@ int FS_Qt::SetPath( QString path )
 
 QString FS_Qt::GetPath()
 {
-	return path_;
+	return QDir::cleanPath(path_);
 }
 
 int FS_Qt::UpOneLevel()

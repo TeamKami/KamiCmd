@@ -2,6 +2,7 @@
 #include "shlwapi.h"
 #pragma comment(lib, "shlwapi.lib")
 
+#include <QtCore/QDir>
 WCHAR *FS_Windows::GetVeryLongPathName(QString path)
 {
 	WCHAR *ptr = (WCHAR *)path.constData();
@@ -69,7 +70,7 @@ QString FS_Windows::GetPath()
 	WCHAR *ptr = (WCHAR *)path_.constData();
 	wcscpy(buf, ptr);
 	ToUnitedSeparators(buf);
-	return QString::fromUtf16(buf);
+	return QDir::cleanPath(QString::fromUtf16(buf));
 }
 
 int FS_Windows::UpOneLevel()
