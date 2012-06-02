@@ -7,10 +7,10 @@ SUBDIRS = KamiCmd \
           Panel_Classic \
           Unit_KamiShell \
           Unit_PictureView \
-          Unit_WebKit \
+##          Unit_WebKit \
           UnitManager_Tabs \
-	  Unit_TextEditor \
-	  Lib_Lexers
+#	  Unit_TextEditor \
+#	  Lib_Lexers
 
 win32 {
           SUBDIRS += FS_Windows
