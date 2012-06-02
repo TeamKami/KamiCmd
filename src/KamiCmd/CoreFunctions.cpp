@@ -32,15 +32,15 @@ bool CoreFunctions::LoadModules()
 	QDir modulesDir(QApplication::applicationDirPath());
 	modulesDir.cd("Modules");
 
-#if defined(Q_WS_WIN)
+#if defined(Q_OS_WIN)
 	foreach (QString fileName, modulesDir.entryList(QStringList("*.dll"), QDir::Files))
-#elif defined(Q_WS_X11)
+#elif defined(Q_OS_LINUX)
 	foreach (QString fileName, modulesDir.entryList(QStringList("*.so"), QDir::Files))
-#elif defined(Q_WS_MAC)
+#elif defined(Q_OS_MAC)
 	foreach (QString fileName, modulesDir.entryList(QStringList("*.dylib"), QDir::Files))
 #else
 	foreach (QString fileName, modulesDir.entryList(QDir::Files))
-#endif // Q_WS_WIN
+#endif // Q_OS_WIN
 	{
         QPluginLoader loader(modulesDir.absoluteFilePath(fileName));
 	    QObject *libObject = loader.instance();
