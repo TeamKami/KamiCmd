@@ -35,7 +35,7 @@
 extern "C++" {
 #endif
 
-#include <qprinter.h>
+#include <QPrinter>
 
 #include <Qsci/qsciglobal.h>
 #include <Qsci/qsciscintilla.h>
