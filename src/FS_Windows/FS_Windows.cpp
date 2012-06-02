@@ -37,7 +37,7 @@ int FS_Windows::SetPath( QString path )
 
 	PathAddBackslash(buf);
 	GetLongPathName(buf, buf, 32767);
-	path_ = QString::fromUtf16(buf);
+	path_ = QString::fromUtf16(reinterpret_cast<const ushort *>(buf));
 
 	if (hFind_ != INVALID_HANDLE_VALUE)
 		FindClose(hFind_);
@@ -70,7 +70,7 @@ QString FS_Windows::GetPath()
 	WCHAR *ptr = (WCHAR *)path_.constData();
 	wcscpy(buf, ptr);
 	ToUnitedSeparators(buf);
-	return QDir::cleanPath(QString::fromUtf16(buf));
+	return QDir::cleanPath(QString::fromUtf16(reinterpret_cast<const ushort *>(buf)));
 }
 
 int FS_Windows::UpOneLevel()
@@ -130,8 +130,8 @@ void FS_Windows::FileInfoFromFindData(FileInfo &info, WIN32_FIND_DATA &findData)
 	for (int i = 0; i < info.path.size(); i++)
 		if (info.path[i] == '\\')
 			info.path[i] = '/';
-	info.name = QString::fromUtf16(findData.cFileName);
-	info.alternateName = QString::fromUtf16(findData.cAlternateFileName);
+	info.name = QString::fromUtf16(reinterpret_cast<const ushort *>(findData.cFileName));
+	info.alternateName = QString::fromUtf16(reinterpret_cast<const ushort *>(findData.cAlternateFileName));
 }
 
 bool FS_Windows::GetFirstFileInfo( FileInfo &info )
