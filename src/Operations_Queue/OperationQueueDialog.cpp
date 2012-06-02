@@ -28,12 +28,12 @@ OperationsQueueDialog::~OperationsQueueDialog()
 void OperationsQueueDialog::on_addDummyButton_clicked()
 {
     // This line did not compile on Mac OS X. I assume the cause is inheritance of QObject in IFileOperation interface
-    IFileOperation *op = NULL; //dynamic_cast<IFileOperation *>(g_Core->QueryModule("DummyFileOperation", 1));
+    IFileOperation *op = dynamic_cast<IFileOperation *>(g_Core->QueryModule("DummyFileOperation", 1));
 
 	if(op)
 	{
         queue->Add(op, IFileOperation::Running);
-//		op->ShowProgressDialog(this);
+		op->ShowProgressDialog(this);
 	}
 	else
         g_Core->DebugWrite("OperationsQueue", "Can't query DummyFileOperation");

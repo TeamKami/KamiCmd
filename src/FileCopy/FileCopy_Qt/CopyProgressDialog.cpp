@@ -1,9 +1,8 @@
+#include <QtWidgets/QMessageBox>
+
 #include "CopyProgressDialog.h"
 #include "CopyThread.h"
 #include "library.h"
-
-#include <QMessageBox>
-
 
 CopyProgressDialog::CopyProgressDialog(FileCopy *fileCopy, QWidget *parent)
 	: QDialog(parent), fileCopy(fileCopy), ticksPassed(0), oldTotalCopied(0)

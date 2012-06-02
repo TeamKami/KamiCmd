@@ -1,7 +1,7 @@
 #ifndef FS_WINDOWS_LIBRARY_H
 #define FS_WINDOWS_LIBRARY_H
 
-#include <QtPlugin>
+#include <QtCore/QtPlugin>
 #include "ILibrary.h"
 
 extern ICoreFunctions *g_Core;

@@ -1,5 +1,5 @@
 #include <QtCore/QStack>
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QMessageBox>
 
 #include "CopyDialog.h"
 #include "CopyProgressDialog.h"

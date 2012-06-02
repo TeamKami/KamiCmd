@@ -1,7 +1,7 @@
 #ifndef UNIT_WEBKIT_H
 #define UNIT_WEBKIT_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "../IUnitManager.h"
 #include <QWebView>
 

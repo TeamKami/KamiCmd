@@ -1,7 +1,7 @@
 #ifndef KAMICMD_H
 #define KAMICMD_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "../ILibrary.h"
 #include "../IUnitManager.h"
 

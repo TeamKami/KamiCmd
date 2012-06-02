@@ -30,6 +30,12 @@
 
 # This must be kept in sync with configure.py.
 !win32:VERSION = 6.1.0
+greaterThan(QT_MAJOR_VERSION, 4) {
+        QT += widgets
+        QT += quick1
+    } else {
+        QT += declarative
+}
 
 TEMPLATE = lib
 TARGET = qscintilla2

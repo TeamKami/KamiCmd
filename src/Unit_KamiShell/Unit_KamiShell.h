@@ -1,7 +1,7 @@
 #ifndef UNIT_KAMISHELL_H
 #define UNIT_KAMISHELL_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "IUnitManager.h"
 #include "Unit_KamiShell/ConsoleWidget.h"
 #include <QProcess>

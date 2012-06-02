@@ -1,5 +1,11 @@
 # Project type
 TEMPLATE = app
+greaterThan(QT_MAJOR_VERSION, 4) {
+        QT += widgets
+        QT += quick1
+    } else {
+        QT += declarative
+    }
 
 # Global settings. Root variable MUST be present!
 Root = ../..

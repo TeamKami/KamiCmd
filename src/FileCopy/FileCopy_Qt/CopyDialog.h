@@ -1,7 +1,7 @@
 #ifndef COPYDIALOG_H
 #define COPYDIALOG_H
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 #include <QtCore/QTimer>
 
 #include "FileCopy.h"

@@ -1,7 +1,7 @@
 #include "OperationsView.h"
 
 #include <QtGui/QPainter>
-#include <QtGui/QHeaderView>
+#include <QtWidgets/QHeaderView>
 
 OperationsView::OperationsView(QWidget *parent)
 	: QTreeView(parent)

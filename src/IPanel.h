@@ -2,7 +2,7 @@
 #define PANEL_CLASSIC_INTERFACE_H
 
 #include <QtPlugin>
-#include <Qt/qglobal.h>
+#include <QtCore/qglobal.h>
 #include <QWidget>
 #include "IUnitManager.h"
 #include "IFileSystem.h"

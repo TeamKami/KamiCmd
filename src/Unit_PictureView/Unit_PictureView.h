@@ -1,7 +1,7 @@
 #ifndef UNIT_PICTUREVIEW_H
 #define UNIT_PICTUREVIEW_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "../IUnitManager.h"
 #include "../IPanel.h"
 #include <QTextEdit>

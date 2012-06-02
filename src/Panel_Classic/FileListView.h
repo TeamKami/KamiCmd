@@ -1,7 +1,7 @@
 #ifndef FILELISTVIEW_H
 #define FILELISTVIEW_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "SortModel.h"
 #include "FileListModel.h"
 #include <QLineEdit>

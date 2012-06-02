@@ -1,7 +1,7 @@
 #ifndef UNIT_Console_H
 #define UNIT_Console_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "../IUnitManager.h"
 #include "ConsoleWidget.h"
 

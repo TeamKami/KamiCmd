@@ -2,7 +2,7 @@
 #include "FileOperationTask.h"
 
 OperationsQueue::OperationsQueue( QObject *parent /*= 0*/ )
-	: QObject(parent)
+	: IOperationsQueue(parent)
 {
 	threadPool.setMaxThreadCount(8);
 

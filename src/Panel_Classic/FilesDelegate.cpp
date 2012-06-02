@@ -1,13 +1,13 @@
 #include "FilesDelegate.h"
 #include <QPainter>
-#include <QStyleOption>
-#include <QAbstractItemView>
+#include <QtWidgets/QStyleOption>
+#include <QtWidgets/QAbstractItemView>
 #include "FilesDelegate_win.h"
 #include "../IFileSystem.h"
 #include "FileListModel.h"
-#include <QTreeView>
-#include <QHeaderView>
-#include <QApplication>
+#include <QtWidgets/QTreeView>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QApplication>
 
 // This whole file is a pack of hacks and crutches
 

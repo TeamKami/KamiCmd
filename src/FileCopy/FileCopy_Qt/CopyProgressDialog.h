@@ -1,7 +1,7 @@
 #ifndef COPYPROGRESSDIALOG_H
 #define COPYPROGRESSDIALOG_H
 
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 #include "FileCopy.h"
 #include "ui_CopyProgressDialog.h"
 

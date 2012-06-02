@@ -3,7 +3,7 @@
 
 #include "../IFileSystem.h"
 #include "library.h"
-#include <QDir>
+#include <QtCore/QDir>
 
 class FS_Qt : public QObject, public IFileSystem
 {

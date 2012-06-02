@@ -4,7 +4,7 @@
 #include <QtCore/QMutex>
 #include <QtCore/QList>
 #include <QtCore/QAtomicInt>
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 
 #include "IFileCopy.h"
 #include "IFileSystem.h"

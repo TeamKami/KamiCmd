@@ -41,9 +41,10 @@ signals:
 };
 
 
-class IOperationsQueue
+class IOperationsQueue : public QObject
 {
 public:
+	IOperationsQueue(QObject *parent) : QObject(parent) {}
 	virtual ~IOperationsQueue() {}
 	virtual void Add(IFileOperation *, IFileOperation::OperationState state) = 0;
 	virtual void Pause(IFileOperation *) = 0;

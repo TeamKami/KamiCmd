@@ -1,7 +1,7 @@
 #ifndef UNITMANAGER_INTERFACE_H
 #define UNITMANAGER_INTERFACE_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 class IUnit : public QMainWindow//QWidget
 {

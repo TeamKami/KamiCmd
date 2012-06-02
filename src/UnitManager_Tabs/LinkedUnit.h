@@ -1,7 +1,7 @@
 #ifndef LINKEDUNIT_H
 #define LINKEDUNIT_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "IUnitManager.h"
 
 

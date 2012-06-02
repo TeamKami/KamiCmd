@@ -2,8 +2,8 @@
 #include "library.h"
 
 #include <QtCore/QTextStream>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 #include "IUnitManager.h"
 
 DebugDialog::DebugDialog(QWidget *parent)
