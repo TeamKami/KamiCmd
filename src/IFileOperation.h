@@ -4,9 +4,8 @@
 
 #define CURRENT_FILE_OPERATION_INTERFACE_VERSION 1
 
-class IFileOperation : public QObject
+class IFileOperation
 {
-	Q_OBJECT	
 public:
 	enum OperationState
 	{
@@ -19,10 +18,9 @@ public:
 		Canceled
 	};
 
-	IFileOperation(QObject *parent = 0) : QObject(parent) {}
-	virtual ~IFileOperation() {}
+	virtual ~IFileOperation() {};
 	virtual OperationState GetState() const = 0;
-	virtual QString GetType() const = 0; // i.e. copying, etc...
+	virtual QString GetType() const = 0; // i.e. copy, etc...
 	virtual int GetProgress() const = 0; // percentage
 
 	virtual void ShowProgressDialog(QWidget *parent = 0) = 0;
@@ -33,18 +31,20 @@ public:
 	virtual void Cancel() = 0;
 
 	friend class FileOperationProxy;
-
+	
+/*
+classes inheriting this interface should emit following signals
 signals:
 	void finished();
 	void finished(IFileOperation *); // workaround - allows operations queue to know which operation finished. need to change it to better solution
 	void progressChanged(IFileOperation *, int);
+*/
 };
 
 
-class IOperationsQueue : public QObject
+class IOperationsQueue
 {
 public:
-	IOperationsQueue(QObject *parent) : QObject(parent) {}
 	virtual ~IOperationsQueue() {}
 	virtual void Add(IFileOperation *, IFileOperation::OperationState state) = 0;
 	virtual void Pause(IFileOperation *) = 0;

@@ -9,7 +9,7 @@ class QString;
 struct FileInfo;
 class IFilesToCopy;
 
-class IFileCopy : public IFileOperation
+class IFileCopy : public QObject, public IFileOperation
 {
 public:
 
@@ -21,7 +21,7 @@ public:
 		Wait,
 		AskUser
 	};
-	IFileCopy(QObject *parent = 0) : IFileOperation(parent) {}
+	IFileCopy(QObject *parent = 0) : QObject(parent) {}
 	virtual ~IFileCopy() {}
 	virtual void PrepareForCopy(const IFilesToCopy & files) = 0;
 };

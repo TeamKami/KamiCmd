@@ -48,6 +48,9 @@ public:
 
 signals:
 	void reportError(const QString filePath, QFile::FileError error, const QString errorText);
+	void finished();
+	void finished(IFileOperation *); // workaround - allows operations queue to know which operation finished. need to change it to better solution
+	void progressChanged(IFileOperation *, int);
 
 private:
 	enum ErrorProcessingDesicion

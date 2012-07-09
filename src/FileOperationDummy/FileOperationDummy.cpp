@@ -2,7 +2,7 @@
 #include "DummyProgressDialog.h"
 
 FileOperationDummy::FileOperationDummy(QObject *parent)
-	: IFileOperation(parent), timer(0), progressDialog(NULL), state(Running)
+	: QObject(parent), timer(0), progressDialog(NULL), state(Running)
 {
 	elapsed = 0;
 	duration = 6000;

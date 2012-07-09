@@ -10,7 +10,7 @@
 
 class FileOperationThread;
 
-class OperationsQueue : public IOperationsQueue
+class OperationsQueue : public QObject, public IOperationsQueue
 {
 	Q_OBJECT
 

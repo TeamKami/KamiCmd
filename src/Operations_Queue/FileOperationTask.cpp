@@ -11,14 +11,14 @@ FileOperationTask::FileOperationTask( IFileOperation *fileOperation )
 FileOperationTask::~FileOperationTask()
 {
 	g_Core->DebugWrite("OperationQueue", "File Operation task is complete. Deleting...");
-	operation.operation->deleteLater();
+	dynamic_cast<QObject *>(operation.operation)->deleteLater();
 }
 
 void FileOperationTask::run()
 {	
 	operation.Exec();
 	QEventLoop loop;
-	QObject::connect(operation.operation, SIGNAL(finished()), &loop, SLOT(quit()), Qt::QueuedConnection);
+	QObject::connect(dynamic_cast<QObject *>(operation.operation), SIGNAL(finished()), &loop, SLOT(quit()), Qt::QueuedConnection);
 	loop.exec();
 }
 

@@ -6,7 +6,7 @@
 
 class DummyProgressDialog;
 
-class FileOperationDummy : public IFileOperation
+class FileOperationDummy : public QObject, public IFileOperation
 {
 	Q_OBJECT
 public:
@@ -14,19 +14,12 @@ public:
 	virtual ~FileOperationDummy();
 
 	virtual int GetProgress() const;
-
 	virtual bool Exec();
-
 	virtual void Resume();
-
 	virtual void Pause();
-
 	virtual void Cancel();
-
 	virtual OperationState GetState() const;
-
 	virtual QString GetType() const;
-
 	virtual void ShowProgressDialog(QWidget *parent = 0);
 
 private slots:
@@ -37,6 +30,10 @@ signals:
 	void pauseOperation();
 	void resumeOperation();
 	void startOperation();
+	void finished();
+	void finished(IFileOperation *); // workaround - allows operations queue to know which operation finished. need to change it to better solution
+	void progressChanged(IFileOperation *, int);
+
 
 private:
 	enum {Interval = 100};
